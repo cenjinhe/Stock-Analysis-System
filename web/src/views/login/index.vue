@@ -12,7 +12,7 @@
 <template>
   <div class="login">
     <el-form class="form" :model="model" :rules="rules" ref="loginForm">
-      <h1 class="title">Vue3 Element Admin</h1>
+      <h1 class="title">Stock Analysis System</h1>
       <el-form-item prop="userName">
         <el-input
           class="text"
