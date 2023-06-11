@@ -14,3 +14,5 @@
   
 # 访问
   http://192.168.31.25:9200/#/login
+  ![image](https://github.com/cenjinhe/Stock-Analysis-System/assets/103117343/eb710663-3f0c-47a8-a6e8-f75c637cc8eb)
+
