@@ -19,7 +19,7 @@ export default [
     component: Layout,
     name: 'Dashboard',
     meta: {
-      title: 'menu.dashboard',
+      title: '首页',
     },
     icon: 'icon-home',
     children: [
@@ -28,7 +28,7 @@ export default [
         name: 'home',
         component: Home,
         meta: {
-          title: 'menu.homepage',
+          title: '首页',
           affix: true,
         },
       },

@@ -1,10 +1,10 @@
 {
-  "name": "vue3-element-admin",
+  "name": "Stock-Analysis-System",
   "version": "3.0.0",
   "author": {
-    "name": "huzhushan",
-    "email": "huzhushan@126.com",
-    "url": "https://github.com/huzhushan"
+    "name": "cenjinhe",
+    "email": "cenjinhe@126.com",
+    "url": "https://github.com/cenjinhe"
   },
   "scripts": {
     "start": "npm run dev:mock",
@@ -61,11 +61,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/huzhushan/vue3-element-admin.git"
+    "url": "git+https://github.com/cenjinhe/Stock-Analysis-System.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/huzhushan/vue3-element-admin/issues"
+    "url": "https://github.com/cenjinhe/Stock-Analysis-System/issues"
   },
-  "homepage": "https://github.com/huzhushan/vue3-element-admin"
+  "homepage": "https://github.com/cenjinhe/Stock-Analysis-System"
 }

@@ -58,7 +58,8 @@
     <div class="action">
       <error-log />
       <userinfo />
-      <change-lang />
+      <!--      屏蔽语言切换功能-->
+      <!--      <change-lang />-->
     </div>
   </div>
 </template>

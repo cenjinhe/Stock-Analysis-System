@@ -60,7 +60,7 @@ export default {
   },
   tagsbar: {
     // 标签栏是否显示
-    isShow: true,
+    isShow: false,
   },
   breadcrumbs: {
     // 面包屑导航是否显示
