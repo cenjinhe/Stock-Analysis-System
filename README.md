@@ -10,5 +10,5 @@
  >cd Stock-Analysis-System/server-django          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 进入后端目录\
  >python manage.py runserver 127.0.0.1:5000       &nbsp;&nbsp;# 启动Django服务
 
-##访问URL
+##访问url
  >http://127.0.0.1:3001/#/
