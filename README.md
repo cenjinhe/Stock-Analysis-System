@@ -1,18 +1,14 @@
-# 前端
-  **进入前端目录**\
-  $ cd web/\
-  **安装依赖**\
-  $ sudo npm install\
-  **打包vue项目**\
-  sudo npm run build:mock
-  
-# 后端
-  **进入后端目录**\
-  $ cd server/\
-  **启动gunicorn**\
-  $ gunicorn --config=gunicorn_config.py main:app
-  
-# 访问
-  http://192.168.31.25:9200/#/login
-  ![image](https://github.com/cenjinhe/Stock-Analysis-System/assets/103117343/eb710663-3f0c-47a8-a6e8-f75c637cc8eb)
+##克隆项目
+ >git clone https://github.com/cenjinhe/Stock-Analysis-System.git
 
+##前端
+ >cd Stock-Analysis-System/web    &nbsp;&nbsp;# 进入前端目录\
+ >npm install                     &nbsp;&nbsp;# 安装依赖\
+ >npm start                       &nbsp;&nbsp;&nbsp;&nbsp;# 启动服务
+
+##后端（Django）
+ >cd Stock-Analysis-System/server-django          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 进入后端目录\
+ >python manage.py runserver 127.0.0.1:5000       &nbsp;&nbsp;# 启动Django服务
+
+##访问URL
+ http://127.0.0.1:3001/#/
