@@ -26,12 +26,12 @@
  * @Description:
  * @version:
  * @Date: 2021-08-20 11:15:27
- * @LastEditors: huzhushan@126.com
+ * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2022-09-27 16:15:56
- * @Author: huzhushan@126.com
- * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
- * @Github: https://github.com/huzhushan/vue3-element-admin
- * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
+ * @Author: cenjinhe@126.com
+ * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
+ * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
 import { useTags } from '@/pinia/modules/tags'

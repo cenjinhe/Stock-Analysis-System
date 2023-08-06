@@ -26,12 +26,12 @@
  * @Description:
  * @version:
  * @Date: 2021-04-20 11:06:21
- * @LastEditors: huzhushan@126.com
+ * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2021-07-26 13:06:50
- * @Author: huzhushan@126.com
- * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
- * @Github: https://github.com/huzhushan/vue3-element-admin
- * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
+ * @Author: cenjinhe@126.com
+ * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
+ * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
 export default [
@@ -66,7 +66,7 @@ export default [
       message: '获取用户信息成功',
       data: {
         id: 1,
-        name: 'zhangsan',
+        name: 'jinheCen',
         'role|1': ['admin', 'visitor'], // 随机返回一个角色admin或visitor
         avatar: "@image('48x48', '#fb0a2a')",
       },

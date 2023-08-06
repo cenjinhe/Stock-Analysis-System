@@ -17,12 +17,12 @@
  * @Description:
  * @version:
  * @Date: 2021-04-20 11:06:21
- * @LastEditors: huzhushan@126.com
+ * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2021-07-26 16:16:36
- * @Author: huzhushan@126.com
- * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
- * @Github: https://github.com/huzhushan/vue3-element-admin
- * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
+ * @Author: cenjinhe@126.com
+ * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
+ * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
 import { createRouter, createWebHashHistory } from 'vue-router'
@@ -33,11 +33,18 @@ import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
 import test from './modules/test'
+import stockAnalysis from './modules/stock-analysis'
+import stockManage from './modules/stock-manage'
 import system from './modules/system'
 
 /* 菜单栏的路由 */
 // 固定菜单
-export const fixedRoutes = [...home, ...system]
+export const fixedRoutes = [
+  ...home,
+  ...stockAnalysis,
+  ...stockManage,
+  ...system,
+]
 // 动态菜单
 export const asyncRoutes = [...test]
 

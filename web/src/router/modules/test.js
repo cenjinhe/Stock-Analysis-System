@@ -2,12 +2,12 @@
  * @Description:
  * @version:
  * @Date: 2021-04-21 09:18:32
- * @LastEditors: huzhushan@126.com
+ * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2022-09-27 18:51:35
- * @Author: huzhushan@126.com
- * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
- * @Github: https://github.com/huzhushan/vue3-element-admin
- * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
+ * @Author: cenjinhe@126.com
+ * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
+ * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 const Layout = () => import('@/layout/index.vue')
 const List = () => import('@/views/test/index.vue')

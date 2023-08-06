@@ -25,17 +25,16 @@
  * @Description:
  * @version:
  * @Date: 2021-04-20 11:06:21
- * @LastEditors: huzhushan@126.com
- * @LastEditTime: 2022-09-27 16:35:06
- * @Author: huzhushan@126.com
- * @HomePage: https://huzhushan.gitee.io/vue3-element-admin
- * @Github: https://github.com/huzhushan/vue3-element-admin
- * @Donate: https://huzhushan.gitee.io/vue3-element-admin/donate/
+ * @LastEditors: cenjinhe@126.com
+ * @LastEditTime: 2023-07-27 16:35:06
+ * @Author: cenjinhe@126.com
+ * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
+ * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
 import { ElLoading } from 'element-plus'
 import router from '@/router'
-// import store from '@/store'
 import { TOKEN } from '@/pinia/modules/app' // TOKEN变量名
 import { nextTick } from 'vue'
 import { useApp } from './pinia/modules/app'
