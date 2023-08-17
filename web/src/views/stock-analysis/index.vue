@@ -1,5 +1,5 @@
 <template>
-  system
+  stock-analysis
 </template>
 
 <script>

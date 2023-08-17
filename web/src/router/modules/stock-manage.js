@@ -1,11 +1,12 @@
 const Layout = () => import('@/layout/index.vue')
 const StockList = () => import('@/views/stock-manage/stock-list/index.vue')
+const StockUpdate = () => import('@/views/stock-manage/stock-update/index.vue')
 
 export default [
   {
     path: '/stock-manage',
     component: Layout,
-    name: 'stock-manage',
+    name: 'stockManage',
     meta: {
       title: '股票管理',
     },
@@ -14,9 +15,18 @@ export default [
     children: [
       {
         path: 'stock-list',
+        name: 'stockList',
         component: StockList,
         meta: {
           title: '股票列表',
+        },
+      },
+      {
+        path: 'stock-update',
+        name: 'stockUpdate',
+        component: StockUpdate,
+        meta: {
+          title: '历史数据',
         },
       },
     ],

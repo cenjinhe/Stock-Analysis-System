@@ -15,11 +15,20 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from user import views
+from django.urls import include, path
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('user/search/', views.searchUser),
+    path(r'user/', include('user.urls')),
+    # url别名反向解析,别名 name
+    path(r'stockManage/', include('stock_manage.urls'), name='stockManage'),
+
+
 ]
+
+"""
+学习笔记
+url(r'^index/$',views.index)是什么意思呢?
+^匹配要检索的文本的开头,$匹配文本的结束
+"""

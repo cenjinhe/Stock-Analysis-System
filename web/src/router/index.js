@@ -32,8 +32,9 @@ import error from './modules/error'
 import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
-import test from './modules/test'
+// import test from './modules/test'
 import stockAnalysis from './modules/stock-analysis'
+import autoTrade from './modules/auto-trade'
 import stockManage from './modules/stock-manage'
 import system from './modules/system'
 
@@ -41,12 +42,13 @@ import system from './modules/system'
 // 固定菜单
 export const fixedRoutes = [
   ...home,
-  ...stockAnalysis,
   ...stockManage,
-  ...system,
+  ...stockAnalysis,
+  ...autoTrade,
+  // ...system,
 ]
 // 动态菜单
-export const asyncRoutes = [...test]
+export const asyncRoutes = []
 
 const router = createRouter({
   history: createWebHashHistory(),

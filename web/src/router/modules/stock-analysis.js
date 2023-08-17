@@ -9,7 +9,7 @@ export default [
     meta: {
       title: '股票分析',
     },
-    icon: 'DataAnalysis',
+    icon: 'TrendCharts',
     alwaysShow: true,
     children: [
       {
@@ -17,7 +17,7 @@ export default [
         name: 'analysis',
         component: stock_analysis,
         meta: {
-          title: '股票分析',
+          title: '选股策略',
         },
       },
     ],

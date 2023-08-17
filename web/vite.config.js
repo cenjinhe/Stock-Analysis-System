@@ -73,11 +73,12 @@ export default env => {
       },
     },
     server: {
+      host: '127.0.0.1',
       port: 3001,
       open: true,
       proxy: {
         '/api': {
-          target: 'http://dev.api.xxx.com', // 后端接口的域名
+          target: 'http://127.0.0.1:5000',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, ''),
         },

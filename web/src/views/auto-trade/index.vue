@@ -1,5 +1,5 @@
 <template>
-  system
+  auto-trade
 </template>
 
 <script>
