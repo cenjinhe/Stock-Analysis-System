@@ -9,8 +9,11 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" icon="Refresh" @click="test">
-        更新股票列表
+      <el-button type="primary" icon="Refresh" @click="update_stock_sz">
+        更新股票(深市)
+      </el-button>
+      <el-button type="primary" icon="Refresh" @click="update_stock_sh">
+        更新股票(沪市)
       </el-button>
     </template>
     <template #operate="scope">
@@ -22,7 +25,7 @@
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { getStockList } from '@/api/stock-manage'
+import { getStockList, updateStockList } from '@/api/stock-manage'
 export default defineComponent({
   name: 'stockList',
   setup() {
@@ -36,7 +39,7 @@ export default defineComponent({
         {
           label: 'A股代码',
           prop: 'code',
-          width: 180,
+          minWidth: 180,
         },
         {
           label: 'A股简称',
@@ -46,12 +49,12 @@ export default defineComponent({
         {
           label: '上市日期',
           prop: 'date',
-          width: 180,
+          minWidth: 180,
         },
         {
           label: '更新时间',
           prop: 'update_time',
-          width: 180,
+          minWidth: 180,
         },
         {
           label: '操作',
@@ -68,13 +71,13 @@ export default defineComponent({
           {
             type: 'text',
             label: 'A股代码',
-            name: 'nickName',
+            name: 'code',
             defaultValue: '',
           },
           {
             type: 'text',
             label: 'A股简称',
-            name: 'nickName',
+            name: 'name',
             defaultValue: '',
           },
           {
@@ -95,10 +98,6 @@ export default defineComponent({
           },
         ],
       },
-      // 【批量删除】按钮
-      batchDelete() {
-        console.log(state.selectedItems)
-      },
       // 选择
       selectedItems: [],
       handleSelectionChange(arr) {
@@ -106,38 +105,24 @@ export default defineComponent({
       },
       // 请求函数
       async getList(params) {
-        console.log(params)
         // params是从组件接收的，包含分页和搜索字段。
+        console.log('params=', params)
         const { data } = await getStockList(params)
-        // const data = {
-        //   list: [
-        //     {
-        //       code: '0001',
-        //       name: '金河生物',
-        //       date: '2023',
-        //       update_time: '2000',
-        //     },
-        //     {
-        //       code: '0002',
-        //       name: '银河生物',
-        //       date: '2001',
-        //       update_time: '2023',
-        //     },
-        //   ],
-        //   total: 2,
-        // }
         // 必须要返回一个对象，包含data数组和total总数
-        return {
-          data: data.list,
-          total: data.total,
-        }
+        return { data: data.list, total: data.total }
+      },
+      // 【更新股票(深市)】按钮
+      async update_stock_sz() {
+        const param = { stockExchange: 1 }
+        updateStockList(param)
+      },
+      // 【更新股票(沪市)】按钮
+      async update_stock_sh() {
+        const param = { stockExchange: 0 }
+        updateStockList(param)
       },
     })
-    const test = async () => {
-      console.log('done test')
-      const { data } = await getStockList()
-      console.log('data=', data)
-    }
+
     const table = ref(null)
     const refresh = () => {
       table.value.refresh()
@@ -145,7 +130,6 @@ export default defineComponent({
 
     return {
       ...toRefs(state),
-      test,
       refresh,
       table,
     }
