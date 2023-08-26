@@ -1,4 +1,0 @@
-Operations to perform:
-  Apply all migrations: admin, auth, contenttypes, sessions, stock_manage, user
-Running migrations:
-  Applying stock_manage.0003_alter_stocklistsh_update_time_and_more...
