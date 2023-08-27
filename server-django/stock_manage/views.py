@@ -21,7 +21,8 @@ def getStockList(request):
         records = TABLE_MAP.get(stockExchange).objects.filter(code__contains=code, name__contains=name)
         page_info = Paginator(records, size).page(number=current)
         for record in page_info:
-            listData.append({"code": record.code,
+            listData.append({"id": record.id,
+                             "code": record.code,
                              "name": record.name,
                              "date": record.date,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
@@ -36,9 +37,7 @@ def updateStockList(request):
     if request.method == 'POST':
         post_body = request.body
         json_param = json.loads(post_body.decode())
-        stockExchange = 1
-        if json_param:
-            stockExchange = json_param.get('stockExchange', 1)
+        stockExchange = json_param.get('stockExchange', 1) if json_param else 1
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         scv_file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(stockExchange)))
         df = pd.read_csv(scv_file, dtype={"A股代码": "object"})
