@@ -17,8 +17,13 @@
       </el-button>
     </template>
     <template #operate="scope">
-      <el-button size="small" type="primary">编辑</el-button>
-      <el-button size="small" type="danger">删除</el-button>
+      <el-button
+        size="small"
+        type="danger"
+        @click="deleteRow(scope.row, scope.$index)"
+      >
+        删除
+      </el-button>
     </template>
   </pro-table>
 </template>
@@ -26,6 +31,7 @@
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getStockList, updateStockList } from '@/api/stock-manage'
+
 export default defineComponent({
   name: 'stockList',
   setup() {
@@ -106,7 +112,6 @@ export default defineComponent({
       // 请求函数
       async getList(params) {
         // params是从组件接收的，包含分页和搜索字段。
-        console.log('params=', params)
         const { data } = await getStockList(params)
         // 必须要返回一个对象，包含data数组和total总数
         return { data: data.list, total: data.total }
@@ -120,6 +125,13 @@ export default defineComponent({
       async update_stock_sh() {
         const param = { stockExchange: 0 }
         updateStockList(param)
+      },
+      // 【删除)】按钮
+      async deleteRow(row, index) {
+        console.log('table.value=', table.value)
+        table.value.splice(index, 1)
+        console.log('row=', row)
+        const param = { id: row.id }
       },
     })
 
