@@ -1,6 +1,6 @@
 const Layout = () => import('@/layout/index.vue')
 const StockList = () => import('@/views/stock-manage/stock-list/index.vue')
-const StockUpdate = () => import('@/views/stock-manage/stock-update/index.vue')
+const StockUpdate = () => import('@/views/stock-manage/history-data/index.vue')
 
 export default [
   {
@@ -22,7 +22,7 @@ export default [
         },
       },
       {
-        path: 'stock-update',
+        path: 'history-data',
         name: 'stockUpdate',
         component: StockUpdate,
         meta: {

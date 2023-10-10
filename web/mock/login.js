@@ -30,7 +30,7 @@
  * @LastEditTime: 2021-07-26 13:06:50
  * @Author: cenjinhe@126.com
  * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
- * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Github: https://github.com/cenjinhe/Stock-Analysis-System
  * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
@@ -66,7 +66,7 @@ export default [
       message: '获取用户信息成功',
       data: {
         id: 1,
-        name: 'jinheCen',
+        name: '金河岑',
         'role|1': ['admin', 'visitor'], // 随机返回一个角色admin或visitor
         avatar: "@image('48x48', '#fb0a2a')",
       },

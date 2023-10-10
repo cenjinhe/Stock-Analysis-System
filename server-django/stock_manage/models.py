@@ -9,11 +9,15 @@ class StockListSZ(models.Model):
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
+    status = models.BooleanField(default=False, verbose_name='更新状态')
     update_time = models.DateTimeField(default=timezone.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_list_sz'
+        # 为这个类定义一个说明
         verbose_name = '股票列表(深市)'
+        # 不加这个的话在我们的verbose_name在admin里面会被自动加上s
+        verbose_name_plural = '股票列表(深市)'
 
 
 class StockListSH(models.Model):
@@ -21,8 +25,10 @@ class StockListSH(models.Model):
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
+    status = models.BooleanField(default=True, verbose_name='更新状态')
     update_time = models.DateTimeField(default=timezone.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_list_sh'
         verbose_name = '股票列表(沪市)'
+        verbose_name_plural = '股票列表(沪市)'

@@ -21,7 +21,7 @@
  * @LastEditTime: 2021-07-26 16:16:36
  * @Author: cenjinhe@126.com
  * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
- * @Github: https://github.com/cenjinhe/vue3-element-admin
+ * @Github: https://github.com/cenjinhe/Stock-Analysis-System
  * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
  */
 
@@ -32,7 +32,7 @@ import error from './modules/error'
 import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
-// import test from './modules/test'
+import test from './modules/test'
 import stockAnalysis from './modules/stock-analysis'
 import autoTrade from './modules/auto-trade'
 import stockManage from './modules/stock-manage'
@@ -46,6 +46,7 @@ export const fixedRoutes = [
   ...stockAnalysis,
   ...autoTrade,
   // ...system,
+  ...test,
 ]
 // 动态菜单
 export const asyncRoutes = []
