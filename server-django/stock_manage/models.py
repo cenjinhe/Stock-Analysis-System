@@ -1,6 +1,5 @@
 import datetime
 from django.db import models
-from django.utils import timezone
 
 
 # Create your models here.
@@ -10,7 +9,7 @@ class StockListSZ(models.Model):
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
     status = models.BooleanField(default=False, verbose_name='更新状态')
-    update_time = models.DateTimeField(default=timezone.now(), verbose_name="更新时间")
+    update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_list_sz'
@@ -26,7 +25,7 @@ class StockListSH(models.Model):
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
     status = models.BooleanField(default=True, verbose_name='更新状态')
-    update_time = models.DateTimeField(default=timezone.now(), verbose_name="更新时间")
+    update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_list_sh'

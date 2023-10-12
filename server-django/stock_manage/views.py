@@ -24,11 +24,16 @@ def getStockList(request):
         records = TABLE_MAP.get(market).objects.filter(code__contains=code, name__contains=name).order_by('code')
         page_info = Paginator(records, size).page(number=current)
         for record in page_info:
+            # 如果表不存在就建立这个表
+            sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+            # 查询这个表的最后一条数据，获取日期
             sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
             with connection.cursor() as cursor:
                 cursor.execute(sql)
                 last_data = cursor.fetchall()
-            print('last_data=', last_data)
+            # 加入到数据列表中
             listData.append({"id": record.id,
                              "code": record.code,
                              "name": record.name,
