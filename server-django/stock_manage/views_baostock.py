@@ -125,13 +125,8 @@ def update_history_data(request):
 # 更新股票历史数据(深市股票all)
 def update_history_data_sz(request):
     if request.method == 'POST':
-        count = 0
         records = StockListSZ.objects.all()
         for record in records:
-            # count += 1
-            # if count > 150:
-            #     print('count=', count)
-            #     break
             if record.status:
                 continue
             try:
