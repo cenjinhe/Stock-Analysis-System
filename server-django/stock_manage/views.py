@@ -18,10 +18,17 @@ def getStockList(request):
         current = request.GET.get('current', default=1)
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
+        status = request.GET.get('status', default=1)
         market = request.GET.get('market', default='1')
 
         listData = []
-        records = TABLE_MAP.get(market).objects.filter(code__contains=code, name__contains=name).order_by('code')
+        if str(status) in ['0', '1']:
+            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                           name__contains=name,
+                                                           status__contains=status).order_by('code')
+        else:
+            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                           name__contains=name).order_by('code')
         page_info = Paginator(records, size).page(number=current)
         for record in page_info:
             # 如果表不存在就建立这个表
@@ -43,6 +50,41 @@ def getStockList(request):
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
+
+
+# 获取股票状态列表
+def getStatusList(request):
+    TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
+    if request.method == 'GET':
+        size = request.GET.get('size', default=10)
+        current = request.GET.get('current', default=1)
+        code = request.GET.get('code', default='')
+        name = request.GET.get('name', default='')
+        status = request.GET.get('status', default=1)
+        market = request.GET.get('market', default='1')
+
+        listData = []
+        if str(status) in ['0', '1']:
+            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                           name__contains=name,
+                                                           status__contains=status).order_by('code')
+        else:
+            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                           name__contains=name).order_by('code')
+        page_info = Paginator(records, size).page(number=current)
+        for record in page_info:
+            # 如果表不存在就建立这个表
+            sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+            # 查询这个表的最后一条数据，获取日期
+            sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                last_data = cursor.fetchall()
+            # 加入到数据列表中
+            listData.append(record.status)
+        return JsonResponse({'data': listData, 'code': '200', 'message': '获取成功!'})
 
 
 # 更新股票列表toDB
@@ -68,6 +110,26 @@ def updateStockList(request):
                 TABLE_MAP.get(str(market)).objects.create(code=code, name=name, date=date)
 
         result = {'data': {}, 'code': '200', 'message': '更新成功!'}
+        return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+
+# 切换状态
+def updateStatus(request):
+    if request.method == 'POST':
+        post_body = request.body
+        json_param = json.loads(post_body.decode())
+        market = json_param.get('market')
+        stock_code = json_param.get('code')
+
+        # 切换状态
+        if str(market) == '1':
+            record = StockListSZ.objects.filter(code=stock_code).first()
+            StockListSZ.objects.filter(code=stock_code).update(status=not record.status)
+        else:
+            record = StockListSH.objects.filter(code=stock_code).first()
+            StockListSH.objects.filter(code=stock_code).update(status=not record.status)
+
+        result = {'data': {}, 'code': '200', 'message': '切换成功!'}
         return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
 
 

@@ -9,12 +9,30 @@ export const getStockList = params => {
   })
 }
 
+// 获取股票状态列表
+export const getStatusList = params => {
+  return request({
+    url: '/api/stockManage/getStatusList/',
+    method: 'get',
+    params,
+  })
+}
+
 // 更新股票列表(深市/沪市)
 export const updateStockList = data => {
   return request({
     url: '/api/stockManage/updateStockList/',
     method: 'post',
     timeout: 1000 * 60 * 60, // 1小时
+    data,
+  })
+}
+
+// 切换状态
+export const updateStatus = data => {
+  return request({
+    url: '/api/stockManage/updateStatus/',
+    method: 'post',
     data,
   })
 }

@@ -24,13 +24,13 @@ def update_history_data(request):
         if str(market) == '1':
             record = StockListSZ.objects.filter(code=stock_code).first()
             if record.status:
-                return JsonResponse({'data': {}, 'code': '201', 'message': f'该A股code={code}正在更新中...'})
-            StockListSZ.objects.filter(code=stock_code).update(status=True)
+                return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
+            StockListSZ.objects.filter(code=stock_code).update(status=True, update_time=datetime.datetime.now().date())
         else:
             record = StockListSH.objects.filter(code=stock_code).first()
             if record.status:
-                return JsonResponse({'data': {}, 'code': '201', 'message': f'该A股code={code}正在更新中...'})
-            StockListSH.objects.filter(code=stock_code).update(status=True)
+                return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
+            StockListSH.objects.filter(code=stock_code).update(status=True, update_time=datetime.datetime.now().date())
         try:
             # 如果数据库表不存在，则创建
             sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
@@ -126,7 +126,12 @@ def update_history_data(request):
 def update_history_data_sz(request):
     if request.method == 'POST':
         records = StockListSZ.objects.all()
+        num = 0
         for record in records:
+            num += 1
+            if num not in range(150, 200):
+                print('num=', num)
+                continue
             if record.status:
                 continue
             try:
