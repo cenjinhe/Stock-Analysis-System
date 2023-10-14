@@ -129,7 +129,7 @@ def update_history_data_sz(request):
         num = 0
         for record in records:
             num += 1
-            if num not in range(150, 200):
+            if num not in range(150, 2000):
                 print('num=', num)
                 continue
             if record.status:
@@ -137,11 +137,11 @@ def update_history_data_sz(request):
             try:
                 # 更新股票列表的状态（status: true更新中）
                 StockListSZ.objects.filter(code=record.code).update(status=True)
-                # 如果数据库表不存在，则创建
+                # 如果数据库tb_xxxxxx表不存在，则创建
                 sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
                 with connection.cursor() as cursor:
                     cursor.execute(sql)
-                # 获取数据入库的开始日期(数据库中最近的1条记录时间)
+                # 获取数据入库的开始日期(tb_xxxxxx表中最近的1条记录时间)
                 sql = f'{models_sql.SELECT_MAX_DATE}'.format(TABLE_NAME=f'tb_{record.code}')
                 with connection.cursor() as cursor:
                     cursor.execute(sql)
@@ -151,6 +151,13 @@ def update_history_data_sz(request):
                 # 获取数据入库的结束日期(当天)
                 end_date = datetime.datetime.now().date()
                 end_date = end_date.strftime("%Y-%m-%d")
+
+                # ↓↓↓修改tb_xxxxxx表字段volume的类型 int->bigint↓↓↓
+                sql = f'alter  table tb_{record.code} modify  column volume  bigint DEFAULT NULL'
+                with connection.cursor() as cursor:
+                    cursor.execute(sql)
+                # ↑↑↑修改tb_xxxxxx表字段volume的类型 int->bigint↑↑↑
+
                 # 登陆证券宝系统
                 bs.login()
                 # 获取历史数据
