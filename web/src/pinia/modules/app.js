@@ -22,7 +22,7 @@ const COLLAPSE = 'VEA-COLLAPSE'
 
 export const useApp = defineStore('app', {
   state: () => ({
-    title: 'Stock Analysis System',
+    title: 'Stock System',
     authorization: getItem(TOKEN),
     sidebar: {
       collapse: getItem(COLLAPSE),

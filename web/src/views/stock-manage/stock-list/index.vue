@@ -11,7 +11,11 @@
       @selectionChange="handleSelectionChange"
     >
       <!-- 工具栏 -->
-      <template #toolbar></template>
+      <template #toolbar>
+        <el-button icon="Refresh" @click="refresh">
+          刷新
+        </el-button>
+      </template>
       <template #operate="scope">
         <el-button size="small" type="success" @click="btnViewData">
           查看数据

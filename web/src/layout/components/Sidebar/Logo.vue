@@ -35,7 +35,7 @@
 <template>
   <div class="brand">
     <img class="logo" src="~@/assets/logo.svg" @click="goHome" />
-    <div class="title">Stock Analysis System</div>
+    <div class="title">Stock System (Beta版)</div>
   </div>
 </template>
 <script>
