@@ -41,27 +41,27 @@ export default defineComponent({
         {
           label: 'A股代码',
           prop: 'code',
-          minWidth: 180,
+          minWidth: 160,
         },
         {
           label: 'A股简称',
           prop: 'name',
-          minWidth: 200,
+          minWidth: 160,
         },
         {
           label: '上市日期',
           prop: 'date',
-          minWidth: 180,
+          minWidth: 160,
         },
         {
           label: '现价',
           prop: 'close',
-          minWidth: 180,
+          minWidth: 100,
         },
         {
           label: '更新时间',
           prop: 'update_time',
-          minWidth: 180,
+          minWidth: 160,
         },
         {
           label: '操作',

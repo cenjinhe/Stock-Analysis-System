@@ -18,7 +18,7 @@ def getStockList(request):
         current = request.GET.get('current', default=1)
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
-        status = request.GET.get('status', default=1)
+        status = request.GET.get('status', default=2)
         market = request.GET.get('market', default='1')
 
         listData = []
