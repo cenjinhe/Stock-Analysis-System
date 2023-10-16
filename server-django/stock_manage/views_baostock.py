@@ -25,12 +25,14 @@ def update_history_data(request):
             record = StockListSZ.objects.filter(code=stock_code).first()
             if record.status:
                 return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
-            StockListSZ.objects.filter(code=stock_code).update(status=True, update_time=datetime.datetime.now().date())
+            StockListSZ.objects.filter(code=stock_code).update(status=True,
+                                                               update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
         else:
             record = StockListSH.objects.filter(code=stock_code).first()
             if record.status:
                 return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
-            StockListSH.objects.filter(code=stock_code).update(status=True, update_time=datetime.datetime.now().date())
+            StockListSH.objects.filter(code=stock_code).update(status=True,
+                                                               update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
         try:
             # 如果数据库表不存在，则创建
             sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
@@ -129,14 +131,15 @@ def update_history_data_sz(request):
         num = 0
         for record in records:
             num += 1
-            if num not in range(150, 2000):
+            if num not in range(2500, 3000):
                 print('num=', num)
-                continue
+                # continue
             if record.status:
                 continue
             try:
                 # 更新股票列表的状态（status: true更新中）
-                StockListSZ.objects.filter(code=record.code).update(status=True)
+                StockListSZ.objects.filter(
+                    code=record.code).update(status=True, update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
                 # 如果数据库tb_xxxxxx表不存在，则创建
                 sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
                 with connection.cursor() as cursor:

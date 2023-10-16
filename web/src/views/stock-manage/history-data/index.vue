@@ -67,7 +67,11 @@ export default defineComponent({
       // 表格列配置，大部分属性跟el-table-column配置一样
       columns: [
         { type: 'selection', width: 56 },
-        { label: 'test/list.index', type: 'index', width: 80 },
+        {
+          label: 'ID',
+          prop: 'id',
+          minWidth: 80,
+        },
         {
           label: 'A股代码',
           prop: 'code',
@@ -306,7 +310,6 @@ export default defineComponent({
 
       let refreshFlg = false
       let timerFlg = true
-      console.log('status_list.value=', status_list.value)
       if (pre_status.length === status_list.value.length) {
         for (let i = 0; i < status_list.value.length; i++) {
           // status的值是否有变化
@@ -320,11 +323,13 @@ export default defineComponent({
         }
       }
       // 刷新table
+      console.log('refreshFlg=', refreshFlg)
       if (refreshFlg) {
         table.value.refresh()
       }
       // 关闭定时器
-      if (!refreshFlg) {
+      console.log('timerFlg=', timerFlg)
+      if (!timerFlg) {
         clearTimer()
       }
     }

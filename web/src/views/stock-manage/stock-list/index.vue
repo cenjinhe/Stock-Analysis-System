@@ -41,7 +41,11 @@ export default defineComponent({
       // 表格列配置，大部分属性跟el-table-column配置一样
       columns: [
         { type: 'selection', width: 56 },
-        { label: 'test/list.index', type: 'index', width: 80 },
+        {
+          label: 'ID',
+          prop: 'id',
+          minWidth: 80,
+        },
         {
           label: 'A股代码',
           prop: 'code',
@@ -131,7 +135,6 @@ export default defineComponent({
     const refresh = () => {
       table.value.refresh()
     }
-
     return {
       ...toRefs(state),
       refresh,
@@ -140,3 +143,4 @@ export default defineComponent({
   },
 })
 </script>
+<style></style>
