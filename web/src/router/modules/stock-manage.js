@@ -19,6 +19,7 @@ export default [
         component: StockList,
         meta: {
           title: '股票列表',
+          keepAlive: true,
         },
       },
       {

@@ -10,14 +10,14 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" @click="updateStockList">
-        更新列表
-      </el-button>
       <el-button type="primary" @click="updateHistoryDataSZ">
-        更新深市数据(all)
+        更新数据(深)
       </el-button>
       <el-button type="primary" disabled>
-        更新泸市数据(all)
+        更新数据(泸)
+      </el-button>
+      <el-button @click="updateStockList">
+        更新列表
       </el-button>
       <el-button icon="Refresh" @click="refresh">
         刷新

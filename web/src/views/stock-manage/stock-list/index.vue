@@ -1,6 +1,7 @@
 <template>
   <div>
-    <pro-table
+    <keep-alive>
+      <pro-table
       v-if="pageShow === 'stock-list'"
       ref="table"
       :title="$t('test/list.title')"
@@ -22,6 +23,7 @@
         </el-button>
       </template>
     </pro-table>
+    </keep-alive>
     <view-data v-if="pageShow === 'view-data'" v-model:pageShow="pageShow" />
   </div>
 </template>
