@@ -131,9 +131,9 @@ def update_history_data_sz(request):
         num = 0
         for record in records:
             num += 1
-            if num not in range(2500, 3000):
-                print('num=', num)
-                # continue
+            # if num not in range(0, 3000):
+            #     print('num=', num)
+            #     continue
             if record.status:
                 continue
             try:
@@ -156,9 +156,9 @@ def update_history_data_sz(request):
                 end_date = end_date.strftime("%Y-%m-%d")
 
                 # ↓↓↓修改tb_xxxxxx表字段volume的类型 int->bigint↓↓↓
-                sql = f'alter  table tb_{record.code} modify  column volume  bigint DEFAULT NULL'
-                with connection.cursor() as cursor:
-                    cursor.execute(sql)
+                # sql = f'alter  table tb_{record.code} modify  column volume  bigint DEFAULT NULL'
+                # with connection.cursor() as cursor:
+                #     cursor.execute(sql)
                 # ↑↑↑修改tb_xxxxxx表字段volume的类型 int->bigint↑↑↑
 
                 # 登陆证券宝系统

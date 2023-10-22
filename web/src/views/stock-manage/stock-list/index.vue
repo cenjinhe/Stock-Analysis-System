@@ -2,36 +2,43 @@
   <div>
     <keep-alive>
       <pro-table
-      v-if="pageShow === 'stock-list'"
-      ref="table"
-      :title="$t('test/list.title')"
-      :request="getList"
-      :columns="columns"
-      :search="searchConfig"
-      :default-sort="{ prop: 'code', order: 'ascending' }"
-      @selectionChange="handleSelectionChange"
-    >
-      <!-- 工具栏 -->
-      <template #toolbar>
-        <el-button icon="Refresh" @click="refresh">
-          刷新
-        </el-button>
-      </template>
-      <template #operate="scope">
-        <el-button size="small" type="success" @click="btnViewData">
-          查看数据
-        </el-button>
-      </template>
-    </pro-table>
+        v-if="pageShow === 'stock-list'"
+        ref="table"
+        :title="$t('test/list.title')"
+        :request="getList"
+        :columns="columns"
+        :search="searchConfig"
+        :default-sort="{ prop: 'code', order: 'ascending' }"
+        @selectionChange="handleSelectionChange"
+      >
+        <!-- 工具栏 -->
+        <template #toolbar>
+          <el-button type="primary">
+            对比分析
+          </el-button>
+          <el-button icon="Refresh" @click="refresh">
+            刷新
+          </el-button>
+        </template>
+        <template #operate="scope">
+          <el-button size="small" type="success" @click="btnViewData(scope.row)">
+            查看数据
+          </el-button>
+        </template>
+      </pro-table>
     </keep-alive>
-    <view-data v-if="pageShow === 'view-data'" v-model:pageShow="pageShow" />
+    <view-data
+      v-if="pageShow === 'view-data'"
+      v-model:pageShow="pageShow"
+      v-model:row="row"
+    />
   </div>
 </template>
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getStockList } from '@/api/stock-manage'
-import ViewData from '@/views/stock-manage/stock-list/component/view-data.vue'
+import ViewData from '@/views/stock-manage/stock-list/component/ViewData.vue'
 
 export default defineComponent({
   name: 'stockList',
@@ -129,8 +136,11 @@ export default defineComponent({
       },
       // 【查看数据)】按钮
       pageShow: 'stock-list',
-      async btnViewData() {
+      row: {},
+      async btnViewData(row) {
         state.pageShow = 'view-data'
+        state.row = row
+        console.log('state.row=', state.row)
       },
     })
     const table = ref(null)
