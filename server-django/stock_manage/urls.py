@@ -6,6 +6,7 @@ from stock_manage import views_baostock
 urlpatterns = [
     path('getStockList/', views.getStockList),
     path('getStatusList/', views.getStatusList),
+    path('getRawDataList/', views.getRawDataList),
     path('updateStockList/', views.updateStockList),
     path('updateStatus/', views.updateStatus),
     path('deleteStockRecord/', views.deleteStockRecord),

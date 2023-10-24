@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author   : jinhe Cen
-# @Time     : 2023/9/30 22:04
-# @File     : models_sql.py
-
-
 # 创建HISTORY_DATA表
 CREATE_TABLE_HISTORY_DATA = r"""
 CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
@@ -30,6 +23,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
         update_time timestamp NULL default CURRENT_TIMESTAMP
 )
 """
+
 # 增加历史数据
 INSERT_INTO_HISTORY_DATA = r"""
 INSERT INTO {TABLE_NAME} (
@@ -71,6 +65,7 @@ VALUES(
     '{pcfNcfTTM}',
     '{isST}')
 """
+
 # 更新历史数据
 UPDATE_HISTORY_DATA = r"""
 UPDATE {TABLE_NAME}
@@ -95,6 +90,7 @@ SET
     update_time=CURRENT_TIMESTAMP
 WHERE date='{date}'
 """
+
 # 查询最后一条数据的日期
 SELECT_MAX_DATE = r"""
 SELECT MAX(date) as date FROM {TABLE_NAME}
@@ -106,4 +102,9 @@ select * from {TABLE_NAME} order by date desc limit 1;
 # 指定DATE查询数据
 SELECT_DATA_WHERE_DATE = r"""
 SELECT COUNT(*) FROM {TABLE_NAME} WHERE date='{date}'
+"""
+# 查询最近x条数据
+# 数据意义：开盘(open)，收盘(close)，最低(low)，最高(high)
+SELECT_RAW_DATA = r"""
+select date, open, close, low, high from {TABLE_NAME} order by date desc;
 """

@@ -18,6 +18,15 @@ export const getStatusList = params => {
   })
 }
 
+// 获取原始数据列表
+export const getRawDataList = params => {
+  return request({
+    url: '/api/stockManage/getRawDataList/',
+    method: 'get',
+    params,
+  })
+}
+
 // 更新股票列表(深市/沪市)
 export const updateStockList = data => {
   return request({

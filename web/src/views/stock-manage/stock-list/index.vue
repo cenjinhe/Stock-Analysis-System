@@ -9,6 +9,7 @@
         :columns="columns"
         :search="searchConfig"
         :default-sort="{ prop: 'code', order: 'ascending' }"
+        :cell-style="cellStyle"
         @selectionChange="handleSelectionChange"
       >
         <!-- 工具栏 -->
@@ -19,6 +20,9 @@
           <el-button icon="Refresh" @click="refresh">
             刷新
           </el-button>
+        </template>
+        <template #close="scope">
+          <div :style="{color: getCloseColor(scope.row)}">{{scope.row.close}}</div>
         </template>
         <template #operate="scope">
           <el-button size="small" type="success" @click="btnViewData(scope.row)">
@@ -71,9 +75,15 @@ export default defineComponent({
           minWidth: 160,
         },
         {
+          label: '昨日收盘价',
+          prop: 'pre_close',
+          minWidth: 100,
+        },
+        {
           label: '现价',
           prop: 'close',
           minWidth: 100,
+          tdSlot: 'close',
         },
         {
           label: '更新时间',
@@ -127,6 +137,15 @@ export default defineComponent({
       handleSelectionChange(arr) {
         state.selectedItems = arr
       },
+      getCloseColor(row) {
+        if (row.close > row.pre_close) {
+          return 'red'
+        } else if (row.close < row.pre_close) {
+          return 'green'
+        } else {
+          return ''
+        }
+      },
       // 请求函数
       async getList(params) {
         // params是从组件接收的，包含分页和搜索字段。
@@ -140,7 +159,6 @@ export default defineComponent({
       async btnViewData(row) {
         state.pageShow = 'view-data'
         state.row = row
-        console.log('state.row=', state.row)
       },
     })
     const table = ref(null)

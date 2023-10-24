@@ -23,12 +23,15 @@ def getStockList(request):
 
         listData = []
         if str(status) in ['0', '1']:
+            # 状态为(更新中or已更新)的记录
             records = TABLE_MAP.get(market).objects.filter(code__contains=code,
                                                            name__contains=name,
                                                            status__contains=status).order_by('code')
         else:
+            # 状态为(全部)的记录
             records = TABLE_MAP.get(market).objects.filter(code__contains=code,
                                                            name__contains=name).order_by('code')
+        # 分页
         page_info = Paginator(records, size).page(number=current)
         for record in page_info:
             # 如果表不存在就建立这个表
@@ -46,6 +49,7 @@ def getStockList(request):
                              "name": record.name,
                              "date": record.date,
                              "close": last_data[0][6] if last_data else None,
+                             "pre_close": last_data[0][7] if last_data else None,
                              "status": record.status,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
@@ -81,10 +85,23 @@ def getStatusList(request):
             sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
             with connection.cursor() as cursor:
                 cursor.execute(sql)
-                last_data = cursor.fetchall()
             # 加入到数据列表中
             listData.append(record.status)
         return JsonResponse({'data': listData, 'code': '200', 'message': '获取成功!'})
+
+
+# 获取原始数据列表
+def getRawDataList(request):
+    if request.method == 'GET':
+        count = request.GET.get('count', default=100)
+        code = request.GET.get('code', default='')
+
+        sql = f'{models_sql.SELECT_RAW_DATA}'.format(TABLE_NAME=f'tb_{code}')
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            rawData = cursor.fetchall()
+
+        return JsonResponse({'rawData': rawData, 'code': '200', 'message': '获取成功!'})
 
 
 # 更新股票列表toDB
