@@ -3,14 +3,13 @@
     <el-button size="small" type="primary" icon="Back" @click="btnReturn">
       返回
     </el-button>
-    <div id="main" style="margin-top: 20px;width: 100%; height: 400px"></div>
+    <div id="main" style="margin-top: 50px;width: 100%; height: 400px"></div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, defineProps, defineEmits, watch, ref, toRefs } from 'vue'
+import { defineEmits, defineProps, onMounted } from 'vue'
 import { getRawDataList } from '@/api/stock-manage'
-import { ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
 
 // eslint-disable-next-line no-unused-vars
@@ -47,7 +46,7 @@ async function initKLine() {
   // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
   const params = { count: 200, code: props.row.code }
   const { rawData } = await getRawDataList(params)
-  const data = splitData(rawData.reverse())
+  let data = splitData(rawData.reverse())
 
   // 分割原始数据
   function splitData(rawData) {
@@ -81,7 +80,12 @@ async function initKLine() {
     }
     return result
   }
-
+  // 计算滑块开始位置
+  function startCount() {
+    const base = 100
+    let len = data.values.length
+    return len > base ? Math.round(((len - base) / len) * 100) : base
+  }
   // ECharts option
   const option = {
     title: {
@@ -95,7 +99,7 @@ async function initKLine() {
       },
     },
     legend: {
-      data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
+      data: ['日K', 'MA5', 'MA10', 'MA15', 'MA20', 'MA30'],
       selected: { MA30: false }, // 不需要显示的图例设置为false
     },
     grid: {
@@ -124,7 +128,7 @@ async function initKLine() {
     dataZoom: [
       {
         type: 'inside',
-        start: 5,
+        start: startCount(),
         end: 100,
       },
       {
@@ -246,6 +250,15 @@ async function initKLine() {
         name: 'MA10', ///两周均线
         type: 'line',
         data: calculateMA(10),
+        smooth: true,
+        lineStyle: {
+          opacity: 0.5,
+        },
+      },
+      {
+        name: 'MA15', ///三周均线
+        type: 'line',
+        data: calculateMA(15),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
