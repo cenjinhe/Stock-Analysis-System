@@ -71,6 +71,11 @@ export default defineComponent({
         },
         {
           label: '上市日期',
+          prop: 'listing_date',
+          minWidth: 160,
+        },
+        {
+          label: '行情日期',
           prop: 'date',
           minWidth: 160,
         },
