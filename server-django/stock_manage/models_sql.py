@@ -97,7 +97,7 @@ SELECT MAX(date) as date FROM {TABLE_NAME}
 """
 # 查询表的最后一条数据
 SELECT_LAST_DATA = r"""
-select * from {TABLE_NAME} order by date desc limit 1;
+SELECT * FROM {TABLE_NAME} order by date desc limit 1;
 """
 # 指定DATE查询数据
 SELECT_DATA_WHERE_DATE = r"""
@@ -106,5 +106,5 @@ SELECT COUNT(*) FROM {TABLE_NAME} WHERE date='{date}'
 # 查询最近x条数据
 # 数据意义：开盘(open)，收盘(close)，最低(low)，最高(high)
 SELECT_RAW_DATA = r"""
-select date, open, close, low, high from {TABLE_NAME} order by date desc;
+SELECT date, open, close, low, high, volume FROM {TABLE_NAME} order by date desc;
 """

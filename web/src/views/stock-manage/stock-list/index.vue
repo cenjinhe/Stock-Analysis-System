@@ -26,7 +26,7 @@
         </template>
         <template #operate="scope">
           <el-button size="small" type="success" @click="btnViewData(scope.row)">
-            查看数据
+            查看指标
           </el-button>
         </template>
       </pro-table>
