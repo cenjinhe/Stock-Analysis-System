@@ -36,7 +36,7 @@ export default [
         name: 'analysis',
         component: stock_analysis,
         meta: {
-          title: '交易股票',
+          title: '自动选股',
         },
       },
       {
@@ -44,7 +44,7 @@ export default [
         name: 'analysis',
         component: stock_analysis,
         meta: {
-          title: '每日推荐',
+          title: '交易管理',
         },
       },
       {
