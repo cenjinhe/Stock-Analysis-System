@@ -14,15 +14,17 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="primary">
-            对比分析
-          </el-button>
-          <el-button icon="Refresh" @click="refresh">
+          <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
             刷新
           </el-button>
         </template>
         <template #close="scope">
           <div :style="{color: getCloseColor(scope.row)}">{{scope.row.close}}</div>
+        </template>
+        <template #ratio="scope">
+          <div :style="{color: getCloseColor(scope.row)}">
+            {{(((scope.row.close - scope.row.pre_close) / scope.row.pre_close) * 100).toFixed(2)}}%
+          </div>
         </template>
         <template #operate="scope">
           <el-button size="small" type="success" @click="btnViewData(scope.row)">
@@ -89,6 +91,12 @@ export default defineComponent({
           prop: 'close',
           minWidth: 100,
           tdSlot: 'close',
+        },
+        {
+          label: '涨跌幅',
+          prop: 'ratio',
+          minWidth: 100,
+          tdSlot: 'ratio',
         },
         {
           label: '更新时间',

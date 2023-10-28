@@ -19,7 +19,7 @@
       <el-button @click="updateStockList">
         更新列表
       </el-button>
-      <el-button icon="Refresh" @click="refresh">
+      <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
         刷新
       </el-button>
     </template>
