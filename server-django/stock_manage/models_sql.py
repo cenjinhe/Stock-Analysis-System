@@ -104,7 +104,8 @@ SELECT_DATA_WHERE_DATE = r"""
 SELECT COUNT(*) FROM {TABLE_NAME} WHERE date='{date}'
 """
 # 查询最近x条数据
-# 数据意义：开盘(open)，收盘(close)，最低(low)，最高(high)
+# 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)，成交额(amount)
 SELECT_RAW_DATA = r"""
-SELECT date, open, close, low, high, volume FROM {TABLE_NAME} order by date desc;
+SELECT date, open, close, low, high, volume, amount 
+FROM {TABLE_NAME} order by date desc;
 """

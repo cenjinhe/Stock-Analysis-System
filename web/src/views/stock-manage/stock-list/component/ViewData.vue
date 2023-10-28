@@ -3,7 +3,7 @@
     <el-button size="small" type="primary" icon="Back" @click="btnReturn">
       返回
     </el-button>
-    <div id="main" style="margin-top: 50px;width: 100%; height: 400px"></div>
+    <div id="main" style="margin-top: 50px;width: 100%; height: 600px"></div>
   </div>
 </template>
 
@@ -56,7 +56,7 @@ async function initKLine() {
   ]
 
   // 获取原始数据
-  // 数据意义：开盘(open)，收盘(close)，最低(lowest)，最高(highest)
+  // 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)，成交额(amount)
   const params = { count: 200, code: props.row.code }
   const { rawData } = await getRawDataList(params)
   let data = splitData(rawData.reverse())
@@ -66,15 +66,20 @@ async function initKLine() {
     const categoryData = []
     const values = []
     const volumes = []
+    const amounts = []
     for (let i = 0; i < rawData.length; i++) {
       categoryData.push(rawData[i].splice(0, 1)[0])
       values.push(rawData[i])
+      // 成交量数据
       volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1])
+      // 成交额数据
+      amounts.push([i, rawData[i][5], rawData[i][0] > rawData[i][1] ? 1 : -1])
     }
     return {
       categoryData: categoryData,
       values: values,
       volumes: volumes,
+      amounts: amounts,
     }
   }
 
@@ -147,7 +152,7 @@ async function initKLine() {
     toolbox: {},
     visualMap: {
       show: false,
-      seriesIndex: 6,
+      seriesIndex: [6, 7],
       dimension: 2,
       pieces: [
         {
@@ -166,16 +171,25 @@ async function initKLine() {
       {
         left: '8%', // 图表显示的间距
         right: '6%',
-        height: '50%',
+        top: '10%',
+        height: '200px',
         width: 'auto', // grid 组件的宽度。默认自适应
       },
-      // 图表2的配置
+      // 图表2（成交量）
       {
         left: '8%',
         right: '6%',
-        top: '70%',
-        height: '16%',
-        width: 'auto', // grid 组件的宽度。默认自适应
+        bottom: '30%',
+        height: '100px',
+        width: 'auto',
+      },
+      // 图表3（成交额）
+      {
+        left: '8%',
+        right: '6%',
+        bottom: '10%',
+        height: '100px',
+        width: 'auto',
       },
     ],
     // x轴
@@ -191,10 +205,21 @@ async function initKLine() {
         axisLine: { onZero: false },
         splitLine: { show: false }, // 隐藏网格线
       },
-      // 图表2的x轴配置
+      // 图表2的x轴（成交量）
       {
         type: 'category',
         gridIndex: 1,
+        data: data.categoryData,
+        boundaryGap: false,
+        axisLine: { onZero: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
+        axisLabel: { show: false },
+      },
+      // 图表3的x轴（成交额）
+      {
+        type: 'category',
+        gridIndex: 2,
         data: data.categoryData,
         boundaryGap: false,
         axisLine: { onZero: false },
@@ -217,13 +242,13 @@ async function initKLine() {
           // show: true, // splitArea:设置数据窗口分割区域
         },
       },
-      // 图表2的y轴配置
+      // 图表2的y轴（成交量）
       {
         name: '成交量',
         nameTextStyle: {
           color: '#000',
           fontSize: 12,
-          padding: [0, 0, -80, -90], // 上右下左与原位置距离
+          padding: [0, 0, -115, -90], // 上右下左与原位置距离
         },
         nameRotate: 0, // y轴name旋转90度 使其垂直
         // nameGap: 30, // y轴name与横纵坐标轴线的间距
@@ -236,20 +261,39 @@ async function initKLine() {
         axisTick: { show: false },
         splitLine: { show: false },
       },
+      // 图表3的y轴（成交额）
+      {
+        name: '成交额',
+        nameTextStyle: {
+          color: '#000',
+          fontSize: 12,
+          padding: [0, 0, -115, -90], // 上右下左与原位置距离
+        },
+        nameRotate: 0, // y轴name旋转90度 使其垂直
+        // nameGap: 30, // y轴name与横纵坐标轴线的间距
+        // nameLocation: 'center', // y轴name处于y轴的什么位置
+        scale: true,
+        gridIndex: 2,
+        // splitNumber: 2,
+        axisLabel: { show: false }, // 是否显示刻度标签
+        axisLine: { show: false }, // 是否显示分隔线。默认数值轴显示，类目轴不显示
+        axisTick: { show: false },
+        splitLine: { show: false },
+      },
     ],
     // 滑动块组件
     dataZoom: [
       {
         type: 'inside', // 内置在坐标系中,在坐标系中滑动拖拽进行数据区域平移。
-        xAxisIndex: [0, 1],
+        xAxisIndex: [0, 1, 2],
         start: startCount(), // 滑动块start位置百分比
         end: 100, // 滑动块end位置百分比
       },
       {
         show: true, // 显示滑动
-        xAxisIndex: [0, 1],
+        xAxisIndex: [0, 1, 2],
         type: 'slider', // slider表示有滑动块的
-        top: '90%', // dataZoom-slider组件离容器上侧的距离
+        bottom: '1%', // dataZoom-slider组件离容器上侧的距离
       },
     ],
     series: [
@@ -271,31 +315,6 @@ async function initKLine() {
               },
             },
           },
-          // data: [
-          //   {
-          //     name: 'XX标点',
-          //     coord: ['2013/5/31', 2300],
-          //     value: 2300,
-          //     itemStyle: {
-          //       color: 'rgb(41,60,85)',
-          //     },
-          //   },
-          //   {
-          //     name: 'highest value',
-          //     type: 'max',
-          //     valueDim: 'highest',
-          //   },
-          //   {
-          //     name: 'lowest value',
-          //     type: 'min',
-          //     valueDim: 'lowest',
-          //   },
-          //   {
-          //     name: 'average value on close',
-          //     type: 'average',
-          //     valueDim: 'close',
-          //   },
-          // ],
           tooltip: {
             formatter: function(param) {
               return param.name + '<br>' + (param.data.coord || '')
@@ -305,49 +324,6 @@ async function initKLine() {
         // markLine: 图表标线
         markLine: {
           symbol: ['none', 'none'], // 线段两端的图表,默认开始是圆圈,结束是箭头
-          data: [
-            // [
-            //   {
-            //     name: 'from lowest to highest', // 标注名称,可不填,不会展示出来
-            //     type: 'min',
-            //     valueDim: 'lowest', // K线图的取值维度open, close, lowest, highest
-            //     symbol: 'circle',
-            //     symbolSize: 10,
-            //     label: {
-            //       show: false,
-            //     },
-            //     emphasis: {
-            //       label: {
-            //         show: false,
-            //       },
-            //     },
-            //   },
-            //   {
-            //     type: 'max',
-            //     valueDim: 'highest',
-            //     symbol: 'circle',
-            //     symbolSize: 10,
-            //     label: {
-            //       show: false,
-            //     },
-            //     emphasis: {
-            //       label: {
-            //         show: false,
-            //       },
-            //     },
-            //   },
-            // ],
-            {
-              name: 'min line on close',
-              type: 'min',
-              valueDim: 'close',
-            },
-            {
-              name: 'max line on close',
-              type: 'max',
-              valueDim: 'close',
-            },
-          ],
         },
       },
       {
@@ -401,6 +377,13 @@ async function initKLine() {
         xAxisIndex: 1,
         yAxisIndex: 1,
         data: data.volumes,
+      },
+      {
+        name: 'Amount',
+        type: 'bar',
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+        data: data.amounts,
       },
     ],
   }
