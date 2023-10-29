@@ -4,6 +4,9 @@
       返回
     </el-button>
     <div id="main" style="margin-top: 50px;width: 100%; height: 600px"></div>
+    <div style="margin-top: 50px;width: 100%; height: 600px">
+      <h1>乾坤六道指标法</h1>
+    </div>
   </div>
 </template>
 
@@ -29,7 +32,6 @@ const emits = defineEmits(['update:pageShow']) // 此处需写'update'
 // 初始化
 onMounted(() => {
   initKLine()
-  // console.log(props.row)
 })
 // 【返回】按钮,更新父组件pageShow
 const btnReturn = () => {
@@ -42,48 +44,37 @@ async function initKLine() {
   const downColor = '#00da3c'
   const downBorderColor = '#008F28'
   const colorList = [
-    '#c23531',
-    '#2f4554',
-    '#61a0a8',
-    '#d48265',
-    '#91c7ae',
-    '#749f83',
-    '#ca8622',
-    '#bda29a',
-    '#6e7074',
+    '#c23531', // MA5
+    '#2f4554', // MA10
+    '#61a0a8', // MA15
+    '#d48265', // MA20
+    '#91c7ae', // MA30
+    '#749f83', // 成交量
+    '#ca8622', // MACD
+    '#bda29a', // DIFF
+    '#6e7074', // DEA
     '#546570',
-    '#c4ccd3',
   ]
-
-  // 获取原始数据
-  // 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)，成交额(amount)
-  const params = { count: 200, code: props.row.code }
-  const { rawData } = await getRawDataList(params)
-  let data = splitData(rawData.reverse())
 
   // 分割原始数据
   function splitData(rawData) {
     const categoryData = []
     const values = []
     const volumes = []
-    const amounts = []
     for (let i = 0; i < rawData.length; i++) {
       categoryData.push(rawData[i].splice(0, 1)[0])
       values.push(rawData[i])
       // 成交量数据
       volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1])
-      // 成交额数据
-      amounts.push([i, rawData[i][5], rawData[i][0] > rawData[i][1] ? 1 : -1])
     }
     return {
       categoryData: categoryData,
       values: values,
       volumes: volumes,
-      amounts: amounts,
     }
   }
 
-  // 计算均线数据
+  // 计算 MA 均线数据
   function calculateMA(dayCount) {
     const result = []
     let len = data.values.length
@@ -102,6 +93,82 @@ async function initKLine() {
     return result
   }
 
+  /*
+   * 计算EMA指数平滑移动平均线，用于MACD
+   * @param {number} n 时间窗口
+   * @param {array} data 输入数据
+   * @param {string} field 计算字段配置
+   */
+  function calculateEMA(n, data, field) {
+    let i, l, ema, a
+    a = 2 / (n + 1)
+    if (field) {
+      //二维数组
+      ema = [data[0][field]]
+      for (i = 1, l = data.length; i < l; i++) {
+        ema.push((a * data[i][field] + (1 - a) * ema[i - 1]).toFixed(3))
+      }
+    } else {
+      //普通一维数组
+      ema = [data[0]]
+      for (i = 1, l = data.length; i < l; i++) {
+        ema.push((a * data[i] + (1 - a) * ema[i - 1]).toFixed(3))
+      }
+    }
+    return ema
+  }
+
+  /*
+   * 计算DIF快线，用于MACD
+   * @param {number} short 快速EMA时间窗口
+   * @param {number} long 慢速EMA时间窗口
+   * @param {array} data 输入数据
+   * @param {string} field 计算字段配置
+   */
+  function calculateDIF(short, long, data, field) {
+    let i, l, dif, emaShort, emaLong;
+    dif = []
+    emaShort = calculateEMA(short, data, field)
+    emaLong = calculateEMA(long, data, field)
+    for (i = 0, l = data.length; i < l; i++) {
+      dif.push((emaShort[i] - emaLong[i]).toFixed(3))
+    }
+    return dif
+  }
+
+  /*
+   * 计算DEA慢线，用于MACD
+   * @param {number} mid 对dif的时间窗口
+   * @param {array} dif 输入数据
+   */
+  function calculateDEA(mid, dif) {
+    return calculateEMA(mid, dif)
+  }
+
+  /*
+   * 计算MACD
+   * @param {number} short 快速EMA时间窗口
+   * @param {number} long 慢速EMA时间窗口
+   * @param {number} mid dea时间窗口
+   * @param {array} data 输入数据
+   * @param {string} field 计算字段配置
+   */
+  function calculateMACD(short, long, mid, data, field) {
+    let i, l, diffData, deaData, macdData
+    macdData = []
+    diffData = calculateDIF(short, long, data, field)
+    deaData = calculateDEA(mid, diffData)
+    for (i = 0, l = data.length; i < l; i++) {
+      macdData.push(((diffData[i] - deaData[i]) * 2).toFixed(3))
+    }
+
+    return {
+      macdData,
+      diffData,
+      deaData,
+    }
+  }
+
   // 计算滑块开始位置
   function startCount() {
     const base = 60
@@ -109,7 +176,15 @@ async function initKLine() {
     return len > base ? Math.round(((len - base) / len) * 100) : base
   }
 
-  // ECharts option
+  //=================================================
+  // 获取原始数据
+  // 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)
+  const { rawData } = await getRawDataList({ count: 200, code: props.row.code })
+  // 分割原始数据: x轴日期(categoryData), K线数据(values), 成交量数据(volumes)
+  let data = splitData(rawData.reverse())
+  // 计算 MACD 指标
+  let macdObj = calculateMACD(12, 26, 9, data.values, 1)
+  // 配置ECharts option
   const option = {
     animation: true,
     color: colorList,
@@ -122,7 +197,18 @@ async function initKLine() {
     legend: {
       top: 15,
       left: 'center',
-      data: ['日K', 'MA5', 'MA10', 'MA15', 'MA20', 'MA30'],
+      data: [
+        '日K',
+        'MA5',
+        'MA10',
+        'MA15',
+        'MA20',
+        'MA30',
+        '成交量',
+        'MACD',
+        'DIFF',
+        'DEA',
+      ],
       selected: { MA30: false }, // 不需要显示的图例设置为false
     },
     // 提示框 （即鼠标移动到柱状图会显示内容）
@@ -152,7 +238,9 @@ async function initKLine() {
     toolbox: {},
     visualMap: {
       show: false,
-      seriesIndex: [6, 7],
+      seriesIndex: [6],
+      // dimension: 指定用数据的『哪个维度』，映射到视觉元素上。『数据』即 series.data。
+      // 可以把 series.data 理解成一个二维数组,其中每个列是一个维度,默认取 data 中最后一个维度
       dimension: 2,
       pieces: [
         {
@@ -167,34 +255,30 @@ async function initKLine() {
     },
     // 图表
     grid: [
-      // 图表1的配置
       {
-        left: '8%', // 图表显示的间距
+        id: 'gd_kline',
+        left: '8%',
         right: '6%',
         top: '10%',
-        height: '200px',
-        width: 'auto', // grid 组件的宽度。默认自适应
+        height: '200px', //日K线的高度
       },
-      // 图表2（成交量）
       {
+        id: 'gd_volume',
         left: '8%',
         right: '6%',
         bottom: '30%',
-        height: '100px',
-        width: 'auto',
+        height: '100px', //成交量的高度
       },
-      // 图表3（成交额）
       {
+        id: 'gd_macd',
         left: '8%',
         right: '6%',
         bottom: '10%',
-        height: '100px',
-        width: 'auto',
+        height: '100px', // MACD的高度
       },
     ],
     // x轴
     xAxis: [
-      // 图表1的x轴配置
       {
         // 坐标轴类型:'value' 数值轴，适用于连续数据。 'category' 类目轴，适用于离散的类目数据，为该类型时必须通过 data 设置类目数据。
         // 'time' 时间轴，适用于连续的时序数据， 'log' 对数轴。适用于对数数据。
@@ -203,10 +287,11 @@ async function initKLine() {
         scale: true,
         boundaryGap: true, // 刻度离纵轴有无间隙，默认true有间距
         axisLine: { onZero: false },
+        axisLabel: { show: true }, // 显示label
         splitLine: { show: false }, // 隐藏网格线
       },
-      // 图表2的x轴（成交量）
       {
+        // 成交量
         type: 'category',
         gridIndex: 1,
         data: data.categoryData,
@@ -216,8 +301,8 @@ async function initKLine() {
         splitLine: { show: false },
         axisLabel: { show: false },
       },
-      // 图表3的x轴（成交额）
       {
+        // MACD
         type: 'category',
         gridIndex: 2,
         data: data.categoryData,
@@ -230,19 +315,14 @@ async function initKLine() {
     ],
     // y轴
     yAxis: [
-      // 图表1的y轴配置
       {
-        show: true, // 显示y轴
+        // k线
         // 坐标轴类型：'value'，默认数值轴，适用于连续数据，'category'，类目轴，适用于离散的类目数据。
         // 'time'，时间轴，适用于连续的时序数据，'log'，对数轴。适用于对数数据
         type: 'value',
         inverse: false, // 是否是反向坐标轴
         scale: true,
-        splitArea: {
-          // show: true, // splitArea:设置数据窗口分割区域
-        },
       },
-      // 图表2的y轴（成交量）
       {
         name: '成交量',
         nameTextStyle: {
@@ -261,9 +341,8 @@ async function initKLine() {
         axisTick: { show: false },
         splitLine: { show: false },
       },
-      // 图表3的y轴（成交额）
       {
-        name: '成交额',
+        name: 'MACD',
         nameTextStyle: {
           color: '#000',
           fontSize: 12,
@@ -281,6 +360,8 @@ async function initKLine() {
         splitLine: { show: false },
       },
     ],
+    // 背景se
+    // backgroundColor: '#b8b886',
     // 滑动块组件
     dataZoom: [
       {
@@ -291,7 +372,7 @@ async function initKLine() {
       },
       {
         show: true, // 显示滑动
-        xAxisIndex: [0, 1, 2],
+        xAxisIndex: [0, 1, 2], // 控件联动
         type: 'slider', // slider表示有滑动块的
         bottom: '1%', // dataZoom-slider组件离容器上侧的距离
       },
@@ -372,18 +453,53 @@ async function initKLine() {
         },
       },
       {
-        name: 'Volume',
+        name: '成交量',
         type: 'bar',
         xAxisIndex: 1,
         yAxisIndex: 1,
         data: data.volumes,
       },
       {
-        name: 'Amount',
+        name: 'MACD',
         type: 'bar',
         xAxisIndex: 2,
         yAxisIndex: 2,
-        data: data.amounts,
+        data: macdObj.macdData,
+        itemStyle: {
+          normal: {
+            color: function(params) {
+              let colorList
+              if (params.data >= 0) {
+                colorList = upColor
+              } else {
+                colorList = downColor
+              }
+              return colorList
+            },
+          },
+        },
+      },
+      {
+        name: 'DIFF',
+        type: 'line',
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+        showSymbol: false,
+        data: macdObj.diffData,
+        // itemStyle: {
+        //   color: '#FFC069',
+        // },
+      },
+      {
+        name: 'DEA',
+        type: 'line',
+        xAxisIndex: 2,
+        yAxisIndex: 2,
+        showSymbol: false,
+        data: macdObj.deaData,
+        // itemStyle: {
+        //   color: '#722ED1',
+        // },
       },
     ],
   }
@@ -393,7 +509,7 @@ async function initKLine() {
   if (option && typeof option === 'object') {
     myChart.setOption(option)
   }
-  // 随着屏幕大小调节图表
+  // 随着屏幕大小调节ECharts图表
   window.addEventListener('resize', () => {
     myChart.resize()
   })
