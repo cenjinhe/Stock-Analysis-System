@@ -40,7 +40,7 @@
       class="menu"
       :mode="mode"
       :collapse="collapse"
-      :uniqueOpened="true"
+      :uniqueOpened="false"
       :router="true"
       :default-active="activePath"
       :background-color="variables.menuBg"
