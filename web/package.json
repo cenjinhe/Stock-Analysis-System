@@ -1,5 +1,5 @@
 {
-  "name": "Stock-Analysis-System",
+  "name": "Stock-System",
   "version": "3.0.0",
   "author": {
     "name": "cenjinhe",
@@ -62,11 +62,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cenjinhe/Stock-Analysis-System.git"
+    "url": "git+https://github.com/cenjinhe/Stock-System.git"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cenjinhe/Stock-Analysis-System/issues"
+    "url": "https://github.com/cenjinhe/Stock-System/issues"
   },
-  "homepage": "https://github.com/cenjinhe/Stock-Analysis-System"
+  "homepage": "https://github.com/cenjinhe/Stock-System"
 }

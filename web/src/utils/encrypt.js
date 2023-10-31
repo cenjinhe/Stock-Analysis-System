@@ -29,9 +29,9 @@
  * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2021-04-23 13:59:04
  * @Author: cenjinhe@126.com
- * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
- * @Github: https://github.com/cenjinhe/Stock-Analysis-System
- * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
+ * @HomePage: https://cenjinhe.gitee.io/Stock-System
+ * @Github: https://github.com/cenjinhe/Stock-System
+ * @Donate: https://cenjinhe.gitee.io/Stock-System/donate/
  */
 
 import { encrypt, decrypt } from 'crypto-js/aes'

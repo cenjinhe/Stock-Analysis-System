@@ -5,9 +5,9 @@
  * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2022-09-27 16:49:31
  * @Author: cenjinhe@126.com
- * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
- * @Github: https://github.com/cenjinhe/Stock-Analysis-System
- * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
+ * @HomePage: https://cenjinhe.gitee.io/Stock-System
+ * @Github: https://github.com/cenjinhe/Stock-System
+ * @Donate: https://cenjinhe.gitee.io/Stock-System/donate/
  */
 import { defineStore } from 'pinia'
 import { getItem, setItem, removeItem } from '@/utils/storage' //getItem和setItem是封装的操作localStorage的方法

@@ -26,9 +26,9 @@
  * @LastEditors: cenjinhe@126.com
  * @LastEditTime: 2022-09-26 12:14:10
  * @Author: cenjinhe@126.com
- * @HomePage: https://cenjinhe.gitee.io/Stock-Analysis-System
- * @Github: https://github.com/cenjinhe/Stock-Analysis-System
- * @Donate: https://cenjinhe.gitee.io/Stock-Analysis-System/donate/
+ * @HomePage: https://cenjinhe.gitee.io/Stock-System
+ * @Github: https://github.com/cenjinhe/Stock-System
+ * @Donate: https://cenjinhe.gitee.io/Stock-System/donate/
  -->
 <template>
   <el-config-provider :locale="locales[lang]">

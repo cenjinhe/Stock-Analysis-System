@@ -4,8 +4,15 @@
       返回
     </el-button>
     <div id="main" style="margin-top: 50px;width: 100%; height: 600px"></div>
-    <div style="margin-top: 50px;width: 100%; height: 600px">
-      <h1>乾坤六道指标法</h1>
+    <div style="margin-top: 50px;height: 600px">
+      <h1 style="font-weight: bold;">乾坤六道法</h1>
+      <pro-table
+        ref="table"
+        style="padding-left: 5%;padding-right: 5%;height: 600px"
+        :request="getList"
+        :columns="columns"
+        :default-sort="{ prop: 'code', order: 'ascending' }"
+      ></pro-table>
     </div>
   </div>
 </template>
@@ -126,7 +133,7 @@ async function initKLine() {
    * @param {string} field 计算字段配置
    */
   function calculateDIF(short, long, data, field) {
-    let i, l, dif, emaShort, emaLong;
+    let i, l, dif, emaShort, emaLong
     dif = []
     emaShort = calculateEMA(short, data, field)
     emaLong = calculateEMA(long, data, field)
@@ -514,6 +521,54 @@ async function initKLine() {
     myChart.resize()
   })
 }
+
+// 请求函数
+async function getList(params) {
+  // params是从组件接收的，包含分页和搜索字段。
+  // const { data } = await getStockList(params)
+  // 必须要返回一个对象，包含data数组和total总数
+  return { data: [], total: 0 }
+}
+// eslint-disable-next-line no-unused-vars
+const columns = [
+  { type: 'selection', width: 56 },
+  {
+    label: '日期',
+    prop: 'id',
+    minWidth: 80,
+  },
+  {
+    label: 'MNCD',
+    prop: 'code',
+    minWidth: 160,
+  },
+  {
+    label: 'KDJ',
+    prop: 'name',
+    minWidth: 160,
+  },
+  {
+    label: 'RSI',
+    prop: 'listing_date',
+    minWidth: 160,
+  },
+  {
+    label: 'LWR',
+    prop: 'date',
+    minWidth: 160,
+  },
+  {
+    label: 'BBI',
+    prop: 'pre_close',
+    minWidth: 100,
+  },
+  {
+    label: 'MTM',
+    width: 180,
+    align: 'center',
+    tdSlot: 'operate', // 自定义单元格内容的插槽名称
+  },
+]
 </script>
 
 <style scoped></style>
