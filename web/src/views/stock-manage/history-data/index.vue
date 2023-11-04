@@ -25,7 +25,7 @@
     </template>
     <template #trade_status="{row}">
       <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
-        {{ row.trade_status === 1 ? '正常' : '停牌' }}
+        {{ row.trade_status === 1 ? '正常' : (row.trade_status === 2 ? '退市' : '停牌') }}
       </el-tag>
     </template>
     <template #status="{row}">
@@ -129,7 +129,7 @@ export default defineComponent({
       // 搜索配置
       searchConfig: {
         labelWidth: '90px', // 必须带上单位
-        inputWidth: '180px', // 必须带上单位
+        inputWidth: '150px', // 必须带上单位
         fields: [
           {
             type: 'text',
@@ -147,10 +147,14 @@ export default defineComponent({
             label: '交易状态',
             name: 'trade_status',
             type: 'select',
-            defaultValue: 2,
+            defaultValue: 3,
             options: [
               {
                 name: '全部',
+                value: 3,
+              },
+              {
+                name: '退市',
                 value: 2,
               },
               {
@@ -225,8 +229,8 @@ export default defineComponent({
           const market = table.value.searchModel.market
           const param = { market: market }
           await updateStockList(param)
-          // refresh()
-          setTimer()
+          refresh()
+          // setTimer()
           ElMessage({ type: 'success', message: '更新成功' })
         })
       },
@@ -260,7 +264,8 @@ export default defineComponent({
           }
           const { code, message } = await update_history_data(param)
           if (code === '200') {
-            setTimer()
+            refresh()
+            // setTimer()
             ElMessage({ type: 'success', message: '更新成功' })
           } else if (code === '201') {
             ElMessage({ type: 'warning', message: message })

@@ -127,13 +127,24 @@ def update_history_data(request):
             trade_status = lastData[0][12] if lastData else None
             # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
             if str(market) == '1':
-                StockListSZ.objects.filter(code=stock_code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                    trade_status=trade_status, status=False)
+                record = StockListSZ.objects.filter(code=stock_code).first()
+                if record.trade_status == 2:
+                    # 退市不更新交易状态
+                    StockListSZ.objects.filter(code=stock_code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
+                else:
+                    StockListSZ.objects.filter(code=stock_code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                        trade_status=trade_status, status=False)
             else:
-                StockListSH.objects.filter(code=stock_code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                    trade_status=trade_status, status=False)
+                record = StockListSH.objects.filter(code=stock_code).first()
+                if record.trade_status == 2:
+                    StockListSH.objects.filter(code=stock_code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                        trade_status=trade_status, status=False)
+                else:
+                    StockListSH.objects.filter(code=stock_code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
 
     return JsonResponse({'data': data_list, 'code': '200', 'message': '更新成功!!'})
 
@@ -251,9 +262,14 @@ def update_history_data_sz(request):
                     cursor.execute(sql)
                     lastData = cursor.fetchall()
                 trade_status = lastData[0][12] if lastData else None
-                # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
-                StockListSZ.objects.filter(code=record.code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                    trade_status=trade_status, status=False)
+                data = StockListSZ.objects.filter(code=record.code).first()
+                if data.trade_status == 2:
+                    # 退市不更新交易状态
+                    StockListSZ.objects.filter(code=record.code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
+                else:
+                    StockListSZ.objects.filter(code=record.code).update(
+                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                        trade_status=trade_status, status=False)
 
     return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})

@@ -139,26 +139,6 @@ export default defineComponent({
             defaultValue: '',
           },
           {
-            label: '交易状态',
-            name: 'trade_status',
-            type: 'select',
-            defaultValue: 2,
-            options: [
-              {
-                name: '全部',
-                value: 2,
-              },
-              {
-                name: '正常',
-                value: 1,
-              },
-              {
-                name: '停牌',
-                value: 0,
-              },
-            ],
-          },
-          {
             label: '证券交易所',
             name: 'market',
             type: 'radio',
