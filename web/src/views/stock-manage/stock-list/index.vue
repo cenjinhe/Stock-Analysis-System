@@ -26,6 +26,11 @@
             {{(((scope.row.close - scope.row.pre_close) / scope.row.pre_close) * 100).toFixed(2)}}%
           </div>
         </template>
+        <template #trade_status="{row}">
+          <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
+            {{ row.trade_status === 1 ? '正常' : '停牌' }}
+          </el-tag>
+        </template>
         <template #operate="scope">
           <el-button size="small" type="success" @click="btnViewData(scope.row)">
             查看指标
@@ -99,6 +104,12 @@ export default defineComponent({
           tdSlot: 'ratio',
         },
         {
+          label: '交易状态',
+          prop: 'trade_status',
+          minWidth: 100,
+          tdSlot: 'trade_status',
+        },
+        {
           label: '更新时间',
           prop: 'update_time',
           minWidth: 160,
@@ -126,6 +137,26 @@ export default defineComponent({
             label: 'A股简称',
             name: 'name',
             defaultValue: '',
+          },
+          {
+            label: '交易状态',
+            name: 'trade_status',
+            type: 'select',
+            defaultValue: 2,
+            options: [
+              {
+                name: '全部',
+                value: 2,
+              },
+              {
+                name: '正常',
+                value: 1,
+              },
+              {
+                name: '停牌',
+                value: 0,
+              },
+            ],
           },
           {
             label: '证券交易所',

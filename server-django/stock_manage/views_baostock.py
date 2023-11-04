@@ -16,7 +16,7 @@ from django.http.response import JsonResponse
 from stock_manage.models import StockListSZ, StockListSH
 
 
-# 更新股票历史数据
+# 更新股票历史数据(单个股票的历史数据)
 def update_history_data(request):
     if request.method == 'POST':
         post_body = request.body
@@ -119,18 +119,26 @@ def update_history_data(request):
                     print(f'sql={sql}')
                     cursor.execute(sql)
         finally:
+            # 查询这个表的最后一条数据，获取交易状态
+            sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                lastData = cursor.fetchall()
+            trade_status = lastData[0][12] if lastData else None
             # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
             if str(market) == '1':
                 StockListSZ.objects.filter(code=stock_code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
+                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                    trade_status=trade_status, status=False)
             else:
                 StockListSH.objects.filter(code=stock_code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
+                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                    trade_status=trade_status, status=False)
 
     return JsonResponse({'data': data_list, 'code': '200', 'message': '更新成功!!'})
 
 
-# 更新股票历史数据(深市股票all)
+# 更新股票历史数据(所有深市股票的历史数据)
 def update_history_data_sz(request):
     if request.method == 'POST':
         records = StockListSZ.objects.all()
@@ -237,8 +245,15 @@ def update_history_data_sz(request):
                         print(f'sql={sql}')
                         cursor.execute(sql)
             finally:
+                # 查询这个表的最后一条数据，获取交易状态
+                sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+                with connection.cursor() as cursor:
+                    cursor.execute(sql)
+                    lastData = cursor.fetchall()
+                trade_status = lastData[0][12] if lastData else None
                 # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
                 StockListSZ.objects.filter(code=record.code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()), status=False)
+                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                    trade_status=trade_status, status=False)
 
     return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})

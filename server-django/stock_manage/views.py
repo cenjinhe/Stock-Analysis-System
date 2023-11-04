@@ -18,19 +18,32 @@ def getStockList(request):
         current = request.GET.get('current', default=1)
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
+        trade_status = request.GET.get('trade_status', default=2)
         status = request.GET.get('status', default=2)
         market = request.GET.get('market', default='1')
 
         listData = []
+        # 更新状态为(更新中or已更新)的记录
         if str(status) in ['0', '1']:
-            # 状态为(更新中or已更新)的记录
-            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
-                                                           name__contains=name,
-                                                           status__contains=status).order_by('code')
+            # 交易状态为(更新中or已更新)的记录
+            if str(trade_status) in ['0', '1']:
+                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                               name__contains=name,
+                                                               trade_status__contains=trade_status,
+                                                               status__contains=status).order_by('code')
+            else:
+                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                               name__contains=name,
+                                                               status__contains=status).order_by('code')
         else:
-            # 状态为(全部)的记录
-            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
-                                                           name__contains=name).order_by('code')
+            # 更新状态为(全部)的记录&&交易状态为(更新中or已更新)的记录
+            if str(trade_status) in ['0', '1']:
+                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                               trade_status__contains=trade_status,
+                                                               name__contains=name).order_by('code')
+            else:
+                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                                                               name__contains=name).order_by('code')
         # 分页
         page_info = Paginator(records, size).page(number=current)
         for record in page_info:
@@ -51,6 +64,7 @@ def getStockList(request):
                              "date": last_data[0][1] if last_data else None,
                              "close": last_data[0][6] if last_data else None,
                              "pre_close": last_data[0][7] if last_data else None,
+                             "trade_status": last_data[0][12] if last_data else None,
                              "status": record.status,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
@@ -105,27 +119,33 @@ def getRawDataList(request):
         return JsonResponse({'rawData': rawData, 'code': '200', 'message': '获取成功!'})
 
 
-# 更新股票列表toDB
+# 更新所有股票名称一览
 def updateStockList(request):
     TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
-    FILE_MAP = {'0': 'shA股列表.csv', '1': 'szA股列表.csv'}
+    FILE_MAP = {'0': 'shA股列表.xlsx', '1': 'szA股列表.xlsx'}
     if request.method == 'POST':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        scv_file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
-        df = pd.read_csv(scv_file, dtype={"A股代码": "object"})
+        # scv_file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
+        # df = pd.read_csv(scv_file, dtype={"A股代码": "object"})
+        file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
+        df = pd.read_excel(file, dtype={"A股代码": "object"})
         for i in range(len(df)):
             code = df['A股代码'][i]
             name = df['A股简称'][i] if market == 1 else df['证券简称'][i]
-            date = df['上市日期'][i] if market == 1 else datetime.strptime(str(df['上市日期'][i]),
-                                                                       "%Y%m%d").strftime('%Y-%m-%d')
+            date = df['A股上市日期'][i] if market == 1 else datetime.strptime(str(df['A股上市日期'][i]),
+                                                                         "%Y%m%d").strftime('%Y-%m-%d')
             date = datetime.strptime(date, "%Y-%m-%d").date()
             # 如果数据库中没有这条A股代码，就添加
             record = TABLE_MAP.get(str(market)).objects.filter(code__exact=code)
             if len(record) == 0:
+                print(f'code={code}', f'name={name}', f'date={date}')
                 TABLE_MAP.get(str(market)).objects.create(code=code, name=name, date=date)
+            else:
+                print(f'code={code}', f'name={name}')
+                TABLE_MAP.get(str(market)).objects.filter(code=code).update(name=name)
 
         result = {'data': {}, 'code': '200', 'message': '更新成功!'}
         return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")

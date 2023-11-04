@@ -23,6 +23,11 @@
         刷新
       </el-button>
     </template>
+    <template #trade_status="{row}">
+      <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
+        {{ row.trade_status === 1 ? '正常' : '停牌' }}
+      </el-tag>
+    </template>
     <template #status="{row}">
       <el-tag :type="row.status === 0 ? 'success' : 'error'">
         {{ row.status === 0 ? '已更新' : '更新中' }}
@@ -98,6 +103,12 @@ export default defineComponent({
           minWidth: 100,
         },
         {
+          label: '交易状态',
+          prop: 'trade_status',
+          minWidth: 100,
+          tdSlot: 'trade_status',
+        },
+        {
           label: '更新状态',
           prop: 'status',
           minWidth: 100,
@@ -131,6 +142,26 @@ export default defineComponent({
             label: 'A股简称',
             name: 'name',
             defaultValue: '',
+          },
+          {
+            label: '交易状态',
+            name: 'trade_status',
+            type: 'select',
+            defaultValue: 2,
+            options: [
+              {
+                name: '全部',
+                value: 2,
+              },
+              {
+                name: '正常',
+                value: 1,
+              },
+              {
+                name: '停牌',
+                value: 0,
+              },
+            ],
           },
           {
             label: '更新状态',

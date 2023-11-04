@@ -8,6 +8,7 @@ class StockListSZ(models.Model):
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
+    trade_status = models.IntegerField(default=1, verbose_name='交易状态')
     status = models.IntegerField(default=0, verbose_name='更新状态')
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
@@ -24,6 +25,7 @@ class StockListSH(models.Model):
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
     date = models.DateField(verbose_name='上市日期')
+    trade_status = models.IntegerField(default=1, verbose_name='交易状态')
     status = models.BooleanField(default=True, verbose_name='更新状态')
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
