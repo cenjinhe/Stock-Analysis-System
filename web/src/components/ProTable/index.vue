@@ -400,7 +400,7 @@ export default defineComponent({
       tableData: [],
       total: 0,
       pageNum: 1,
-      pageSize: (!!props.pagination && props.pagination.pageSize) || 10,
+      pageSize: (!!props.pagination && props.pagination.pageSize) || 15,
       paginationConfig: {
         show: false,
       },
@@ -470,7 +470,7 @@ export default defineComponent({
       state.paginationConfig = {
         show: true,
         layout: layout || 'total, sizes, prev, pager, next, jumper',
-        pageSizes: pageSizes || [10, 20, 30, 40, 50, 100],
+        pageSizes: pageSizes || [10, 15, 20, 30, 40, 50, 100],
         style: style || {},
       }
     }

@@ -33,19 +33,17 @@ import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
 import test from './modules/test'
-import stockAnalysis from './modules/stock-analysis'
-import autoTrade from './modules/auto-trade'
 import stockManage from './modules/stock-manage'
-import system from './modules/system'
+import autoTrade from './modules/auto-trade'
+import user from './modules/user'
 
 /* 菜单栏的路由 */
 // 固定菜单
 export const fixedRoutes = [
   ...home,
   ...stockManage,
-  ...stockAnalysis,
   ...autoTrade,
-  // ...system,
+  ...user,
   ...test,
 ]
 // 动态菜单

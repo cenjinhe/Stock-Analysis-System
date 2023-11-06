@@ -29,7 +29,7 @@ export default [
         component: Home,
         meta: {
           title: '首页',
-          affix: true,
+          affix: true, // 默认false，如果设置为true，那么它会固定在tags-view中
         },
       },
     ],

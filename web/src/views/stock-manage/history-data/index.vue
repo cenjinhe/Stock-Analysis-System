@@ -295,7 +295,7 @@ export default defineComponent({
       // 【切换状态)】按钮
       async btnChangeStatus(row) {
         ElMessageBox.confirm(
-          `切换A股代码${row.code}的状态, 是否继续?`,
+          `切换A股代码${row.code}的更新状态, 是否继续?`,
           '提示',
           {
             confirmButtonText: '确定',

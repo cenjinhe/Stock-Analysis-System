@@ -11,7 +11,8 @@ export default [
     meta: {
       title: '股票管理',
     },
-    icon: 'Management',
+    // icon: 'Management',
+    icon: 'TrendCharts',
     alwaysShow: true,
     children: [
       {
@@ -21,6 +22,14 @@ export default [
         meta: {
           title: '股票列表',
           keepAlive: true,
+        },
+      },
+      {
+        path: 'history-data',
+        name: 'stockUpdate',
+        component: StockUpdate,
+        meta: {
+          title: '历史数据',
         },
       },
       {
@@ -45,14 +54,6 @@ export default [
         component: stock_analysis,
         meta: {
           title: '交易管理',
-        },
-      },
-      {
-        path: 'history-data',
-        name: 'stockUpdate',
-        component: StockUpdate,
-        meta: {
-          title: '历史数据',
         },
       },
     ],

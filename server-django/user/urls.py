@@ -3,5 +3,7 @@ from user import views
 
 
 urlpatterns = [
-    path(r'searchUser/', views.searchUser),
+    path(r'login/', views.login),
+    path(r'userinfo/', views.userinfo),
+    path(r'menus/', views.menus),
 ]

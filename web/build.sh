@@ -4,7 +4,7 @@
 #sudo npm install
 
 # 打包Vue项目
-sudo npm run build:mock
+sudo npm run build
 
 # 复制dist
 sudo rm -rf /var/www/html/dist

@@ -14,7 +14,7 @@ import request from '@/utils/request'
 // 登录接口
 export const Login = data => {
   return request({
-    url: '/api/login',
+    url: '/api/user/login/',
     method: 'post',
     data,
   })
@@ -23,7 +23,8 @@ export const Login = data => {
 // 获取登录用户信息
 export const GetUserinfo = () => {
   return request({
-    url: '/api/userinfo',
+    // url: '/api/user/userinfo/',
+    url: '/api/userinfo/',
     method: 'get',
   })
 }
