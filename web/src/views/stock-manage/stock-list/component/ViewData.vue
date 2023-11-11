@@ -4,7 +4,7 @@
       返回
     </el-button>
     <div style="padding-right: 5%;">
-      <panel-group @handleSetLineChartData1="handleSetLineChartData" />
+      <panel-group :code="row.code" @handleSetLineChartData1="handleSetLineChartData" />
     </div>
     <div id="main" style="margin-top: 30px;width: 100%; height: 600px"></div>
     <div style="margin-top: 50px;height: 600px">

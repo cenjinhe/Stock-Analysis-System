@@ -8,13 +8,13 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">
-              最高价
+              最高
             </div>
             <count-to
-              :startVal="0"
-              :endVal="102400"
+              :start-val="0"
+              :end-val="panelNum.high"
               :decimals="2"
-              :duration="3000"
+              :duration="1000"
               class="card-panel-num"
             />
           </div>
@@ -27,30 +27,13 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">
-              最低价
+              最低
             </div>
             <count-to
               :start-val="0"
-              :end-val="81212"
-              :duration="3000"
-              class="card-panel-num"
-            />
-          </div>
-        </div>
-      </el-col>
-      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-        <div class="card-panel" @click="handleSetLineChartData('close')">
-          <div class="card-panel-icon-wrapper icon-money">
-            <svg-icon name="icon-money" class-name="card-panel-icon" />
-          </div>
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              <span>今天收盘价</span>
-            </div>
-            <count-to
-              :start-val="0"
-              :end-val="9280"
-              :duration="3200"
+              :end-val="panelNum.low"
+              :decimals="2"
+              :duration="1000"
               class="card-panel-num"
             />
           </div>
@@ -63,12 +46,32 @@
           </div>
           <div class="card-panel-description">
             <div class="card-panel-text">
-              昨天收盘价
+              昨日收盘
             </div>
             <count-to
               :start-val="0"
-              :end-val="13600"
-              :duration="3600"
+              :end-val="panelNum.preclose"
+              :decimals="2"
+              :duration="1000"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('close')">
+          <div class="card-panel-icon-wrapper icon-money">
+            <svg-icon name="icon-money" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              <span>今日收盘</span>
+            </div>
+            <count-to
+              :start-val="0"
+              :end-val="panelNum.close"
+              :decimals="2"
+              :duration="1000"
               class="card-panel-num"
             />
           </div>
@@ -79,13 +82,50 @@
 </template>
 
 <script>
-import CountTo from 'vue3-count-to'
+//  https://blog.csdn.net/fengxiaopeng74/article/details/120484307
+import CountTo from '@/components/vue-count-to/vue-countTo.vue'
+import { getRawDataList } from '@/api/stock-manage'
 
 export default {
   components: {
     CountTo,
   },
+  props: {
+    code: {
+      type: String,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      panelNum: {
+        high: 0,
+        low: 0,
+        close: 0,
+        preclose: 0,
+      },
+    }
+  },
+  mounted() {
+    this.initData()
+  },
   methods: {
+    initData() {
+      // 数据意义：0日期(date)，1开盘(open)，2收盘(close)，3最低(low)，4最高(high)，5成交量(volume)，6昨日收盘(pre_close)
+      getRawDataList({ count: 1, code: this.$props.code }).then(rep =>{
+        const rawData = rep.rawData
+        console.log('rawData=', rawData)
+        if (rawData && rawData.length > 0) {
+          this.panelNum = {
+            high: rawData[0][4],
+            low: rawData[0][3],
+            close: rawData[0][2],
+            preclose: rawData[0][6]
+          }
+        }
+        console.log('this.panelNum=', this.panelNum)
+      })
+    },
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
     },
@@ -102,7 +142,7 @@ export default {
   }
 
   .card-panel {
-    height: 75px;
+    height: 85px;
     cursor: pointer;
     font-size: 12px;
     position: relative;
