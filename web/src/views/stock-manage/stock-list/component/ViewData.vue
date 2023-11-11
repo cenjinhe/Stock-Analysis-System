@@ -3,8 +3,8 @@
     <el-button size="small" type="primary" icon="Back" @click="btnReturn">
       返回
     </el-button>
-    <div>
-      <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    <div style="padding-right: 5%;">
+      <panel-group @handleSetLineChartData1="handleSetLineChartData" />
     </div>
     <div id="main" style="margin-top: 30px;width: 100%; height: 600px"></div>
     <div style="margin-top: 50px;height: 600px">

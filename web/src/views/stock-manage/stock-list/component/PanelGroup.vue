@@ -1,58 +1,81 @@
 <template>
-  <el-row :gutter="40" class="panel-group">
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('high')">
-        <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="icon-peoples" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            最高价
+  <div>
+    <el-row :gutter="40" class="panel-group">
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('high')">
+          <div class="card-panel-icon-wrapper icon-people">
+            <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
-          <count-to :startVal="0" :endVal="102400" :decimals="2" :duration="3000" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('low')">
-        <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="icon-message" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            最低价
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              最高价
+            </div>
+            <count-to
+              :startVal="0"
+              :endVal="102400"
+              :decimals="2"
+              :duration="3000"
+              class="card-panel-num"
+            />
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
         </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('close')">
-        <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="icon-money" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            <span>今天收盘价</span>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('low')">
+          <div class="card-panel-icon-wrapper icon-message">
+            <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
-        </div>
-      </div>
-    </el-col>
-    <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
-      <div class="card-panel" @click="handleSetLineChartData('preclose')">
-        <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="icon-shopping" class-name="card-panel-icon" />
-        </div>
-        <div class="card-panel-description">
-          <div class="card-panel-text">
-            昨天收盘价
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              最低价
+            </div>
+            <count-to
+              :start-val="0"
+              :end-val="81212"
+              :duration="3000"
+              class="card-panel-num"
+            />
           </div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
         </div>
-      </div>
-    </el-col>
-  </el-row>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('close')">
+          <div class="card-panel-icon-wrapper icon-money">
+            <svg-icon name="icon-money" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              <span>今天收盘价</span>
+            </div>
+            <count-to
+              :start-val="0"
+              :end-val="9280"
+              :duration="3200"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+      <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel" @click="handleSetLineChartData('preclose')">
+          <div class="card-panel-icon-wrapper icon-shopping">
+            <svg-icon name="icon-money" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              昨天收盘价
+            </div>
+            <count-to
+              :start-val="0"
+              :end-val="13600"
+              :duration="3600"
+              class="card-panel-num"
+            />
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -90,7 +113,7 @@ export default {
     border-color: rgba(0, 0, 0, 0.05);
 
     & {
-    /*&:hover {*/
+      /*&:hover {*/
       .card-panel-icon-wrapper {
         color: #fff;
       }
@@ -113,19 +136,19 @@ export default {
     }
 
     .icon-people {
-      color: #40c9c6;
+      color: #fff;
     }
 
     .icon-message {
-      color: #36a3f7;
+      color: #fff;
     }
 
     .icon-money {
-      color: #f4516c;
+      color: #fff;
     }
 
     .icon-shopping {
-      color: #34bfa3;
+      color: #fff;
     }
 
     .card-panel-icon-wrapper {
