@@ -3,9 +3,12 @@
     <el-button size="small" type="primary" icon="Back" @click="btnReturn">
       返回
     </el-button>
-    <div id="main" style="margin-top: 50px;width: 100%; height: 600px"></div>
+    <div>
+      <panel-group @handleSetLineChartData="handleSetLineChartData" />
+    </div>
+    <div id="main" style="margin-top: 30px;width: 100%; height: 600px"></div>
     <div style="margin-top: 50px;height: 600px">
-      <h1 style="font-weight: bold;">乾坤六道法</h1>
+      <h1 style="font-weight: bold;color: #303133;">乾坤六道法</h1>
       <pro-table
         ref="table"
         style="padding-left: 5%;padding-right: 5%;height: 600px"
@@ -19,6 +22,7 @@
 
 <script setup>
 import { defineEmits, defineProps, onMounted } from 'vue'
+import PanelGroup from './PanelGroup.vue'
 import { getRawDataList } from '@/api/stock-manage'
 import * as echarts from 'echarts'
 
@@ -520,6 +524,10 @@ async function initKLine() {
   window.addEventListener('resize', () => {
     myChart.resize()
   })
+}
+
+// 点击panel的时间
+function handleSetLineChartData(type) {
 }
 
 // 请求函数

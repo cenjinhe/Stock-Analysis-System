@@ -61,7 +61,7 @@ import {
 } from '@/api/stock-manage'
 
 export default defineComponent({
-  // name: 'historyData',
+  name: 'HistoryData',
   created(){
     console.log('created')
   },
@@ -124,6 +124,7 @@ export default defineComponent({
           width: 260,
           align: 'center',
           tdSlot: 'operate', // 自定义单元格内容的插槽名称
+          fixed: 'right',
         },
       ],
       // 搜索配置

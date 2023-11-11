@@ -26,6 +26,7 @@
     "pinia": "^2.0.14",
     "vue": "3.2.33",
     "vue-router": "^4.0.5",
+    "vue3-count-to": "^1.1.2",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

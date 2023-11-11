@@ -53,7 +53,7 @@
       </template>
       <template v-else>
 <!--        <img class="avatar" :src="userinfo.avatar" />-->
-        <img class="avatar" src="~@/assets/svg/user1.svg" />
+        <img class="avatar" src="~@/assets/svg/icon-user.svg" />
         {{ userinfo.name }}
       </template>
     </div>

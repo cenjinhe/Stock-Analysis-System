@@ -26,7 +26,7 @@ export default [
       },
       {
         path: 'history-data',
-        name: 'stockUpdate',
+        name: 'HistoryData',
         component: StockUpdate,
         meta: {
           title: '历史数据',

@@ -119,6 +119,7 @@ export default defineComponent({
           width: 180,
           align: 'center',
           tdSlot: 'operate', // 自定义单元格内容的插槽名称
+          fixed: 'right',
         },
       ],
       // 搜索配置
