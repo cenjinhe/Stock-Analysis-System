@@ -21,29 +21,35 @@ def getStockList(request):
         trade_status = request.GET.get('trade_status', default=3)
         status = request.GET.get('status', default=2)
         market = request.GET.get('market', default='1')
+        sortFieldName = request.GET.get('column', default='')
+        order = request.GET.get('order', default='ascending')
 
-        listData = []
+        # 获取字段名称和排序类型
+        sortFieldName = 'code' if sortFieldName == '' else sortFieldName
+        sortFieldName = sortFieldName if order == 'ascending' else '-' + sortFieldName
+
         # 更新状态为(更新中or已更新)的记录
+        listData = []
         if str(status) in ['0', '1']:
             # 交易状态为(0停牌or1正常or2退市)的记录
             if str(trade_status) in ['0', '1', '2']:
                 records = TABLE_MAP.get(market).objects.filter(code__contains=code,
                                                                name__contains=name,
                                                                trade_status__contains=trade_status,
-                                                               status__contains=status).order_by('code')
+                                                               status__contains=status).order_by(sortFieldName)
             else:
                 records = TABLE_MAP.get(market).objects.filter(code__contains=code,
                                                                name__contains=name,
-                                                               status__contains=status).order_by('code')
+                                                               status__contains=status).order_by(sortFieldName)
         else:
             # 更新状态为(全部)的记录&&交易状态为(0停牌or1正常or2退市)的记录
             if str(trade_status) in ['0', '1', '2']:
                 records = TABLE_MAP.get(market).objects.filter(code__contains=code,
                                                                trade_status__contains=trade_status,
-                                                               name__contains=name).order_by('code')
+                                                               name__contains=name).order_by(sortFieldName)
             else:
                 records = TABLE_MAP.get(market).objects.filter(code__contains=code,
-                                                               name__contains=name).order_by('code')
+                                                               name__contains=name).order_by(sortFieldName)
         # 分页
         try:
             page_info = Paginator(records, size).page(number=current)
@@ -53,22 +59,23 @@ def getStockList(request):
 
         for record in page_info:
             # 如果表不存在就建立这个表
-            sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
-            # 查询这个表的最后一条数据，获取日期
-            sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
-                last_data = cursor.fetchall()
+            # sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+            # with connection.cursor() as cursor:
+            #     cursor.execute(sql)
+            # # 查询这个表的最后一条数据，获取日期
+            # sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
+            # with connection.cursor() as cursor:
+            #     cursor.execute(sql)
+            #     last_data = cursor.fetchall()
             # 加入到数据列表中
             listData.append({"id": record.id,
                              "code": record.code,
                              "name": record.name,
                              "listing_date": record.date,
-                             "date": last_data[0][1] if last_data else None,
-                             "close": last_data[0][6] if last_data else None,
-                             "pre_close": last_data[0][7] if last_data else None,
+                             "date": record.today_date,
+                             "close": record.close,
+                             "pre_close": record.pre_close,
+                             "ratio": record.ratio,
                              "trade_status": record.trade_status,
                              "status": record.status,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})

@@ -217,6 +217,7 @@
         stripe
         :border="border"
         @selection-change="handleSelectionChange"
+        @sort-change="changeTableSort"
       >
         <el-table-column
           v-for="item in columns"
@@ -435,6 +436,10 @@ export default defineComponent({
       // 全选
       handleSelectionChange(arr) {
         emit('selectionChange', arr)
+      },
+      // 排序
+      changeTableSort(column) {
+        emit('sort-change', column)
       },
       // 过滤方法
       filterHandler(value, row, column) {

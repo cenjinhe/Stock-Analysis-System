@@ -4,13 +4,13 @@
       <pro-table
         v-if="pageShow === 'stock-list'"
         ref="table"
-        :title="$t('test/list.title')"
+        title="股票列表"
         :request="getList"
         :columns="columns"
         :search="searchConfig"
-        :default-sort="{ prop: 'code', order: 'ascending' }"
         :cell-style="cellStyle"
         @selectionChange="handleSelectionChange"
+        @sort-change="changeTableSort"
       >
         <!-- 工具栏 -->
         <template #toolbar>
@@ -23,7 +23,7 @@
         </template>
         <template #ratio="scope">
           <div :style="{color: getCloseColor(scope.row)}">
-            {{(((scope.row.close - scope.row.pre_close) / scope.row.pre_close) * 100).toFixed(2)}}%
+            {{ scope.row.ratio }}%
           </div>
         </template>
         <template #trade_status="{row}">
@@ -96,12 +96,14 @@ export default defineComponent({
           prop: 'close',
           minWidth: 100,
           tdSlot: 'close',
+          sortable: 'custom',
         },
         {
           label: '涨跌幅',
           prop: 'ratio',
           minWidth: 100,
           tdSlot: 'ratio',
+          sortable: 'custom',
         },
         {
           label: '交易状态',
@@ -162,6 +164,21 @@ export default defineComponent({
       handleSelectionChange(arr) {
         state.selectedItems = arr
       },
+      // 排序
+      changeTableSort(column) {
+        // 获取字段名称和排序类型
+        const fieldName = column.prop
+        const order = column.order
+        // 发起后端请求的接口
+        const params = Object.assign(
+          table.value.searchModel,
+          { column: fieldName },
+          { order: order }
+        )
+        state.getList(params)
+        refresh()
+      },
+      // 设置[现价]列显示的颜色
       getCloseColor(row) {
         if (row.close > row.pre_close) {
           return 'red'
@@ -173,7 +190,7 @@ export default defineComponent({
       },
       // 请求函数
       async getList(params) {
-        // params是从组件接收的，包含分页和搜索字段。
+        // params是从组件接收的，包含分页和搜索字段
         const { data } = await getStockList(params)
         // 必须要返回一个对象，包含data数组和total总数
         return { data: data.list, total: data.total }
