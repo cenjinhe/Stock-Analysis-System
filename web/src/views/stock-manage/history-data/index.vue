@@ -1,7 +1,7 @@
 <template>
   <pro-table
     ref="table"
-    :title="$t('test/list.title')"
+    title="股票列表"
     :request="getList"
     :columns="columns"
     :search="searchConfig"
