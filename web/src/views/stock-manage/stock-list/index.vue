@@ -70,6 +70,7 @@ export default defineComponent({
           label: 'A股代码',
           prop: 'code',
           minWidth: 160,
+          sortable: 'custom',
         },
         {
           label: 'A股简称',
@@ -127,7 +128,7 @@ export default defineComponent({
       // 搜索配置
       searchConfig: {
         labelWidth: '90px', // 必须带上单位
-        inputWidth: '200px', // 必须带上单位
+        inputWidth: '150px', // 必须带上单位
         fields: [
           {
             type: 'text',
