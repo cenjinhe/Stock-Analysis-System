@@ -123,7 +123,10 @@ def getRawDataList(request):
         count = request.GET.get('count', default=100)
         code = request.GET.get('code', default='')
 
-        sql = f'{models_sql.SELECT_RAW_DATA}'.format(TABLE_NAME=f'tb_{code}', COUNT=count)
+        if str(count) == '0':
+            sql = f'{models_sql.SELECT_RAW_DATA_ALL}'.format(TABLE_NAME=f'tb_{code}')
+        else:
+            sql = f'{models_sql.SELECT_RAW_DATA}'.format(TABLE_NAME=f'tb_{code}', COUNT=count)
         with connection.cursor() as cursor:
             cursor.execute(sql)
             rawData = cursor.fetchall()

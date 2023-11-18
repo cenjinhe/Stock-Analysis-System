@@ -109,6 +109,10 @@ SELECT_RAW_DATA = r"""
 SELECT date, open, close, low, high, volume, pre_close
 FROM {TABLE_NAME} order by date desc LIMIT {COUNT};
 """
+SELECT_RAW_DATA_ALL = r"""
+SELECT date, open, close, low, high, volume, pre_close
+FROM {TABLE_NAME} order by date desc;
+"""
 # 删除表
 DROP_TABLE = r"""
 DROP TABLE {TABLE_NAME}

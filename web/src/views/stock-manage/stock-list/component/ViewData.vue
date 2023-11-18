@@ -1,13 +1,19 @@
 <template>
   <div>
-    <el-button size="small" type="primary" icon="Back" @click="btnReturn">
-      返回
-    </el-button>
-    <div style="padding-right: 5%;">
+    <div style="text-align: center;">
+      <el-button size="small" type="primary" icon="Back" style="float: left;" @click="btnReturn">返回</el-button>
+      <el-select v-model="dataCount" value-key="id" style="float: right;padding-right: 5%;" @change="initKLine">
+        <el-option v-for="item in dataOptions" :key="item.id" :label="item.label" :value="item.value"/>
+      </el-select>
+    </div><br />
+    <!--面板组展示-->
+    <div style="padding-right: 5%;margin-top: 30px;">
       <panel-group :code="row.code" @handleSetLineChartData1="handleSetLineChartData" />
     </div>
-    <div id="main" style="margin-top: 30px;width: 100%; height: 600px"></div>
-    <div style="margin-top: 50px;height: 600px">
+    <!--k线图-->
+    <div id="main" style="margin-top: 30px;width: 100%; height: 600px;float: left;"></div>
+    <!--乾坤六道法-->
+    <div style="margin-top: 50px;height: 600px;">
       <h1 style="font-weight: bold;color: #303133;">乾坤六道法</h1>
       <pro-table
         ref="table"
@@ -21,7 +27,7 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, onMounted } from 'vue'
+import { defineEmits, defineProps, onMounted, ref } from 'vue'
 import PanelGroup from './PanelGroup.vue'
 import { getRawDataList } from '@/api/stock-manage'
 import * as echarts from 'echarts'
@@ -40,6 +46,17 @@ const props = defineProps({
   row: Object, // 子组件声明了的 props ，若父组件未传，则该值为 undefined
 })
 const emits = defineEmits(['update:pageShow']) // 此处需写'update'
+
+// input框-获取n条历史数据
+const dataCount = ref(200)
+const dataOptions = ref([
+  { id: 1, label: '200条历史数据', value: 200 },
+  { id: 2, label: '400条历史数据', value: 400 },
+  { id: 3, label: '600条历史数据', value: 600 },
+  { id: 4, label: '800条历史数据', value: 800 },
+  { id: 5, label: '所有历史数据', value: 0 },
+])
+
 // 初始化
 onMounted(() => {
   initKLine()
@@ -190,7 +207,7 @@ async function initKLine() {
   //=================================================
   // 获取原始数据
   // 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)
-  const { rawData } = await getRawDataList({ count: 200, code: props.row.code })
+  const { rawData } = await getRawDataList({ count: dataCount.value, code: props.row.code })
   // 分割原始数据: x轴日期(categoryData), K线数据(values), 成交量数据(volumes)
   let data = splitData(rawData.reverse())
   // 计算 MACD 指标
