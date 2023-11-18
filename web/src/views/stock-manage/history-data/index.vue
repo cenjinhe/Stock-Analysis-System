@@ -71,7 +71,7 @@ export default defineComponent({
     const state = reactive({
       // 表格列配置，大部分属性跟el-table-column配置一样
       columns: [
-        { type: 'selection', width: 56 },
+        // { type: 'selection', width: 56 },
         {
           label: 'ID',
           prop: 'id',
