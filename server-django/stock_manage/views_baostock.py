@@ -128,19 +128,24 @@ def update_history_data_single(request):
             low = lastData[0][5] if lastData else None
             close = lastData[0][6] if lastData else None
             pre_close = lastData[0][7] if lastData else None
-            ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
+            volume = lastData[0][8] if lastData else None
+            amount = lastData[0][9] if lastData else None
+            adjust_flag = lastData[0][10] if lastData else None
+            turn = lastData[0][11] if lastData else None
             trade_status = lastData[0][12] if lastData else None
+            pctChg = lastData[0][13] if lastData else None
+            # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
             # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
             record = table.objects.filter(code=stock_code).first()
             table.objects.filter(code=stock_code).update(
                 update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                today_date=today_date,      # 当前行情日期
-                open=open,                  # 开盘价
-                high=high,                  # 最高价
-                low=low,                    # 最低价
-                close=close,                # 收盘价
-                pre_close=pre_close,        # 前一天收盘价
-                ratio=ratio,                # 涨跌幅
+                today_date=today_date,          # 当前行情日期
+                open=open,                      # 开盘价
+                high=high,                      # 最高价
+                low=low,                        # 最低价
+                close=close,                    # 收盘价
+                pre_close=pre_close,            # 前一天收盘价
+                ratio='{:.2f}'.format(pctChg),  # 涨跌幅
                 trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
                 status=False)
 
@@ -270,18 +275,23 @@ def update_history_data_all(request):
                 low = lastData[0][5] if lastData else None
                 close = lastData[0][6] if lastData else None
                 pre_close = lastData[0][7] if lastData else None
-                ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
+                volume = lastData[0][8] if lastData else None
+                amount = lastData[0][9] if lastData else None
+                adjust_flag = lastData[0][10] if lastData else None
+                turn = lastData[0][11] if lastData else None
                 trade_status = lastData[0][12] if lastData else None
+                pctChg = lastData[0][13] if lastData else None
+                # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
                 data = table.objects.filter(code=record.code).first()
                 table.objects.filter(code=record.code).update(
                     update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                    today_date=today_date,      # 当前行情日期
-                    open=open,                  # 开盘价
-                    high=high,                  # 最高价
-                    low=low,                    # 最低价
-                    close=close,                # 收盘价
-                    pre_close=pre_close,        # 前一天收盘价
-                    ratio=ratio,                # 涨跌幅
+                    today_date=today_date,          # 当前行情日期
+                    open=open,                      # 开盘价
+                    high=high,                      # 最高价
+                    low=low,                        # 最低价
+                    close=close,                    # 收盘价
+                    pre_close=pre_close,            # 前一天收盘价
+                    ratio='{:.2f}'.format(pctChg),  # 涨跌幅
                     trade_status=trade_status if data.trade_status != 2 else data.trade_status,  # 退市交易状态不变
                     status=False)
 
