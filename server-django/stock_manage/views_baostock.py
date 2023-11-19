@@ -15,30 +15,27 @@ from stock_manage import models_sql
 from django.http.response import JsonResponse
 from stock_manage.models import StockListSZ, StockListSH
 
+TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
+
 
 # 更新股票历史数据(单个股票的历史数据)
-def update_history_data(request):
+def update_history_data_single(request):
     if request.method == 'POST':
         post_body = request.body
         json_param = json.loads(post_body.decode())
-        market = json_param.get('market')
+        market = json_param.get('market', '1')
         stock_code = json_param.get('code')
         release_date = json_param.get('release_date')
         code = f'SZ.{stock_code}' if str(market) == '1' else f'SH.{stock_code}'
+        table = TABLE_MAP.get(str(market))
 
         # 更新股票列表的状态（status: true更新中）
-        if str(market) == '1':
-            record = StockListSZ.objects.filter(code=stock_code).first()
-            if record.status:
-                return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
-            StockListSZ.objects.filter(code=stock_code).update(status=True,
-                                                               update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
-        else:
-            record = StockListSH.objects.filter(code=stock_code).first()
-            if record.status:
-                return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
-            StockListSH.objects.filter(code=stock_code).update(status=True,
-                                                               update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
+        record = table.objects.filter(code=stock_code).first()
+        if record.status:
+            return JsonResponse({'data': {}, 'code': '201', 'message': f'该股票code={code}正在更新中...'})
+        table.objects.filter(code=stock_code).update(status=True,
+                                                     update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
+
         try:
             # 如果数据库表不存在，则创建
             sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
@@ -49,7 +46,8 @@ def update_history_data(request):
             with connection.cursor() as cursor:
                 cursor.execute(sql)
                 last_date = cursor.fetchall()
-            start_date = last_date[0][0].strftime('%Y-%m-%d') if last_date is not None and last_date[0][0] is not None else release_date
+            start_date = last_date[0][0].strftime('%Y-%m-%d') if last_date is not None and last_date[0][
+                0] is not None else release_date
             # 获取数据入库的结束日期(当天)
             end_date = datetime.datetime.now().date()
             end_date = end_date.strftime("%Y-%m-%d")
@@ -133,68 +131,31 @@ def update_history_data(request):
             ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
             trade_status = lastData[0][12] if lastData else None
             # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
-            if str(market) == '1':
-                # '1'：深市
-                record = StockListSZ.objects.filter(code=stock_code).first()
-                if record.trade_status == 2:
-                    # 退市不更新交易状态
-                    StockListSZ.objects.filter(code=stock_code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        status=False)
-                else:
-                    StockListSZ.objects.filter(code=stock_code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        trade_status=trade_status,
-                        status=False)
-            else:
-                # '0'：沪市
-                record = StockListSH.objects.filter(code=stock_code).first()
-                if record.trade_status == 2:
-                    # 退市不更新交易状态
-                    StockListSH.objects.filter(code=stock_code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        status=False)
-                else:
-                    StockListSH.objects.filter(code=stock_code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        trade_status=trade_status,
-                        status=False)
+            record = table.objects.filter(code=stock_code).first()
+            table.objects.filter(code=stock_code).update(
+                update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                today_date=today_date,      # 当前行情日期
+                open=open,                  # 开盘价
+                high=high,                  # 最高价
+                low=low,                    # 最低价
+                close=close,                # 收盘价
+                pre_close=pre_close,        # 前一天收盘价
+                ratio=ratio,                # 涨跌幅
+                trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
+                status=False)
 
     return JsonResponse({'data': data_list, 'code': '200', 'message': '更新成功!!'})
 
 
-# 更新股票历史数据(所有深市股票的历史数据)
-def update_history_data_sz(request):
+# 更新股票历史数据(所有股票的历史数据)
+def update_history_data_all(request):
     if request.method == 'POST':
-        records = StockListSZ.objects.all()
+        post_body = request.body
+        json_param = json.loads(post_body.decode())
+        market = json_param.get('market')
+        table = TABLE_MAP.get(str(market))
+
+        records = table.objects.all()
         num = 0
         for record in records:
             num += 1
@@ -205,7 +166,7 @@ def update_history_data_sz(request):
                 continue
             try:
                 # 更新股票列表的状态（status: true更新中）
-                StockListSZ.objects.filter(
+                table.objects.filter(
                     code=record.code).update(status=True, update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()))
                 # 如果数据库tb_xxxxxx表不存在，则创建
                 sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
@@ -311,30 +272,17 @@ def update_history_data_sz(request):
                 pre_close = lastData[0][7] if lastData else None
                 ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
                 trade_status = lastData[0][12] if lastData else None
-                data = StockListSZ.objects.filter(code=record.code).first()
-                if data.trade_status == 2:
-                    # 退市不更新交易状态
-                    StockListSZ.objects.filter(code=record.code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        status=False)
-                else:
-                    StockListSZ.objects.filter(code=record.code).update(
-                        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                        today_date=today_date,
-                        trade_status=trade_status,
-                        open=open,
-                        high=high,
-                        low=low,
-                        close=close,
-                        pre_close=pre_close,
-                        ratio=ratio,
-                        status=False)
+                data = table.objects.filter(code=record.code).first()
+                table.objects.filter(code=record.code).update(
+                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+                    today_date=today_date,      # 当前行情日期
+                    open=open,                  # 开盘价
+                    high=high,                  # 最高价
+                    low=low,                    # 最低价
+                    close=close,                # 收盘价
+                    pre_close=pre_close,        # 前一天收盘价
+                    ratio=ratio,                # 涨跌幅
+                    trade_status=trade_status if data.trade_status != 2 else data.trade_status,  # 退市交易状态不变
+                    status=False)
 
     return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})

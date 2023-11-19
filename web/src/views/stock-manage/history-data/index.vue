@@ -10,7 +10,7 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" @click="updateHistoryDataSZ">
+      <el-button type="primary" @click="updateHistoryData(1)">
         更新数据(深)
       </el-button>
       <el-button type="primary" disabled>
@@ -56,8 +56,8 @@ import {
   updateStockList,
   updateStatus,
   deleteStockRecord,
-  update_history_data,
-  update_history_data_sz,
+  update_history_data_single,
+  update_history_data_all,
 } from '@/api/stock-manage'
 
 export default defineComponent({
@@ -236,14 +236,14 @@ export default defineComponent({
         })
       },
       // 【更新深市数据(all)】按钮
-      async updateHistoryDataSZ() {
+      async updateHistoryData(market) {
         ElMessageBox.confirm(`更新深市数据, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
         }).then(async () => {
-          const param = {}
-          await update_history_data_sz(param)
+          const param = { market: market }
+          await update_history_data_all(param)
         })
       },
       // 【更新数据)】按钮
@@ -263,7 +263,7 @@ export default defineComponent({
             code: row.code,
             release_date: row.date,
           }
-          const { code, message } = await update_history_data(param)
+          const { code, message } = await update_history_data_single(param)
           if (code === '200') {
             refresh()
             // setTimer()

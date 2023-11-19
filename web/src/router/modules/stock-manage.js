@@ -1,5 +1,6 @@
 const Layout = () => import('@/layout/index.vue')
 const StockList = () => import('@/views/stock-manage/stock-list/index.vue')
+const Trend = () => import('@/views/stock-manage/trend/index.vue')
 const stock_analysis = () => import('@/views/stock-analysis/index.vue')
 const StockUpdate = () => import('@/views/stock-manage/history-data/index.vue')
 
@@ -30,6 +31,14 @@ export default [
         component: StockUpdate,
         meta: {
           title: '历史数据',
+        },
+      },
+      {
+        path: 'trend',
+        name: 'trend',
+        component: Trend,
+        meta: {
+          title: '拟合斜率',
         },
       },
       {
