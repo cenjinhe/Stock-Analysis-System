@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # @Author   : jinhe Cen
 # @Time     : 2023/10/29 21:51
-# @File     : test.py
+# @File     : views_baostock.py
 # @baostock : http://baostock.com/baostock/index.php/%E9%A6%96%E9%A1%B5
 import re
 import json

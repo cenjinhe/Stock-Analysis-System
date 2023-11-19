@@ -9,10 +9,11 @@ from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 from stock_manage.models import StockListSZ, StockListSH
 
+TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
+
 
 # 获取股票列表
 def getStockList(request):
-    TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
     if request.method == 'GET':
         size = request.GET.get('size', default=10)
         current = request.GET.get('current', default=1)
@@ -85,7 +86,6 @@ def getStockList(request):
 
 # 获取股票状态列表
 def getStatusList(request):
-    TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
     if request.method == 'GET':
         size = request.GET.get('size', default=10)
         current = request.GET.get('current', default=1)
@@ -136,7 +136,6 @@ def getRawDataList(request):
 
 # 更新所有股票名称一览
 def updateStockList(request):
-    TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
     FILE_MAP = {'0': 'shA股列表.xlsx', '1': 'szA股列表.xlsx'}
     if request.method == 'POST':
         post_body = request.body
@@ -197,7 +196,6 @@ def updateStatus(request):
 
 # 删除一条股票记录(深市/沪市)
 def deleteStockRecord(request):
-    TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
     if request.method == 'POST':
         post_body = request.body
         json_param = json.loads(post_body.decode())
