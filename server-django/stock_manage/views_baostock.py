@@ -51,9 +51,9 @@ def update_history_data_single(request):
             # 获取数据入库的结束日期(当天)
             end_date = datetime.datetime.now().date()
             end_date = end_date.strftime("%Y-%m-%d")
-            # 登陆证券宝系统
+
+            # 登陆证券宝系统,获取历史数据
             bs.login()
-            # 获取历史数据
             fields = "date, code, open, high, low, close, preclose, volume, amount, adjustflag, turn, tradestatus, " \
                      "pctChg, peTTM, pbMRQ, psTTM, pcfNcfTTM, isST"
             print('获取历史数据的参数：', f'market={market}', f'code={code}', f'start_date={start_date}', f'end_date={end_date}')
@@ -62,6 +62,7 @@ def update_history_data_single(request):
             while (respond.error_code == '0') & respond.next():  # 获取一条记录，将记录合并在一起
                 data_list.append(respond.get_row_data())
             result = pd.DataFrame(data_list, columns=respond.fields)
+
             # 将历史数据更新到数据库
             for index, row in result.iterrows():
                 # 判断row['date']日期的数据是否已存在（存在：更新/不存在：添加）
@@ -69,85 +70,33 @@ def update_history_data_single(request):
                 with connection.cursor() as cursor:
                     cursor.execute(sql)
                     data = cursor.fetchall()
-                if data[0][0] == 0:
-                    # 增加历史数据sql
-                    sql = f'{models_sql.INSERT_INTO_HISTORY_DATA}'.format(
-                        TABLE_NAME=f'tb_{stock_code}',
-                        date=row['date'],
-                        code=re.findall(r'\d+\.?\d*', row['code'])[0],
-                        open=row['open'] if row['open'] != '' else 0,
-                        high=row['high'] if row['high'] != '' else 0,
-                        low=row['low'] if row['low'] != '' else 0,
-                        close=row['close'] if row['close'] != '' else 0,
-                        pre_close=row['preclose'] if row['preclose'] != '' else 0,
-                        volume=row['volume'] if row['volume'] != '' else 0,
-                        amount=row['amount'] if row['amount'] != '' else 0,
-                        adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
-                        turn=row['turn'] if row['turn'] != '' else 0,
-                        trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
-                        pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
-                        peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
-                        pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
-                        psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
-                        pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
-                        isST=row['isST'] if row['isST'] != '' else 0)
-                else:
-                    # 更新历史数据sql
-                    sql = f'{models_sql.UPDATE_HISTORY_DATA}'.format(
-                        TABLE_NAME=f'tb_{stock_code}',
-                        date=row['date'],
-                        code=re.findall(r'\d+\.?\d*', row['code'])[0],
-                        open=row['open'] if row['open'] != '' else 0,
-                        high=row['high'] if row['high'] != '' else 0,
-                        low=row['low'] if row['low'] != '' else 0,
-                        close=row['close'] if row['close'] != '' else 0,
-                        pre_close=row['preclose'] if row['preclose'] != '' else 0,
-                        volume=row['volume'] if row['volume'] != '' else 0,
-                        amount=row['amount'] if row['amount'] != '' else 0,
-                        adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
-                        turn=row['turn'] if row['turn'] != '' else 0,
-                        trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
-                        pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
-                        peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
-                        pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
-                        psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
-                        pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
-                        isST=row['isST'] if row['isST'] != '' else 0)
+                # 增加历史数据 or 更新历史数据
+                sql = models_sql.INSERT_INTO_HISTORY_DATA if data[0][0] == 0 else models_sql.UPDATE_HISTORY_DATA
+                sql = sql.format(
+                    TABLE_NAME=f'tb_{stock_code}',
+                    date=row['date'],
+                    code=re.findall(r'\d+\.?\d*', row['code'])[0],
+                    open=row['open'] if row['open'] != '' else 0,
+                    high=row['high'] if row['high'] != '' else 0,
+                    low=row['low'] if row['low'] != '' else 0,
+                    close=row['close'] if row['close'] != '' else 0,
+                    pre_close=row['preclose'] if row['preclose'] != '' else 0,
+                    volume=row['volume'] if row['volume'] != '' else 0,
+                    amount=row['amount'] if row['amount'] != '' else 0,
+                    adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
+                    turn=row['turn'] if row['turn'] != '' else 0,
+                    trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
+                    pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
+                    peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
+                    pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
+                    psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
+                    pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
+                    isST=row['isST'] if row['isST'] != '' else 0)
                 with connection.cursor() as cursor:
                     print(f'sql={sql}')
                     cursor.execute(sql)
         finally:
-            # 查询这个表的最后一条数据，获取交易状态
-            sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
-                lastData = cursor.fetchall()
-            today_date = lastData[0][1] if lastData else None
-            open = lastData[0][3] if lastData else None
-            high = lastData[0][4] if lastData else None
-            low = lastData[0][5] if lastData else None
-            close = lastData[0][6] if lastData else None
-            pre_close = lastData[0][7] if lastData else None
-            volume = lastData[0][8] if lastData else None
-            amount = lastData[0][9] if lastData else None
-            adjust_flag = lastData[0][10] if lastData else None
-            turn = lastData[0][11] if lastData else None
-            trade_status = lastData[0][12] if lastData else None
-            pctChg = lastData[0][13] if lastData else None
-            # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
-            # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
-            record = table.objects.filter(code=stock_code).first()
-            table.objects.filter(code=stock_code).update(
-                update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                today_date=today_date,          # 当前行情日期
-                open=open,                      # 开盘价
-                high=high,                      # 最高价
-                low=low,                        # 最低价
-                close=close,                    # 收盘价
-                pre_close=pre_close,            # 前一天收盘价
-                ratio='{:.2f}'.format(pctChg),  # 涨跌幅
-                trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
-                status=False)
+            _update_stock_list(table, stock_code)
 
     return JsonResponse({'data': data_list, 'code': '200', 'message': '更新成功!!'})
 
@@ -161,12 +110,7 @@ def update_history_data_all(request):
         table = TABLE_MAP.get(str(market))
 
         records = table.objects.all()
-        num = 0
         for record in records:
-            num += 1
-            # if num not in range(0, 3000):
-            #     print('num=', num)
-            #     continue
             if record.status:
                 continue
             try:
@@ -194,9 +138,8 @@ def update_history_data_all(request):
                 #     cursor.execute(sql)
                 # ↑↑↑修改tb_xxxxxx表字段volume的类型 int->bigint↑↑↑
 
-                # 登陆证券宝系统
+                # 登陆证券宝系统,获取历史数据
                 bs.login()
-                # 获取历史数据
                 fields = "date, code, open, high, low, close, preclose, volume, amount, adjustflag, turn," \
                          "tradestatus, pctChg, peTTM, pbMRQ, psTTM, pcfNcfTTM, isST"
                 print('获取历史数据的参数：', f'code=SZ.{record.code}', f'start_date={start_date}', f'end_date={end_date}')
@@ -208,6 +151,7 @@ def update_history_data_all(request):
                 while (respond.error_code == '0') & respond.next():  # 获取一条记录，将记录合并在一起
                     data_list.append(respond.get_row_data())
                 result = pd.DataFrame(data_list, columns=respond.fields)
+
                 # 将历史数据更新到数据库
                 for index, row in result.iterrows():
                     # 判断row['date']日期的数据是否已存在（存在：更新/不存在：添加）
@@ -216,83 +160,72 @@ def update_history_data_all(request):
                     with connection.cursor() as cursor:
                         cursor.execute(sql)
                         data = cursor.fetchall()
-                    if data[0][0] == 0:
-                        # 增加历史数据sql
-                        sql = f'{models_sql.INSERT_INTO_HISTORY_DATA}'.format(
-                            TABLE_NAME=f'tb_{record.code}',
-                            date=row['date'],
-                            code=re.findall(r'\d+\.?\d*', row['code'])[0],
-                            open=row['open'] if row['open'] != '' else 0,
-                            high=row['high'] if row['high'] != '' else 0,
-                            low=row['low'] if row['low'] != '' else 0,
-                            close=row['close'] if row['close'] != '' else 0,
-                            pre_close=row['preclose'] if row['preclose'] != '' else 0,
-                            volume=row['volume'] if row['volume'] != '' else 0,
-                            amount=row['amount'] if row['amount'] != '' else 0,
-                            adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
-                            turn=row['turn'] if row['turn'] != '' else 0,
-                            trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
-                            pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
-                            peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
-                            pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
-                            psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
-                            pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
-                            isST=row['isST'] if row['isST'] != '' else 0)
-                    else:
-                        # 更新历史数据sql
-                        sql = f'{models_sql.UPDATE_HISTORY_DATA}'.format(
-                            TABLE_NAME=f'tb_{record.code}',
-                            date=row['date'],
-                            code=re.findall(r'\d+\.?\d*', row['code'])[0],
-                            open=row['open'] if row['open'] != '' else 0,
-                            high=row['high'] if row['high'] != '' else 0,
-                            low=row['low'] if row['low'] != '' else 0,
-                            close=row['close'] if row['close'] != '' else 0,
-                            pre_close=row['preclose'] if row['preclose'] != '' else 0,
-                            volume=row['volume'] if row['volume'] != '' else 0,
-                            amount=row['amount'] if row['amount'] != '' else 0,
-                            adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
-                            turn=row['turn'] if row['turn'] != '' else 0,
-                            trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
-                            pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
-                            peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
-                            pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
-                            psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
-                            pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
-                            isST=row['isST'] if row['isST'] != '' else 0)
+                    # 增加历史数据 or 更新历史数据
+                    sql = models_sql.INSERT_INTO_HISTORY_DATA if data[0][0] == 0 else models_sql.UPDATE_HISTORY_DATA
+                    sql = sql.format(
+                        TABLE_NAME=f'tb_{record.code}',
+                        date=row['date'],
+                        code=re.findall(r'\d+\.?\d*', row['code'])[0],
+                        open=row['open'] if row['open'] != '' else 0,
+                        high=row['high'] if row['high'] != '' else 0,
+                        low=row['low'] if row['low'] != '' else 0,
+                        close=row['close'] if row['close'] != '' else 0,
+                        pre_close=row['preclose'] if row['preclose'] != '' else 0,
+                        volume=row['volume'] if row['volume'] != '' else 0,
+                        amount=row['amount'] if row['amount'] != '' else 0,
+                        adjust_flag=row['adjustflag'] if row['adjustflag'] != '' else 0,
+                        turn=row['turn'] if row['turn'] != '' else 0,
+                        trade_status=row['tradestatus'] if row['tradestatus'] != '' else 0,
+                        pctChg=row['pctChg'] if row['pctChg'] != '' else 0,
+                        peTTM=row['peTTM'] if row['peTTM'] != '' else 0,
+                        pbMRQ=row['pbMRQ'] if row['pbMRQ'] != '' else 0,
+                        psTTM=row['psTTM'] if row['psTTM'] != '' else 0,
+                        pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
+                        isST=row['isST'] if row['isST'] != '' else 0)
                     with connection.cursor() as cursor:
                         print(f'sql={sql}')
                         cursor.execute(sql)
             finally:
-                # 查询这个表的最后一条数据，获取交易状态
-                sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-                with connection.cursor() as cursor:
-                    cursor.execute(sql)
-                    lastData = cursor.fetchall()
-                today_date = lastData[0][1] if lastData else None
-                open = lastData[0][3] if lastData else None
-                high = lastData[0][4] if lastData else None
-                low = lastData[0][5] if lastData else None
-                close = lastData[0][6] if lastData else None
-                pre_close = lastData[0][7] if lastData else None
-                volume = lastData[0][8] if lastData else None
-                amount = lastData[0][9] if lastData else None
-                adjust_flag = lastData[0][10] if lastData else None
-                turn = lastData[0][11] if lastData else None
-                trade_status = lastData[0][12] if lastData else None
-                pctChg = lastData[0][13] if lastData else None
-                # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
-                data = table.objects.filter(code=record.code).first()
-                table.objects.filter(code=record.code).update(
-                    update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
-                    today_date=today_date,          # 当前行情日期
-                    open=open,                      # 开盘价
-                    high=high,                      # 最高价
-                    low=low,                        # 最低价
-                    close=close,                    # 收盘价
-                    pre_close=pre_close,            # 前一天收盘价
-                    ratio='{:.2f}'.format(pctChg),  # 涨跌幅
-                    trade_status=trade_status if data.trade_status != 2 else data.trade_status,  # 退市交易状态不变
-                    status=False)
+                _update_stock_list(table, record.code)
 
     return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
+
+
+# 更新个股
+def _update_stock(table, stock_code):
+    pass
+
+
+# 更新股票列表(个股更新后，将最近一条数据如，最高价，现价等等更新到股票列表中)
+def _update_stock_list(table, stock_code):
+    # 查询这个表的最后一条数据，获取交易状态
+    sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
+    with connection.cursor() as cursor:
+        cursor.execute(sql)
+        lastData = cursor.fetchall()
+    today_date = lastData[0][1] if lastData else None
+    open = lastData[0][3] if lastData else None
+    high = lastData[0][4] if lastData else None
+    low = lastData[0][5] if lastData else None
+    close = lastData[0][6] if lastData else None
+    pre_close = lastData[0][7] if lastData else None
+    volume = lastData[0][8] if lastData else None
+    amount = lastData[0][9] if lastData else None
+    adjust_flag = lastData[0][10] if lastData else None
+    turn = lastData[0][11] if lastData else None
+    trade_status = lastData[0][12] if lastData else None
+    pctChg = lastData[0][13] if lastData else None
+    # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
+    # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
+    record = table.objects.filter(code=stock_code).first()
+    table.objects.filter(code=stock_code).update(
+        update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
+        today_date=today_date,  # 当前行情日期
+        open=open,  # 开盘价
+        high=high,  # 最高价
+        low=low,  # 最低价
+        close=close,  # 收盘价
+        pre_close=pre_close,  # 前一天收盘价
+        ratio='{:.2f}'.format(pctChg),  # 涨跌幅
+        trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
+        status=False)
