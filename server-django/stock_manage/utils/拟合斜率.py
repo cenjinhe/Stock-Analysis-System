@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# @Author   : jinhe Cen
+# @Time     : 2023/11/19 16:41
+# @File     : 拟合斜率.py
+"""
+功能
+1.通过斜率法计算，选出所有股票：前一天斜率 及当前斜率
+2.将计算出来的斜率更新到stock_list_sz数据库表，关联字段(pre_trend,trend)
+说明
+方法一 斜率法
+    原理
+    斜率法的原理就是使用最小二乘等方法对时序数据进行拟合，
+    然后根据拟合成的直线的斜率k判断序列的数据走势，
+    当k>0时，则代表趋势上升；当k<0时，则代表趋势下降。
+    优缺点
+    优点是方法简单；缺点是要求趋势是线性的，当数去波动较大时无法准确拟合。
+
+    https://www.cnblogs.com/yibeimingyue/p/11185535.html
+"""
+import math
+import numpy as np
+
+
+def trend_line(data):
+    """做最⼩⼆乘拟合，把数据拟合成⼀条直线"""
+    x = [i for i in range(1, len(data) + 1)]    # x 坐标
+    y = list(data)                              # y 坐标
+    slope, intercept = np.polyfit(x, y, deg=1)  # 拟合曲线
+    return slope, intercept                     # slope：斜率 intercept：截距
+
+
+def judge_trend(coeffs, data, degree=1, shake=1):
+    """根据直线的斜率k，判断数据的主要⾛势"""
+    tan_k = math.tan(degree * math.pi / 180)  # tan()返回x弧度的正切值，数值在 -1 到 1 之间
+    # print('tan_k=', tan_k)
+    if coeffs[0] >= tan_k:
+        return "上升"
+    elif coeffs[0] <= -tan_k:
+        return "下降"
+    else:
+        return get_shake(coeffs, data, shake)
+
+
+def get_shake(coeffs, data, shake):
+    count = 0
+    for i, d in enumerate(data):  # i+1相当于横坐标，从1开始
+        y = np.polyval(coeffs, i + 1)
+        count += (y - d) ** 2
+    # print("count: ", count)
+    if count > shake:
+        return "波动"
+    else:
+        return "平稳"

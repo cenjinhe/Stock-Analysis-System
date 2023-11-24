@@ -80,22 +80,22 @@ export default defineComponent({
         {
           label: 'A股代码',
           prop: 'code',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: 'A股简称',
           prop: 'name',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: '上市日期',
           prop: 'listing_date',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: '行情日期',
           prop: 'date',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: '现价',
@@ -117,7 +117,7 @@ export default defineComponent({
         {
           label: '更新时间',
           prop: 'update_time',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: '操作',

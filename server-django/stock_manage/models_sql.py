@@ -20,6 +20,9 @@ CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
         psTTM float NULL,
         pcfNcfTTM float NULL,
         isST int NULL,
+        slope float NULL,
+        intercept float NULL,
+        trend_status char(50) NULL,
         update_time timestamp NULL default CURRENT_TIMESTAMP
 )
 """
@@ -88,6 +91,15 @@ SET
     pcfNcfTTM='{pcfNcfTTM}',
     isST='{isST}',
     update_time=CURRENT_TIMESTAMP
+WHERE date='{date}'
+"""
+# 更新拟合斜率
+UPDATE_TREND = r"""
+UPDATE {TABLE_NAME}
+SET
+    slope='{slope}',
+    intercept='{intercept}',
+    trend_status='{trend_status}'
 WHERE date='{date}'
 """
 

@@ -11,8 +11,9 @@ import datetime
 import pandas as pd
 import baostock as bs
 from django.db import connection
-from stock_manage import models_sql
 from django.http.response import JsonResponse
+from stock_manage import models_sql
+from stock_manage.utils import handler, 拟合斜率
 from stock_manage.models import StockListSZ, StockListSH
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
@@ -97,8 +98,8 @@ def _update_stock(market, stock_code, release_date, code, table):
             sql = models_sql.INSERT_INTO_HISTORY_DATA if data[0][0] == 0 else models_sql.UPDATE_HISTORY_DATA
             sql = sql.format(
                 TABLE_NAME=f'tb_{stock_code}',
-                date=row['date'],
-                code=re.findall(r'\d+\.?\d*', row['code'])[0],
+                date=row['date'],                                                       # 行情日期
+                code=re.findall(r'\d+\.?\d*', row['code'])[0],                          # 股票代码
                 open=row['open'] if row['open'] != '' else 0,
                 high=row['high'] if row['high'] != '' else 0,
                 low=row['low'] if row['low'] != '' else 0,
@@ -118,6 +119,29 @@ def _update_stock(market, stock_code, release_date, code, table):
             with connection.cursor() as cursor:
                 print(f'sql={sql}')
                 cursor.execute(sql)
+
+            # try:
+            #     # ######### 添加字段slope ########
+            #     sql = f"ALTER TABLE tb_{stock_code} ADD COLUMN slope float DEFAULT NULL COMMENT '斜率' AFTER isST"
+            #     with connection.cursor() as cursor:
+            #         cursor.execute(sql)
+            # except:
+            #     pass
+
+            # 获取原始数据30件，计算趋势and斜率，并更新到数据库
+            rawData = handler.getRawDataList(stock_code, 30)
+            closeData = [element[2] for element in rawData][::-1]
+            slope, intercept = 拟合斜率.trend_line(closeData)
+            trend_status = 拟合斜率.judge_trend((slope, intercept), closeData)
+            sql = models_sql.UPDATE_TREND.format(
+                TABLE_NAME=f'tb_{stock_code}',
+                slope='{:.6f}'.format(slope),                # 斜率
+                intercept='{:.6f}'.format(intercept),        # 截距
+                trend_status=trend_status,                   # 斜率状态["上升", "下降", "波动", "平稳"]
+                date=row['date'])
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+
     finally:
         _update_stock_list(table, stock_code)
 
@@ -141,17 +165,24 @@ def _update_stock_list(table, stock_code):
     turn = lastData[0][11] if lastData else None
     trade_status = lastData[0][12] if lastData else None
     pctChg = lastData[0][13] if lastData else None
-    # ratio = '{:.2f}'.format(((close - pre_close) / pre_close) * 100) if pre_close > 0 else 0
+    slope = lastData[0][19] if lastData else None
+    intercept = lastData[0][20] if lastData else None
+    trend_status = lastData[0][21] if lastData else None
     # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
     record = table.objects.filter(code=stock_code).first()
     table.objects.filter(code=stock_code).update(
         update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
         today_date=today_date,  # 当前行情日期
-        open=open,  # 开盘价
-        high=high,  # 最高价
-        low=low,  # 最低价
-        close=close,  # 收盘价
-        pre_close=pre_close,  # 前一天收盘价
+        open=open,              # 开盘价
+        high=high,              # 最高价
+        low=low,                # 最低价
+        close=close,            # 收盘价
+        pre_close=pre_close,    # 前一天收盘价
         ratio='{:.2f}'.format(pctChg),  # 涨跌幅
         trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
-        status=False)
+        status=False,                   # 更新状态
+        slope=slope,                    # 斜率
+        intercept=intercept,            # 截距
+        trend_status=trend_status       # 斜率状态
+    )
+

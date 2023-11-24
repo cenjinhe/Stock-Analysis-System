@@ -64,7 +64,7 @@ export default defineComponent({
         {
           label: 'ID',
           prop: 'id',
-          minWidth: 80,
+          minWidth: 60,
         },
         {
           label: 'A股代码',
@@ -107,6 +107,18 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
+          label: '斜率',
+          prop: 'slope',
+          minWidth: 100,
+          sortable: 'custom',
+        },
+        {
+          label: '斜率状态',
+          prop: 'trend_status',
+          minWidth: 100,
+          sortable: 'custom',
+        },
+        {
           label: '交易状态',
           prop: 'trade_status',
           minWidth: 100,
@@ -119,7 +131,7 @@ export default defineComponent({
         },
         {
           label: '操作',
-          width: 180,
+          width: 160,
           align: 'center',
           tdSlot: 'operate', // 自定义单元格内容的插槽名称
           fixed: 'right',

@@ -3,11 +3,13 @@ import json
 import pandas as pd
 from datetime import datetime
 from django.db import connection
-from stock_manage import models_sql
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
+from stock_manage import models_sql
+from stock_manage.utils import handler
 from stock_manage.models import StockListSZ, StockListSH
+
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 
@@ -79,6 +81,9 @@ def getStockList(request):
                              "ratio": record.ratio,
                              "trade_status": record.trade_status,
                              "status": record.status,
+                             "slope": record.slope,
+                             "intercept": record.intercept,
+                             "trend_status": record.trend_status,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
@@ -123,14 +128,7 @@ def getRawDataList(request):
         count = request.GET.get('count', default=100)
         code = request.GET.get('code', default='')
 
-        if str(count) == '0':
-            sql = f'{models_sql.SELECT_RAW_DATA_ALL}'.format(TABLE_NAME=f'tb_{code}')
-        else:
-            sql = f'{models_sql.SELECT_RAW_DATA}'.format(TABLE_NAME=f'tb_{code}', COUNT=count)
-        with connection.cursor() as cursor:
-            cursor.execute(sql)
-            rawData = cursor.fetchall()
-
+        rawData = handler.getRawDataList(code, count)
         return JsonResponse({'rawData': rawData, 'code': '200', 'message': '获取成功!'})
 
 
