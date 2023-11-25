@@ -72,6 +72,7 @@ def _update_stock(market, stock_code, release_date, code, table):
             last_date = cursor.fetchall()
         condition = last_date is not None and last_date[0][0] is not None
         start_date = last_date[0][0].strftime('%Y-%m-%d') if condition else release_date
+        start_date = str(start_date)
         # 获取数据入库的结束日期(当天)
         end_date = datetime.datetime.now().date()
         end_date = end_date.strftime("%Y-%m-%d")
@@ -117,7 +118,7 @@ def _update_stock(market, stock_code, release_date, code, table):
                 pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
                 isST=row['isST'] if row['isST'] != '' else 0)
             with connection.cursor() as cursor:
-                # print(f'sql={sql}')
+                print(f'sql={sql}')
                 cursor.execute(sql)
 
             # try:
@@ -179,7 +180,7 @@ def _update_stock_list(table, stock_code):
         low=low,                # 最低价
         close=close,            # 收盘价
         pre_close=pre_close,    # 前一天收盘价
-        ratio='{:.2f}'.format(pctChg),  # 涨跌幅
+        ratio='{:.2f}'.format(pctChg) if pctChg else 0,  # 涨跌幅
         trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
         status=False,                   # 更新状态
         slope=slope,                    # 斜率
