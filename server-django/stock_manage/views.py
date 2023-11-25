@@ -134,7 +134,7 @@ def getRawDataList(request):
 
 # 更新所有股票名称一览
 def updateStockList(request):
-    FILE_MAP = {'0': 'shA股列表.xlsx', '1': 'szA股列表.xlsx'}
+    FILE_MAP = {'0': 'shA股列表.xls', '1': 'szA股列表.xlsx'}
     if request.method == 'POST':
         post_body = request.body
         json_param = json.loads(post_body.decode())
@@ -144,11 +144,12 @@ def updateStockList(request):
         # df = pd.read_csv(scv_file, dtype={"A股代码": "object"})
         file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
         df = pd.read_excel(file, dtype={"A股代码": "object"})
+        print(f'file={file}')
         # update 所有股票名称一览
         for i in range(len(df)):
             code = df['A股代码'][i]
             name = df['A股简称'][i] if market == 1 else df['证券简称'][i]
-            date = df['A股上市日期'][i] if market == 1 else datetime.strptime(str(df['A股上市日期'][i]),
+            date = df['A股上市日期'][i] if market == 1 else datetime.strptime(str(df['上市日期'][i]),
                                                                          "%Y%m%d").strftime('%Y-%m-%d')
             date = datetime.strptime(date, "%Y-%m-%d").date()
             # 如果数据库中没有这条A股代码，就添加

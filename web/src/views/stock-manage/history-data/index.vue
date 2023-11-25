@@ -1,7 +1,7 @@
 <template>
   <pro-table
     ref="table"
-    title="股票列表"
+    :title="`${currentMarket === 1 ? '深市' : '沪市'}股票列表`"
     :request="getList"
     :columns="columns"
     :search="searchConfig"
@@ -10,14 +10,11 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" @click="updateHistoryData(1)">
-        更新数据(深)
-      </el-button>
-      <el-button type="primary" disabled>
-        更新数据(泸)
+      <el-button type="primary" @click="updateHistoryData">
+        更新数据({{ currentMarket === 1 ? '深市' : '沪市' }})
       </el-button>
       <el-button @click="updateStockList">
-        更新列表
+        更新列表({{ currentMarket === 1 ? '深市' : '沪市' }})
       </el-button>
       <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
         刷新
@@ -29,8 +26,8 @@
       </el-tag>
     </template>
     <template #status="{row}">
-      <el-tag :type="row.status === 0 ? 'success' : 'error'">
-        {{ row.status === 0 ? '已更新' : '更新中' }}
+      <el-tag :type="row.status === 0 || row.status === false ? 'success' : 'error'">
+        {{ row.status === 0 || row.status === false ? '已更新' : '更新中' }}
       </el-tag>
     </template>
     <template #operate="scope">
@@ -215,38 +212,42 @@ export default defineComponent({
       async getList(params) {
         // params是从组件接收的，包含分页和搜索字段。
         const { data } = await getStockList(params)
+        state.currentMarket = params.market
         // 必须要返回一个对象，包含data数组和total总数
         return { data: data.list, total: data.total }
       },
-      // 【更新列表】按钮
+      // 【更新列表(深市or泸市)】按钮
       async updateStockList() {
-        const market = table.value.searchModel.market
-        const exchange = market === 1 ? '深市' : '泸市'
-        ElMessageBox.confirm(`更新${exchange}A股列表, 是否继续?`, '提示', {
+        const exchange = state.currentMarket === 1 ? '深市' : '泸市'
+        ElMessageBox.confirm(`更新${exchange}股票列表, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
-        }).then(async () => {
-          const market = table.value.searchModel.market
-          const param = { market: market }
-          await updateStockList(param)
-          refresh()
-          // setTimer()
-          ElMessage({ type: 'success', message: '更新成功' })
         })
+          .then(async () => {
+            const param = { market: state.currentMarket }
+            await updateStockList(param)
+            refresh()
+            // setTimer()
+            ElMessage({ type: 'success', message: '更新成功' })
+          })
+          .catch(() => {})
       },
-      // 【更新深市数据(all)】按钮
-      async updateHistoryData(market) {
-        ElMessageBox.confirm(`更新深市数据, 是否继续?`, '提示', {
+      // 【更新数据(深市or泸市)】按钮-所有股票
+      async updateHistoryData() {
+        const exchange = state.currentMarket === 1 ? '深市' : '泸市'
+        ElMessageBox.confirm(`更新${exchange}数据, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
-        }).then(async () => {
-          const param = { market: market }
-          await update_history_data_all(param)
         })
+          .then(async () => {
+            const param = { market: state.currentMarket }
+            await update_history_data_all(param)
+          })
+          .catch(() => {})
       },
-      // 【更新数据)】按钮
+      // 【更新数据)】按钮-单个股票
       async btnUpdateData(row) {
         ElMessageBox.confirm(
           `更新A股代码${row.code}历史数据, 是否继续?`,
@@ -256,24 +257,26 @@ export default defineComponent({
             cancelButtonText: '取消',
             type: 'warning',
           }
-        ).then(async () => {
-          const market = table.value.searchModel.market
-          const param = {
-            market: market,
-            code: row.code,
-            release_date: row.date,
-          }
-          const { code, message } = await update_history_data_single(param)
-          if (code === '200') {
-            refresh()
-            // setTimer()
-            ElMessage({ type: 'success', message: '更新成功' })
-          } else if (code === '201') {
-            ElMessage({ type: 'warning', message: message })
-          } else {
-            console.log('done')
-          }
-        })
+        )
+          .then(async () => {
+            const market = table.value.searchModel.market
+            const param = {
+              market: market,
+              code: row.code,
+              release_date: row.listing_date,
+            }
+            const { code, message } = await update_history_data_single(param)
+            if (code === '200') {
+              refresh()
+              // setTimer()
+              ElMessage({ type: 'success', message: '更新成功' })
+            } else if (code === '201') {
+              ElMessage({ type: 'warning', message: message })
+            } else {
+              console.log('done')
+            }
+          })
+          .catch(() => {})
       },
       // 【删除)】按钮
       async btnDeleteRow(row, index) {
@@ -285,13 +288,15 @@ export default defineComponent({
             cancelButtonText: '取消',
             type: 'warning',
           }
-        ).then(async () => {
-          const market = table.value.searchModel.market
-          const param = { market: market, id: row.id }
-          await deleteStockRecord(param)
-          refresh()
-          ElMessage({ type: 'success', message: '删除成功' })
-        })
+        )
+          .then(async () => {
+            const market = table.value.searchModel.market
+            const param = { market: market, id: row.id }
+            await deleteStockRecord(param)
+            refresh()
+            ElMessage({ type: 'success', message: '删除成功' })
+          })
+          .catch(() => {})
       },
       // 【切换状态)】按钮
       async btnChangeStatus(row) {
@@ -303,18 +308,22 @@ export default defineComponent({
             cancelButtonText: '取消',
             type: 'warning',
           }
-        ).then(async () => {
-          const market = table.value.searchModel.market
-          const param = { market: market, code: row.code }
-          const { code } = await updateStatus(param)
-          if (code === '200') {
-            ElMessage({ type: 'success', message: '切换成功' })
-            refresh()
-          } else {
-            console.log('done')
-          }
-        })
+        )
+          .then(async () => {
+            const market = table.value.searchModel.market
+            const param = { market: market, code: row.code }
+            const { code } = await updateStatus(param)
+            if (code === '200') {
+              ElMessage({ type: 'success', message: '切换成功' })
+              refresh()
+            } else {
+              console.log('done')
+            }
+          })
+          .catch(() => {})
       },
+      // 当前的证券交易所,默认1：深市
+      currentMarket: 1,
     })
     const table = ref(null)
     const refresh = () => {

@@ -4,7 +4,7 @@
       <pro-table
         v-if="pageShow === 'stock-list'"
         ref="table"
-        title="股票列表"
+        :title="`${currentMarket === 1 ? '深市' : '沪市'}股票列表`"
         :request="getList"
         :columns="columns"
         :search="searchConfig"
@@ -22,9 +22,10 @@
           <div :style="{color: getCloseColor(scope.row)}">{{scope.row.close}}</div>
         </template>
         <template #ratio="scope">
-          <div :style="{color: getCloseColor(scope.row)}">
-            {{ scope.row.ratio }}%
-          </div>
+          <div :style="{color: getCloseColor(scope.row)}">{{ scope.row.ratio }}%</div>
+        </template>
+        <template #trend_status="{row}">
+          <div :style="{color: getTrendStatusColor(row)}">{{ row.trend_status }}</div>
         </template>
         <template #trade_status="{row}">
           <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
@@ -32,9 +33,7 @@
           </el-tag>
         </template>
         <template #operate="scope">
-          <el-button size="small" type="success" @click="btnViewData(scope.row)">
-            查看指标
-          </el-button>
+          <el-button size="small" type="success" @click="btnViewData(scope.row)">查看指标</el-button>
         </template>
       </pro-table>
     </keep-alive>
@@ -113,9 +112,11 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
-          label: '斜率状态',
+          label: '趋势',
           prop: 'trend_status',
           minWidth: 100,
+          tdSlot: 'trend_status',
+          // align: 'center',
           sortable: 'custom',
         },
         {
@@ -201,10 +202,23 @@ export default defineComponent({
           return ''
         }
       },
+      // 设置[斜率状态]列显示的颜色
+      getTrendStatusColor(row) {
+        if (row.trend_status === '上升') {
+          return 'red'
+        } else if (row.trend_status === '下降') {
+          return 'green'
+        } else if (row.trend_status === '波动') {
+          return 'blue'
+        } else {
+          return ''
+        }
+      },
       // 请求函数
       async getList(params) {
         // params是从组件接收的，包含分页和搜索字段
         const { data } = await getStockList(params)
+        state.currentMarket = params.market
         // 必须要返回一个对象，包含data数组和total总数
         return { data: data.list, total: data.total }
       },
@@ -215,6 +229,8 @@ export default defineComponent({
         state.pageShow = 'view-data'
         state.row = row
       },
+      // 当前的证券交易所,默认1：深市
+      currentMarket: 1,
     })
     const table = ref(null)
     const refresh = () => {

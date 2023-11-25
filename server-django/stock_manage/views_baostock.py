@@ -117,7 +117,7 @@ def _update_stock(market, stock_code, release_date, code, table):
                 pcfNcfTTM=row['pcfNcfTTM'] if row['pcfNcfTTM'] != '' else 0,
                 isST=row['isST'] if row['isST'] != '' else 0)
             with connection.cursor() as cursor:
-                print(f'sql={sql}')
+                # print(f'sql={sql}')
                 cursor.execute(sql)
 
             # try:
@@ -130,17 +130,18 @@ def _update_stock(market, stock_code, release_date, code, table):
 
             # 获取原始数据30件，计算趋势and斜率，并更新到数据库
             rawData = handler.getRawDataList(stock_code, 30)
-            closeData = [element[2] for element in rawData][::-1]
-            slope, intercept = 拟合斜率.trend_line(closeData)
-            trend_status = 拟合斜率.judge_trend((slope, intercept), closeData)
-            sql = models_sql.UPDATE_TREND.format(
-                TABLE_NAME=f'tb_{stock_code}',
-                slope='{:.6f}'.format(slope),                # 斜率
-                intercept='{:.6f}'.format(intercept),        # 截距
-                trend_status=trend_status,                   # 斜率状态["上升", "下降", "波动", "平稳"]
-                date=row['date'])
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
+            if len(rawData) > 0:
+                closeData = [element[2] for element in rawData][::-1]
+                slope, intercept = 拟合斜率.trend_line(closeData)
+                trend_status = 拟合斜率.judge_trend((slope, intercept), closeData)
+                sql = models_sql.UPDATE_TREND.format(
+                    TABLE_NAME=f'tb_{stock_code}',
+                    slope='{:.6f}'.format(slope),                # 斜率
+                    intercept='{:.6f}'.format(intercept),        # 截距
+                    trend_status=trend_status,                   # 斜率状态["上升", "下降", "波动", "平稳"]
+                    date=row['date'])
+                with connection.cursor() as cursor:
+                    cursor.execute(sql)
 
     finally:
         _update_stock_list(table, stock_code)

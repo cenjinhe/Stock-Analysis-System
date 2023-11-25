@@ -55,7 +55,7 @@ export const deleteStockRecord = data => {
   })
 }
 
-// 更新历史数据
+// 更新历史数据(单个股票)
 export const update_history_data_single = data => {
   return request({
     url: '/api/stockManage/update_history_data_single/',
@@ -65,7 +65,7 @@ export const update_history_data_single = data => {
   })
 }
 
-// 更新股票历史数据(深市or泸市股票all)
+// 更新历史数据(深市or泸市股票all)
 export const update_history_data_all = data => {
   return request({
     url: '/api/stockManage/update_history_data_all/',
