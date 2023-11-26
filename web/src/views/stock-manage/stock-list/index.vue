@@ -120,19 +120,21 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
-          label: '交易状态',
-          prop: 'trade_status',
-          minWidth: 100,
-          tdSlot: 'trade_status',
-        },
-        {
           label: '更新时间',
           prop: 'update_time',
-          minWidth: 120,
+          minWidth: 140,
+        },
+        {
+          label: '交易状态',
+          prop: 'trade_status',
+          minWidth: 80,
+          align: 'center',
+          tdSlot: 'trade_status',
+          fixed: 'right',
         },
         {
           label: '操作',
-          width: 160,
+          minWidth: 140,
           align: 'center',
           tdSlot: 'operate', // 自定义单元格内容的插槽名称
           fixed: 'right',
