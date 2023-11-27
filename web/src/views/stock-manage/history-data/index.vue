@@ -49,7 +49,6 @@ import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   getStockList,
-  getStatusList,
   updateStockList,
   updateStatus,
   deleteStockRecord,
@@ -268,7 +267,6 @@ export default defineComponent({
             const { code, message } = await update_history_data_single(param)
             if (code === '200') {
               refresh()
-              // setTimer()
               ElMessage({ type: 'success', message: '更新成功' })
             } else if (code === '201') {
               ElMessage({ type: 'warning', message: message })
@@ -329,69 +327,9 @@ export default defineComponent({
     const refresh = () => {
       table.value.refresh()
     }
-    let timer = ref(0)
-    const setTimer = () => {
-      if (timer.value === 0) {
-        timer.value = setInterval(async () => {
-          await judgeStatus()
-        }, 2000)
-      }
-    }
-    const clearTimer = () => {
-      if (timer.value !== 0) {
-        timer.value = 0
-      }
-    }
-    let status_list = ref([])
-    const judgeStatus = async () => {
-      // 前回状态list
-      let pre_status = status_list
-      // 当前状态list
-      const params = {
-        code: table.value.searchModel.code,
-        name: table.value.searchModel.name,
-        status: table.value.searchModel.status,
-        market: table.value.searchModel.market,
-        current: table.value.pageNum,
-        pageSize: table.value.pageSize,
-      }
-      const { data } = await getStatusList(params)
-      console.log('data=', data)
-      status_list.value = data
-
-      let refreshFlg = false
-      let timerFlg = true
-      if (pre_status.length === status_list.value.length) {
-        for (let i = 0; i < status_list.value.length; i++) {
-          // status的值是否有变化
-          if (pre_status[i] != status_list.value[i] && !refreshFlg) {
-            refreshFlg = true
-          }
-          // status的值是否有更新中的状态
-          if (status_list.value[i] === 1 && timerFlg) {
-            timerFlg = false
-          }
-        }
-      }
-      // 刷新table
-      console.log('refreshFlg=', refreshFlg)
-      if (refreshFlg) {
-        table.value.refresh()
-      }
-      // 关闭定时器
-      console.log('timerFlg=', timerFlg)
-      if (!timerFlg) {
-        clearTimer()
-      }
-    }
     return {
       ...toRefs(state),
       refresh,
-      setTimer,
-      clearTimer,
-      judgeStatus,
-      timer,
-      status_list,
       table,
     }
   },

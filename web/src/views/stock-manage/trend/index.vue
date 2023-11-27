@@ -56,7 +56,6 @@ export default defineComponent({
           label: '斜率',
           prop: 'slope',
           minWidth: 100,
-          tdSlot: 'slope',
         },
         {
           label: '弧度',

@@ -9,15 +9,6 @@ export const getStockList = params => {
   })
 }
 
-// 获取股票状态列表
-export const getStatusList = params => {
-  return request({
-    url: '/api/stockManage/getStatusList/',
-    method: 'get',
-    params,
-  })
-}
-
 // 获取原始数据列表
 export const getRawDataList = params => {
   return request({

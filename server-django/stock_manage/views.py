@@ -61,15 +61,6 @@ def getStockList(request):
             return JsonResponse({'data': {}, 'code': '200', 'message': 'No data'})
 
         for record in page_info:
-            # 如果表不存在就建立这个表
-            # sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            # with connection.cursor() as cursor:
-            #     cursor.execute(sql)
-            # # 查询这个表的最后一条数据，获取日期
-            # sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            # with connection.cursor() as cursor:
-            #     cursor.execute(sql)
-            #     last_data = cursor.fetchall()
             # 加入到数据列表中
             listData.append({"id": record.id,
                              "code": record.code,
@@ -87,39 +78,6 @@ def getStockList(request):
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
-
-
-# 获取股票状态列表
-def getStatusList(request):
-    if request.method == 'GET':
-        size = request.GET.get('size', default=10)
-        current = request.GET.get('current', default=1)
-        code = request.GET.get('code', default='')
-        name = request.GET.get('name', default='')
-        status = request.GET.get('status', default=1)
-        market = request.GET.get('market', default='1')
-
-        listData = []
-        if str(status) in ['0', '1']:
-            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
-                                                           name__contains=name,
-                                                           status__contains=status).order_by('code')
-        else:
-            records = TABLE_MAP.get(market).objects.filter(code__contains=code,
-                                                           name__contains=name).order_by('code')
-        page_info = Paginator(records, size).page(number=current)
-        for record in page_info:
-            # 如果表不存在就建立这个表
-            sql = f'{models_sql.CREATE_TABLE_HISTORY_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
-            # 查询这个表的最后一条数据，获取日期
-            sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{record.code}')
-            with connection.cursor() as cursor:
-                cursor.execute(sql)
-            # 加入到数据列表中
-            listData.append(record.status)
-        return JsonResponse({'data': listData, 'code': '200', 'message': '获取成功!'})
 
 
 # 获取原始数据列表
@@ -150,8 +108,6 @@ def updateStockList(request):
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        # scv_file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
-        # df = pd.read_csv(scv_file, dtype={"A股代码": "object"})
         file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
         df = pd.read_excel(file, dtype={"A股代码": "object"})
         print(f'file={file}')

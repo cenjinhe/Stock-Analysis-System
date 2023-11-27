@@ -150,27 +150,24 @@ def _update_stock(market, stock_code, release_date, code, table):
 
 # 更新股票列表(个股更新后，将最近一条数据如，最高价，现价等等更新到股票列表中)
 def _update_stock_list(table, stock_code):
-    # 查询这个表的最后一条数据，获取交易状态
-    sql = f'{models_sql.SELECT_LAST_DATA}'.format(TABLE_NAME=f'tb_{stock_code}')
-    with connection.cursor() as cursor:
-        cursor.execute(sql)
-        lastData = cursor.fetchall()
-    today_date = lastData[0][1] if lastData else None
-    open = lastData[0][3] if lastData else None
-    high = lastData[0][4] if lastData else None
-    low = lastData[0][5] if lastData else None
-    close = lastData[0][6] if lastData else None
-    pre_close = lastData[0][7] if lastData else None
-    volume = lastData[0][8] if lastData else None
-    amount = lastData[0][9] if lastData else None
-    adjust_flag = lastData[0][10] if lastData else None
-    turn = lastData[0][11] if lastData else None
-    trade_status = lastData[0][12] if lastData else None
-    pctChg = lastData[0][13] if lastData else None
-    slope = lastData[0][19] if lastData else None
-    intercept = lastData[0][20] if lastData else None
-    trend_status = lastData[0][21] if lastData else None
-    # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）
+    # 查询这个表的最后一条数据
+    lastData = handler.getRawDataDict(stock_code, 1)
+    today_date = lastData[0]['date'] if lastData else None
+    open = lastData[0]['open'] if lastData else None
+    high = lastData[0]['high'] if lastData else None
+    low = lastData[0]['low'] if lastData else None
+    close = lastData[0]['close'] if lastData else None
+    pre_close = lastData[0]['pre_close'] if lastData else None
+    volume = lastData[0]['volume'] if lastData else None
+    amount = lastData[0]['amount'] if lastData else None
+    adjust_flag = lastData[0]['adjust_flag'] if lastData else None
+    turn = lastData[0]['turn'] if lastData else None
+    trade_status = lastData[0]['trade_status'] if lastData else None
+    pctChg = lastData[0]['pctChg'] if lastData else None
+    slope = lastData[0]['slope'] if lastData else None
+    intercept = lastData[0]['intercept'] if lastData else None
+    trend_status = lastData[0]['trend_status'] if lastData else None
+    # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）,及股票信息
     record = table.objects.filter(code=stock_code).first()
     table.objects.filter(code=stock_code).update(
         update_time=time.strftime("%Y-%m-%d %H:%M", time.localtime()),
