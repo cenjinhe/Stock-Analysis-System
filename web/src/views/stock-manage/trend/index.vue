@@ -9,31 +9,8 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" icon="Delete" @click="batchDelete">
-        {{ $t('test/list.batchDelete') }}
-      </el-button>
-      <el-button type="primary" icon="Plus" @click="$router.push('/test/add')">
-        {{ $t('test/list.add') }}
-      </el-button>
-      <el-button type="primary" icon="Refresh" @click="refresh">
-        {{ $t('test/list.refresh') }}
-      </el-button>
-    </template>
-    <template #status="{row}">
-      <el-tag :type="row.status === 1 ? 'success' : 'error'">
-        {{ row.status === 1 ? $t('public.enabled') : $t('public.disabled') }}
-      </el-tag>
-    </template>
-    <template #operate="scope">
-      <el-button
-        size="small"
-        type="primary"
-        @click="$router.push(`/test/edit/${scope.row.id}`)"
-      >
-        {{ $t('public.edit') }}
-      </el-button>
-      <el-button size="small" type="danger">
-        {{ $t('public.delete') }}
+      <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
+        刷新
       </el-button>
     </template>
   </pro-table>
@@ -41,9 +18,9 @@
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { getUsers } from '@/api/test'
+import { getRawDataDict } from '@/api/stock-manage'
+
 export default defineComponent({
-  name: 'testList',
   setup() {
     // const { proxy } = getCurrentInstance()
 
@@ -56,43 +33,42 @@ export default defineComponent({
           minWidth: 80,
         },
         {
+          label: '行情日期',
+          prop: 'date',
+          minWidth: 120,
+        },
+        {
           label: 'A股代码',
           prop: 'code',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
           label: 'A股简称',
           prop: 'name',
-          minWidth: 160,
+          minWidth: 120,
         },
         {
-          label: '趋势状态',
-          prop: 'trade_status',
+          label: '趋势',
+          prop: 'trend_status',
           minWidth: 100,
-          tdSlot: 'trade_status',
         },
         {
           label: '斜率',
-          prop: 'status',
+          prop: 'slope',
           minWidth: 100,
-          tdSlot: 'status',
+          tdSlot: 'slope',
         },
         {
           label: '弧度',
-          prop: 'status',
+          prop: 'atan',
           minWidth: 100,
-          tdSlot: 'status',
+          tdSlot: 'atan',
         },
         {
           label: '角度',
-          prop: 'status',
+          prop: 'angle',
           minWidth: 100,
-          tdSlot: 'status',
-        },
-        {
-          label: '更新时间',
-          prop: 'update_time',
-          minWidth: 160,
+          tdSlot: 'angle',
         },
         {
           label: '操作',
@@ -111,7 +87,7 @@ export default defineComponent({
             type: 'text',
             label: 'A股代码',
             name: 'code',
-            defaultValue: '',
+            defaultValue: '002688',
           },
           {
             type: 'text',
@@ -122,23 +98,20 @@ export default defineComponent({
         ],
       },
       selectedItems: [],
-      batchDelete() {
-        console.log(state.selectedItems)
-      },
       // 选择
       handleSelectionChange(arr) {
         state.selectedItems = arr
       },
       // 请求函数
       async getList(params) {
-        console.log(params)
-        // params是从组件接收的，包含分页和搜索字段。
-        // const { data } = await getUsers(params)
+        const newParams = Object.assign(params, { count: 10 })
+        const { rawData } = await getRawDataDict(newParams)
+        console.log('rawData=', rawData)
         const data = { list: [], total: 0 }
         // 必须要返回一个对象，包含data数组和total总数
         return {
-          data: data.list,
-          total: +data.total,
+          data: rawData,
+          total: rawData.length,
         }
       },
     })

@@ -114,7 +114,7 @@ export default defineComponent({
         {
           label: '更新时间',
           prop: 'update_time',
-          minWidth: 120,
+          minWidth: 160,
         },
         {
           label: '操作',

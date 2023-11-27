@@ -122,7 +122,7 @@ export default defineComponent({
         {
           label: '更新时间',
           prop: 'update_time',
-          minWidth: 140,
+          minWidth: 160,
         },
         {
           label: '交易状态',

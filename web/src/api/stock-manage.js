@@ -27,6 +27,15 @@ export const getRawDataList = params => {
   })
 }
 
+// 获取原始数据字典
+export const getRawDataDict = params => {
+  return request({
+    url: '/api/stockManage/getRawDataDict/',
+    method: 'get',
+    params,
+  })
+}
+
 // 更新股票列表(深市/沪市)
 export const updateStockList = data => {
   return request({

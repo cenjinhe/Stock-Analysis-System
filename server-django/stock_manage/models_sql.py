@@ -125,6 +125,16 @@ SELECT_RAW_DATA_ALL = r"""
 SELECT date, open, close, low, high, volume, pre_close
 FROM {TABLE_NAME} order by date desc;
 """
+# 查询最近x条数据
+# 数据意义：所有字段
+SELECT_RAW_DATA_MORE = r"""
+SELECT *
+FROM {TABLE_NAME} order by date desc LIMIT {COUNT};
+"""
+SELECT_RAW_DATA_ALL_MORE = r"""
+SELECT *
+FROM {TABLE_NAME} order by date desc;
+"""
 # 删除表
 DROP_TABLE = r"""
 DROP TABLE {TABLE_NAME}

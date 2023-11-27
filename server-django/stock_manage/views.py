@@ -132,6 +132,16 @@ def getRawDataList(request):
         return JsonResponse({'rawData': rawData, 'code': '200', 'message': '获取成功!'})
 
 
+# 获取原始数据字典
+def getRawDataDict(request):
+    if request.method == 'GET':
+        count = request.GET.get('count', default=100)
+        code = request.GET.get('code', default='')
+
+        rawData = handler.getRawDataDict(code, count)
+        return JsonResponse({'rawData': rawData, 'code': '200', 'message': '获取成功!'})
+
+
 # 更新所有股票名称一览
 def updateStockList(request):
     FILE_MAP = {'0': 'shA股列表.xls', '1': 'szA股列表.xlsx'}

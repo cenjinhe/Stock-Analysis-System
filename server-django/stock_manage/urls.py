@@ -7,6 +7,7 @@ urlpatterns = [
     path('getStockList/', views.getStockList),
     path('getStatusList/', views.getStatusList),
     path('getRawDataList/', views.getRawDataList),
+    path('getRawDataDict/', views.getRawDataDict),
     path('updateStockList/', views.updateStockList),
     path('updateStatus/', views.updateStatus),
     path('deleteStockRecord/', views.deleteStockRecord),
