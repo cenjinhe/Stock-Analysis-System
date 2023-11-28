@@ -58,7 +58,7 @@ import {
 
 export default defineComponent({
   name: 'HistoryData',
-  created(){
+  created() {
     console.log('created')
   },
   setup() {
@@ -227,7 +227,6 @@ export default defineComponent({
             const param = { market: state.currentMarket }
             await updateStockList(param)
             refresh()
-            // setTimer()
             ElMessage({ type: 'success', message: '更新成功' })
           })
           .catch(() => {})
@@ -335,7 +334,6 @@ export default defineComponent({
   },
   mounted(){
     console.log('mounted')
-    // setTimer()
-  }
+  },
 })
 </script>
