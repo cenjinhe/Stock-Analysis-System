@@ -21,7 +21,7 @@ TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 
 # 更新股票历史数据(单个股票的历史数据)
 def update_history_data_single(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market', '1')
@@ -36,7 +36,7 @@ def update_history_data_single(request):
 
 # 更新股票历史数据(所有股票的历史数据)
 def update_history_data_all(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')

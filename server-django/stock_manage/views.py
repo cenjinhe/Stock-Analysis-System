@@ -103,7 +103,7 @@ def getRawDataDict(request):
 # 更新所有股票名称一览
 def updateStockList(request):
     FILE_MAP = {'0': 'shA股列表.xls', '1': 'szA股列表.xlsx'}
-    if request.method == 'POST':
+    if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
@@ -141,7 +141,7 @@ def updateStockList(request):
 
 # 切换状态
 def updateStatus(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
@@ -158,7 +158,7 @@ def updateStatus(request):
 
 # 删除一条股票记录(深市/沪市)
 def deleteStockRecord(request):
-    if request.method == 'POST':
+    if request.method == 'DELETE':
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')

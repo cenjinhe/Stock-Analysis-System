@@ -31,7 +31,7 @@ export const getRawDataDict = params => {
 export const updateStockList = data => {
   return request({
     url: '/api/stockManage/updateStockList/',
-    method: 'post',
+    method: 'put',
     timeout: 1000 * 60 * 60, // 1小时
     data,
   })
@@ -41,7 +41,7 @@ export const updateStockList = data => {
 export const updateStatus = data => {
   return request({
     url: '/api/stockManage/updateStatus/',
-    method: 'post',
+    method: 'put',
     data,
   })
 }
@@ -50,7 +50,7 @@ export const updateStatus = data => {
 export const deleteStockRecord = data => {
   return request({
     url: '/api/stockManage/deleteStockRecord/',
-    method: 'post',
+    method: 'delete',
     data,
   })
 }
@@ -59,7 +59,7 @@ export const deleteStockRecord = data => {
 export const update_history_data_single = data => {
   return request({
     url: '/api/stockManage/update_history_data_single/',
-    method: 'post',
+    method: 'put',
     timeout: 1000 * 60 * 60 * 24, // 24小时
     data,
   })
@@ -69,7 +69,7 @@ export const update_history_data_single = data => {
 export const update_history_data_all = data => {
   return request({
     url: '/api/stockManage/update_history_data_all/',
-    method: 'post',
+    method: 'put',
     timeout: 1000 * 60 * 60 * 24 * 360, // 24 * 360 小时
     data,
   })
