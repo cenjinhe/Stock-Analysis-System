@@ -263,6 +263,7 @@ export default defineComponent({
               code: row.code,
               release_date: row.listing_date,
             }
+            setTimeout(refresh, 1500)
             const { code, message } = await update_history_data_single(param)
             if (code === '200') {
               refresh()
