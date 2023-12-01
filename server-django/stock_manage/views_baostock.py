@@ -130,7 +130,7 @@ def _update_stock(market, stock_code, release_date, code, table):
             #     pass
 
             # 获取原始数据30件，计算趋势and斜率，并更新到数据库
-            rawData = handler.getRawDataList(stock_code, 30)
+            rawData = handler.getRawDataList(stock_code, 7)
             if len(rawData) > 0:
                 closeData = [element[2] for element in rawData][::-1]
                 slope, intercept = 拟合斜率.trend_line(closeData)

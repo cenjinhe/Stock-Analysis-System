@@ -36,22 +36,22 @@ def getStockList(request):
         if str(status) in ['0', '1']:
             # 交易状态为(0停牌or1正常or2退市)的记录
             if str(trade_status) in ['0', '1', '2']:
-                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                                name__contains=name,
                                                                trade_status__contains=trade_status,
                                                                status__contains=status).order_by(sortFieldName)
             else:
-                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                                name__contains=name,
                                                                status__contains=status).order_by(sortFieldName)
         else:
             # 更新状态为(全部)的记录&&交易状态为(0停牌or1正常or2退市)的记录
             if str(trade_status) in ['0', '1', '2']:
-                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                                trade_status__contains=trade_status,
                                                                name__contains=name).order_by(sortFieldName)
             else:
-                records = TABLE_MAP.get(market).objects.filter(code__contains=code,
+                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                                name__contains=name).order_by(sortFieldName)
         # 分页
         try:
@@ -114,9 +114,9 @@ def updateStockList(request):
         # update 所有股票名称一览
         for i in range(len(df)):
             code = df['A股代码'][i]
-            name = df['A股简称'][i] if market == 1 else df['证券简称'][i]
-            date = df['A股上市日期'][i] if market == 1 else datetime.strptime(str(df['上市日期'][i]),
-                                                                         "%Y%m%d").strftime('%Y-%m-%d')
+            name = df['A股简称'][i] if str(market) == '1' else df['证券简称'][i]
+            date = df['A股上市日期'][i] if str(market) == '1' else datetime.strptime(str(df['上市日期'][i]),
+                                                                                "%Y%m%d").strftime('%Y-%m-%d')
             date = datetime.strptime(date, "%Y-%m-%d").date()
             # 如果数据库中没有这条A股代码，就添加
             record = TABLE_MAP.get(str(market)).objects.filter(code__exact=code)
@@ -146,16 +146,13 @@ def updateStatus(request):
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
         stock_code = json_param.get('code')
-
-        # 切换状态
-        if str(market) == '1':
-            record = StockListSZ.objects.filter(code=stock_code).first()
-            StockListSZ.objects.filter(code=stock_code).update(status=not record.status)
+        try:
+            record = TABLE_MAP.get(str(market)).objects.filter(code=stock_code).first()
+            TABLE_MAP.get(str(market)).objects.filter(code=stock_code).update(status=not record.status)
+        except:
+            result = {'data': {}, 'code': '201', 'message': '切换失败!'}
         else:
-            record = StockListSH.objects.filter(code=stock_code).first()
-            StockListSH.objects.filter(code=stock_code).update(status=not record.status)
-
-        result = {'data': {}, 'code': '200', 'message': '切换成功!'}
+            result = {'data': {}, 'code': '200', 'message': '切换成功!'}
         return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
 
 
@@ -165,7 +162,7 @@ def deleteStockRecord(request):
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
-        if market not in [0, 1]:
+        if str(market) not in ['0', '1']:
             result = {'data': {}, 'code': '201', 'message': '删除失败，参数未指定深市or沪市!'}
             return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
         stock_id = json_param.get('id')
@@ -173,7 +170,7 @@ def deleteStockRecord(request):
             result = {'data': {}, 'code': '202', 'message': '删除失败，参数未指定将删除股票的ID!'}
             return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
         # 删除历史数据的表
-        record = StockListSZ.objects.filter(id=stock_id).first()
+        record = TABLE_MAP.get(str(market)).objects.filter(id=stock_id).first()
         sql = f'{models_sql.DROP_TABLE}'.format(TABLE_NAME=f'tb_{record.code}')
         print('sql = ', sql)
         with connection.cursor() as cursor:

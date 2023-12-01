@@ -40,7 +40,7 @@ def getRawDataDict(code, count):
             # 获取结果
             rawData = cursor.fetchall()
             # 获取字段名
-            fieldDict = get_field_dict(cursor)
+            fieldDict = _get_field_dict(cursor)
             # 转化成dict格式（默认是tuple格式）
             for data in rawData:
                 temp = dict()
@@ -52,7 +52,7 @@ def getRawDataDict(code, count):
     return newData
 
 
-def get_field_dict(cursor):
+def _get_field_dict(cursor):
     """
     获取数据库对应表中的字段名
     """

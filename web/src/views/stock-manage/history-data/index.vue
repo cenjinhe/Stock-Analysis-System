@@ -313,6 +313,8 @@ export default defineComponent({
             if (code === '200') {
               ElMessage({ type: 'success', message: '切换成功' })
               refresh()
+            } else if (code === '201') {
+              ElMessage({ type: 'warning', message: '切换失败' })
             } else {
               console.log('done')
             }
