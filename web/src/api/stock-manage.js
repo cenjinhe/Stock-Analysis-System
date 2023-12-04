@@ -46,15 +46,6 @@ export const updateStatus = data => {
   })
 }
 
-// 删除一条股票记录(深市/沪市)
-export const deleteStockRecord = data => {
-  return request({
-    url: '/api/stockManage/deleteStockRecord/',
-    method: 'delete',
-    data,
-  })
-}
-
 // 更新历史数据(单个股票)
 export const update_history_data_single = data => {
   return request({
@@ -71,6 +62,15 @@ export const update_history_data_all = data => {
     url: '/api/stockManage/update_history_data_all/',
     method: 'put',
     timeout: 1000 * 60 * 60 * 24 * 360, // 24 * 360 小时
+    data,
+  })
+}
+
+// 删除一条股票记录(深市/沪市)
+export const deleteStockRecord = data => {
+  return request({
+    url: '/api/stockManage/deleteStockRecord/',
+    method: 'delete',
     data,
   })
 }
