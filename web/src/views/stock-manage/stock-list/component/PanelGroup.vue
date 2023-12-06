@@ -114,7 +114,6 @@ export default {
       // 数据意义：0日期(date)，1开盘(open)，2收盘(close)，3最低(low)，4最高(high)，5成交量(volume)，6昨日收盘(pre_close)
       getRawDataList({ count: 1, code: this.$props.code }).then(rep =>{
         const rawData = rep.rawData
-        console.log('rawData=', rawData)
         if (rawData && rawData.length > 0) {
           this.panelNum = {
             high: rawData[0][4],
@@ -123,7 +122,6 @@ export default {
             preclose: rawData[0][6]
           }
         }
-        console.log('this.panelNum=', this.panelNum)
       })
     },
     handleSetLineChartData(type) {
