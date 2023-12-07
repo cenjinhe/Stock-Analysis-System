@@ -3,7 +3,7 @@
     <el-row :gutter="40" class="panel-group">
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('high')">
-          <div class="card-panel-icon-wrapper icon-people">
+          <div class="card-panel-icon-wrapper icon-high">
             <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
@@ -22,7 +22,7 @@
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('low')">
-          <div class="card-panel-icon-wrapper icon-message">
+          <div class="card-panel-icon-wrapper icon-low">
             <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
@@ -41,7 +41,7 @@
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('preclose')">
-          <div class="card-panel-icon-wrapper icon-shopping">
+          <div class="card-panel-icon-wrapper icon-preclose">
             <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
@@ -60,7 +60,7 @@
       </el-col>
       <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
         <div class="card-panel" @click="handleSetLineChartData('close')">
-          <div class="card-panel-icon-wrapper icon-money">
+          <div class="card-panel-icon-wrapper icon-close">
             <svg-icon name="icon-money" class-name="card-panel-icon" />
           </div>
           <div class="card-panel-description">
@@ -156,36 +156,36 @@ export default {
         color: #fff;
       }
 
-      .icon-people {
+      .icon-high {
         background: #40c9c6;
       }
 
-      .icon-message {
+      .icon-low {
         background: #36a3f7;
       }
 
-      .icon-money {
+      .icon-close {
         background: #f4516c;
       }
 
-      .icon-shopping {
-        background: #34bfa3;
+      .icon-preclose {
+        background: #4ccb5b;
       }
     }
 
-    .icon-people {
+    .icon-high {
       color: #fff;
     }
 
-    .icon-message {
+    .icon-low {
       color: #fff;
     }
 
-    .icon-money {
+    .icon-close {
       color: #fff;
     }
 
-    .icon-shopping {
+    .icon-preclose {
       color: #fff;
     }
 
