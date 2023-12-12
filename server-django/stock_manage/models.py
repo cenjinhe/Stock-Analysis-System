@@ -47,10 +47,23 @@ class StockListSH(models.Model):
     slope = models.FloatField(default=0, null=True, verbose_name='斜率')
     intercept = models.FloatField(default=0, null=True, verbose_name='截距')
     trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='斜率状态')
-    trend_statuxx = models.CharField(max_length=50, default=None, null=True, verbose_name='斜率状态test')
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_list_sh'
         verbose_name = '股票列表(沪市)'
         verbose_name_plural = '股票列表(沪市)'
+
+
+class StockOnAnalysis(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
+    code = models.CharField(max_length=50, verbose_name='A股代码')
+    name = models.CharField(max_length=50, verbose_name='A股简称')
+    market = models.IntegerField(default=1, verbose_name='1深市0沪市')
+    pre_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='上次的斜率状态')
+    current_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的斜率状态')
+
+    class Meta:
+        db_table = 'stock_on_analysis'
+        verbose_name = '股票分析结果'
+        verbose_name_plural = '股票分析结果'
