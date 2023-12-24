@@ -130,12 +130,12 @@ def _update_stock(market, stock_code, release_date, code, table):
             #     pass
 
             # 获取原始数据7件，计算趋势and斜率，并更新到数据库
-            result = 拟合斜率.getSlopeAndTrend(stock_code, 7)
+            result = 拟合斜率.getSlopeAndTrend(stock_code, row['date'], 7)
             sql = models_sql.UPDATE_TREND.format(
                 TABLE_NAME=f'tb_{stock_code}',
-                slope='{:.6f}'.format(result['slope']),          # 斜率
-                intercept='{:.6f}'.format(result['intercept']),  # 截距
-                trend_status=result['trend_status'],             # 斜率状态["上升", "下降", "波动", "平稳"]
+                slope=result['slope'],                      # 斜率
+                intercept=result['intercept'],              # 截距
+                trend_status=result['trend_status'],        # 斜率状态["上升", "下降", "波动", "平稳"]
                 date=row['date'])
             with connection.cursor() as cursor:
                 cursor.execute(sql)

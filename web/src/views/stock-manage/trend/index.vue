@@ -1,5 +1,6 @@
 <template>
-  <pro-table
+  <div>
+    <pro-table
     ref="table"
     title="拟合斜率"
     :request="getList"
@@ -16,6 +17,10 @@
       </el-button>
     </template>
   </pro-table>
+    <div style="padding: 20px;background: #fff;margin-top: 10px;">
+      <span>1111</span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -63,14 +68,7 @@ export default defineComponent({
           label: '斜率',
           prop: 'slope',
           minWidth: 100,
-        },
-        {
-          label: '操作',
-          width: 260,
-          align: 'center',
-          tdSlot: 'operate', // 自定义单元格内容的插槽名称
-          fixed: 'right',
-        },
+        }
       ],
       // 搜索配置
       searchConfig: {
@@ -97,11 +95,17 @@ export default defineComponent({
         state.selectedItems = arr
       },
       // 请求函数
+      slopeList: [],
       async getList(params) {
+        // 获取table数据列表
         const newParams = Object.assign(params, { count: 7 })
         const { rawData } = await getUpTrendDataList(newParams)
-        console.log('rawData=', rawData)
-        const data = { list: [], total: 0 }
+        // 获取斜率数据列表
+        if (rawData.length > 0) {
+          rawData.forEach(item => {
+            state.slopeList.push(item.slope)
+          })
+        }
         // 必须要返回一个对象，包含data数组和total总数
         return {
           data: rawData,
