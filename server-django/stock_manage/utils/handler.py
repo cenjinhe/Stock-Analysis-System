@@ -7,6 +7,24 @@ from django.db import connection
 from stock_manage import models_sql
 
 
+def getRawDataListFromDate(code, date, count):
+    """
+    获取原始数据列表(列表)
+    """
+    rawData = []
+    try:
+        if str(count) == '0':
+            sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=date)
+        else:
+            sql = f'{models_sql.SELECT_RAW_DATA_FROM_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=date, COUNT=count)
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            rawData = cursor.fetchall()
+    except Exception as ex:
+        pass
+    return rawData
+
+
 def getRawDataList(code, count):
     """
     获取原始数据列表(列表)

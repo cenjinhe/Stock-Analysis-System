@@ -1,6 +1,5 @@
 from django.urls import include, path
-from stock_manage import views
-from stock_manage import views_baostock
+from stock_manage import views, views_baostock, views_trend
 
 
 urlpatterns = [
@@ -10,6 +9,10 @@ urlpatterns = [
     path('updateStockList/', views.updateStockList),
     path('updateStatus/', views.updateStatus),
     path('deleteStockRecord/', views.deleteStockRecord),
+    # baoStock
     path('update_history_data_single/', views_baostock.update_history_data_single),
     path('update_history_data_all/', views_baostock.update_history_data_all),
+    # trend
+    path('getUpTrendDataList/', views_trend.getUpTrendDataList),
+    path('postUpdateTrendStatus/', views_trend.postUpdateTrendStatus),
 ]

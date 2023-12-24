@@ -216,6 +216,7 @@
         tooltip-effect="dark"
         stripe
         :border="border"
+        :max-height="maxHeight"
         @selection-change="handleSelectionChange"
         @sort-change="changeTableSort"
       >
@@ -339,6 +340,10 @@ export default defineComponent({
     border: {
       type: Boolean,
       default: false,
+    },
+    maxHeight: {
+      type: [Number, String],
+      default: 'auto',
     },
     // 表头配置
     columns: {

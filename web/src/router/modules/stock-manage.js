@@ -30,7 +30,15 @@ export default [
         name: 'HistoryData',
         component: StockUpdate,
         meta: {
-          title: '历史数据',
+          title: '历史数据-证券宝',
+        },
+      },
+      {
+        path: 'history-data2',
+        name: 'HistoryData2',
+        component: StockUpdate,
+        meta: {
+          title: '历史数据-同花顺',
         },
       },
       {

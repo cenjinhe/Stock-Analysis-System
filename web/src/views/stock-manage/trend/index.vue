@@ -5,11 +5,13 @@
     :request="getList"
     :columns="columns"
     :search="searchConfig"
+    :pagination="false"
+    max-height="400px"
     @selectionChange="handleSelectionChange"
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
+      <el-button icon="Refresh" style="margin-right: 30px;" @click="updateData()">
         刷新
       </el-button>
     </template>
@@ -18,7 +20,7 @@
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { getRawDataDict } from '@/api/stock-manage'
+import { getUpTrendDataList, postUpdateTrendStatus } from '@/api/stock-manage'
 
 export default defineComponent({
   setup() {
@@ -28,8 +30,8 @@ export default defineComponent({
       // 表格列配置，大部分属性跟el-table-column配置一样
       columns: [
         {
-          label: 'ID',
-          prop: 'id',
+          label: 'Index',
+          type: 'index',
           minWidth: 80,
         },
         {
@@ -48,6 +50,11 @@ export default defineComponent({
           minWidth: 120,
         },
         {
+          label: '现价',
+          prop: 'close',
+          minWidth: 100,
+        },
+        {
           label: '趋势',
           prop: 'trend_status',
           minWidth: 100,
@@ -56,18 +63,6 @@ export default defineComponent({
           label: '斜率',
           prop: 'slope',
           minWidth: 100,
-        },
-        {
-          label: '弧度',
-          prop: 'atan',
-          minWidth: 100,
-          tdSlot: 'atan',
-        },
-        {
-          label: '角度',
-          prop: 'angle',
-          minWidth: 100,
-          tdSlot: 'angle',
         },
         {
           label: '操作',
@@ -103,8 +98,8 @@ export default defineComponent({
       },
       // 请求函数
       async getList(params) {
-        const newParams = Object.assign(params, { count: 10 })
-        const { rawData } = await getRawDataDict(newParams)
+        const newParams = Object.assign(params, { count: 7 })
+        const { rawData } = await getUpTrendDataList(newParams)
         console.log('rawData=', rawData)
         const data = { list: [], total: 0 }
         // 必须要返回一个对象，包含data数组和total总数
@@ -118,8 +113,11 @@ export default defineComponent({
     const refresh = () => {
       table.value.refresh()
     }
-
-    return { ...toRefs(state), refresh, table }
+    const updateData = () => {
+      const param = { market: 1 }
+      postUpdateTrendStatus(param)
+    }
+    return { ...toRefs(state), refresh, table, updateData }
   },
 })
 </script>
