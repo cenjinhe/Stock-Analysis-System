@@ -34,6 +34,7 @@ import lock from './modules/lock'
 import home from './modules/home'
 import test from './modules/test'
 import stockManage from './modules/stock-manage'
+import stockTrend from './modules/stock-trend'
 import autoTrade from './modules/auto-trade'
 import user from './modules/user'
 
@@ -42,6 +43,7 @@ import user from './modules/user'
 export const fixedRoutes = [
   ...home,
   ...stockManage,
+  ...stockTrend,
   ...autoTrade,
   ...user,
   ...test,

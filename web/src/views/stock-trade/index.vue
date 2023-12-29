@@ -1,33 +1,37 @@
 <template>
   <div>
     <pro-table
-    ref="table"
-    title="拟合斜率"
-    :request="getList"
-    :columns="columns"
-    :search="searchConfig"
-    :pagination="false"
-    max-height="400px"
-    @selectionChange="handleSelectionChange"
-  >
-    <!-- 工具栏 -->
-    <template #toolbar>
-      <el-button icon="Refresh" style="margin-right: 30px;" @click="updateData()">
-        刷新
-      </el-button>
-    </template>
-  </pro-table>
+      ref="table"
+      title="拟合斜率"
+      :request="getList"
+      :columns="columns"
+      :search="searchConfig"
+      :border="true"
+      :pagination="false"
+      max-height="400px"
+      @selectionChange="handleSelectionChange"
+    >
+      <!-- 工具栏 -->
+      <template #toolbar>
+        <el-button icon="Refresh" style="margin-right: 30px;" @click="updateData()">
+          刷新
+        </el-button>
+      </template>
+    </pro-table>
     <div style="padding: 20px;background: #fff;margin-top: 10px;">
-      <span>1111</span>
+      <line-chart></line-chart>
     </div>
   </div>
 </template>
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
+import LineChart from '@/components/charts/LineChart.vue'
 import { getUpTrendDataList, postUpdateTrendStatus } from '@/api/stock-manage'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/no-unused-components
+  components: { LineChart },
   setup() {
     // const { proxy } = getCurrentInstance()
 
@@ -68,7 +72,7 @@ export default defineComponent({
           label: '斜率',
           prop: 'slope',
           minWidth: 100,
-        }
+        },
       ],
       // 搜索配置
       searchConfig: {
@@ -117,11 +121,7 @@ export default defineComponent({
     const refresh = () => {
       table.value.refresh()
     }
-    const updateData = () => {
-      const param = { market: 1 }
-      postUpdateTrendStatus(param)
-    }
-    return { ...toRefs(state), refresh, table, updateData }
+    return { ...toRefs(state), refresh, table }
   },
 })
 </script>

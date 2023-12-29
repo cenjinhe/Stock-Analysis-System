@@ -26,6 +26,11 @@ def getUpTrendDataList(request):
         table = TABLE_MAP.get(str(market))
         record = table.objects.filter(code=code).first()
         name = record.name if record else ''
+        if str(market) == '1' and name == '':
+            # 如果在深市列表中没有获取到简称，将尝试在沪市列表中获取
+            table = TABLE_MAP.get('0')
+            record = table.objects.filter(code=code).first()
+            name = record.name if record else ''
 
         flg = True
         upFirst = False
@@ -45,13 +50,6 @@ def getUpTrendDataList(request):
             slope = result['slope']
             trend_status = result['trend_status']
 
-            # 判读是否跳出while循环
-            if trend_status != '上升' and upFirst:
-                flg = False  # 跳出while循环
-                continue
-            if trend_status == '上升' and not upFirst:
-                upFirst = True
-
             # 保存到retData中
             retData.append({
                 'date': date,
@@ -61,6 +59,13 @@ def getUpTrendDataList(request):
                 'slope': slope,
                 'trend_status': trend_status,
             })
+
+            # 判读是否跳出while循环
+            if trend_status != '上升' and upFirst:
+                flg = False  # 跳出while循环
+                continue
+            if trend_status == '上升' and not upFirst:
+                upFirst = True
             index += 1
 
         return JsonResponse({'rawData': retData, 'code': '200', 'message': '获取成功!'})

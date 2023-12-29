@@ -42,14 +42,6 @@ export default [
         },
       },
       {
-        path: 'trend',
-        name: 'trend',
-        component: Trend,
-        meta: {
-          title: '拟合斜率',
-        },
-      },
-      {
         path: 'stock-analysis',
         name: 'analysis',
         component: stock_analysis,
