@@ -48,7 +48,7 @@
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getStockList } from '@/api/stock-manage'
-import ViewData from '@/views/stock-manage/stock-list/component/ViewData.vue'
+import ViewData from '@/views/stock-list/component/ViewData.vue'
 
 export default defineComponent({
   name: 'stockList',
