@@ -12,7 +12,7 @@ export default [
     },
     icon: 'Management',
     // icon: 'TrendCharts',
-    alwaysShow: true,
+    // alwaysShow: true,
     children: [
       {
         path: 'history-data',

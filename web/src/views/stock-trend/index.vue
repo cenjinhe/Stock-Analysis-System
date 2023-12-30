@@ -27,7 +27,7 @@
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import LineChart from '@/components/charts/LineChart.vue'
-import { getUpTrendDataList, postUpdateTrendStatus } from '@/api/stock-manage'
+import { getUpTrendDataList, postUpdateTrendStatus } from '@/api/stock-trend'
 
 export default defineComponent({
   // eslint-disable-next-line vue/no-unused-components
