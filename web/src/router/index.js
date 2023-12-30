@@ -33,6 +33,7 @@ import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
 import test from './modules/test'
+import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
 import stockTrend from './modules/stock-trend'
 import autoTrade from './modules/auto-trade'
@@ -42,6 +43,7 @@ import user from './modules/user'
 // 固定菜单
 export const fixedRoutes = [
   ...home,
+  ...stockList,
   ...stockManage,
   ...stockTrend,
   ...autoTrade,

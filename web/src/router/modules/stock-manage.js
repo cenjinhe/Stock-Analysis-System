@@ -12,19 +12,10 @@ export default [
     meta: {
       title: '股票管理',
     },
-    // icon: 'Management',
-    icon: 'TrendCharts',
+    icon: 'Management',
+    // icon: 'TrendCharts',
     alwaysShow: true,
     children: [
-      {
-        path: 'stock-list',
-        name: 'stockList',
-        component: StockList,
-        meta: {
-          title: '股票列表',
-          keepAlive: true,
-        },
-      },
       {
         path: 'history-data',
         name: 'HistoryData',
