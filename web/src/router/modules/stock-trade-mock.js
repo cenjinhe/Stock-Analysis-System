@@ -3,11 +3,11 @@ const StockTrade = () => import('@/views/stock-trade/index.vue')
 
 export default [
   {
-    path: '/auto-trade',
+    path: '/auto-trade-mock',
     component: Layout,
-    name: 'auto-trade',
+    name: 'auto-trade-mock',
     meta: {
-      title: '自动交易',
+      title: '模拟交易',
     },
     icon: 'Platform',
     children: [
@@ -15,7 +15,7 @@ export default [
         path: '',
         component: StockTrade,
         meta: {
-          title: '自动交易',
+          title: '模拟交易',
         },
       },
     ],

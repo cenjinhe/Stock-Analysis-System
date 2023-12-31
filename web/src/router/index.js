@@ -37,6 +37,7 @@ import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
 import stockTrend from './modules/stock-trend'
 import stockTrade from './modules/stock-trade'
+import stockTradeMock from './modules/stock-trade-mock'
 import user from './modules/user'
 
 /* 菜单栏的路由 */
@@ -47,6 +48,7 @@ export const fixedRoutes = [
   ...stockManage,
   ...stockTrend,
   ...stockTrade,
+  ...stockTradeMock,
   ...user,
   ...test,
 ]
