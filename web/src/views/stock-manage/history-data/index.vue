@@ -11,10 +11,13 @@
     <!-- 工具栏 -->
     <template #toolbar>
       <el-button type="primary" @click="updateHistoryData">
-        更新数据({{ currentMarket === 1 ? '深市' : '沪市' }})
+        更新数据
       </el-button>
-      <el-button @click="updateStockList">
-        更新列表({{ currentMarket === 1 ? '深市' : '沪市' }})
+      <el-button type="primary">
+        更新斜率
+      </el-button>
+      <el-button type="primary" @click="updateStockList">
+        更新列表
       </el-button>
       <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
         刷新

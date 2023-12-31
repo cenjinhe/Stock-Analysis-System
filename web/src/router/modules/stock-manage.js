@@ -8,7 +8,7 @@ export default [
     component: Layout,
     name: 'stockManage',
     meta: {
-      title: '股票管理',
+      title: '数据管理',
     },
     icon: 'Management',
     // icon: 'TrendCharts',
@@ -28,30 +28,6 @@ export default [
         component: StockUpdate,
         meta: {
           title: '历史数据-同花顺',
-        },
-      },
-      {
-        path: 'stock-analysis',
-        name: 'analysis',
-        component: stock_analysis,
-        meta: {
-          title: '选股策略',
-        },
-      },
-      {
-        path: 'stock-analysis',
-        name: 'analysis',
-        component: stock_analysis,
-        meta: {
-          title: '自动选股',
-        },
-      },
-      {
-        path: 'stock-analysis',
-        name: 'analysis',
-        component: stock_analysis,
-        meta: {
-          title: '交易管理',
         },
       },
     ],
