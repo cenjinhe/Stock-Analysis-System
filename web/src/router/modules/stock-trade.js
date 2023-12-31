@@ -1,5 +1,5 @@
 const Layout = () => import('@/layout/index.vue')
-const AutoTrade = () => import('@/views/auto-trade/index.vue')
+const StockTrade = () => import('@/views/auto-trade/index.vue')
 
 export default [
   {
@@ -13,7 +13,7 @@ export default [
     children: [
       {
         path: '',
-        component: AutoTrade,
+        component: StockTrade,
         meta: {
           title: '自动交易',
         },

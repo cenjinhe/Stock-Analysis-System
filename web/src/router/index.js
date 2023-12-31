@@ -36,7 +36,7 @@ import test from './modules/test'
 import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
 import stockTrend from './modules/stock-trend'
-import autoTrade from './modules/auto-trade'
+import stockTrade from './modules/stock-trade'
 import user from './modules/user'
 
 /* 菜单栏的路由 */
@@ -46,7 +46,7 @@ export const fixedRoutes = [
   ...stockList,
   ...stockManage,
   ...stockTrend,
-  ...autoTrade,
+  ...stockTrade,
   ...user,
   ...test,
 ]
