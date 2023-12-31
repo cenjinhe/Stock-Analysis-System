@@ -1,5 +1,4 @@
 const Layout = () => import('@/layout/index.vue')
-const stock_analysis = () => import('@/views/stock-analysis/index.vue')
 const StockUpdate = () => import('@/views/stock-manage/history-data/index.vue')
 
 export default [
