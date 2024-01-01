@@ -10,7 +10,6 @@ from stock_manage import models_sql
 from stock_manage.utils import handler
 from stock_manage.models import StockListSZ, StockListSH
 
-
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 
 
@@ -24,35 +23,28 @@ def getStockList(request):
         trade_status = request.GET.get('trade_status', default=3)
         status = request.GET.get('status', default=2)
         market = request.GET.get('market', default='1')
+        trend_status = request.GET.get('trend', default=0)
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
+        # 定义列表值
+        status_list = ['0', '1']
+        trade_status_list = ['0', '1', '2']
+        trend_status_list = ['上升', '下降', '平稳', '波动']
 
         # 获取字段名称和排序类型
         sortFieldName = 'code' if sortFieldName == '' else sortFieldName
         sortFieldName = sortFieldName if order == 'ascending' else '-' + sortFieldName
 
-        # 更新状态为(更新中or已更新)的记录
+        # 筛选条件
         listData = []
-        if str(status) in ['0', '1']:
-            # 交易状态为(0停牌or1正常or2退市)的记录
-            if str(trade_status) in ['0', '1', '2']:
-                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
-                                                               name__contains=name,
-                                                               trade_status__contains=trade_status,
-                                                               status__contains=status).order_by(sortFieldName)
-            else:
-                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
-                                                               name__contains=name,
-                                                               status__contains=status).order_by(sortFieldName)
-        else:
-            # 更新状态为(全部)的记录&&交易状态为(0停牌or1正常or2退市)的记录
-            if str(trade_status) in ['0', '1', '2']:
-                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
-                                                               trade_status__contains=trade_status,
-                                                               name__contains=name).order_by(sortFieldName)
-            else:
-                records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
-                                                               name__contains=name).order_by(sortFieldName)
+        status = [str(status)] if str(status) in status_list else status_list
+        trade_status = [str(trade_status)] if str(status) in trade_status_list else trade_status_list
+        trend_status = [str(trend_status)] if str(trend_status) in trend_status_list else trend_status_list
+        records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
+                                                            name__contains=name,
+                                                            trade_status__in=trade_status,
+                                                            trend_status__in=trend_status,
+                                                            status__in=status).order_by(sortFieldName)
         # 分页
         try:
             page_info = Paginator(records, size).page(number=current)

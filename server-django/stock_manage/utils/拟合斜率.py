@@ -34,7 +34,7 @@ def _trend_line(data):
 def _judge_trend(coeffs, data, degree=1, shake=1):
     """根据直线的斜率k，判断数据的主要⾛势"""
     tan_k = math.tan(degree * math.pi / 180)  # tan()返回x弧度的正切值，数值在 -1 到 1 之间
-    # print('tan_k=', tan_k)
+    # print('tan_k=', tan_k)  # tan_k= 0.017455064928217585
     if coeffs[0] >= tan_k:
         return "上升"
     elif coeffs[0] <= -tan_k:

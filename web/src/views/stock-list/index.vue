@@ -160,7 +160,7 @@ export default defineComponent({
           {
             label: '证券交易所',
             name: 'market',
-            type: 'radio',
+            type: 'select',
             defaultValue: 1,
             options: [
               {
@@ -170,6 +170,34 @@ export default defineComponent({
               {
                 name: '沪市',
                 value: 0,
+              },
+            ],
+          },
+          {
+            label: '趋势状态',
+            name: 'trend',
+            type: 'select',
+            defaultValue: 0,
+            options: [
+              {
+                name: '全部',
+                value: 0,
+              },
+              {
+                name: '上升',
+                value: '上升',
+              },
+              {
+                name: '下降',
+                value: '下降',
+              },
+              {
+                name: '平稳',
+                value: '平稳',
+              },
+              {
+                name: '波动',
+                value: '波动',
               },
             ],
           },
