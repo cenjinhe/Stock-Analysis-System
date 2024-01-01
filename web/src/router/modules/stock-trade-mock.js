@@ -9,7 +9,7 @@ export default [
     meta: {
       title: '模拟交易',
     },
-    icon: 'Platform',
+    icon: 'icon-test',
     children: [
       {
         path: '',
