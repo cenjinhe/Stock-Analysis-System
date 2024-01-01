@@ -5,6 +5,7 @@ export const getUpTrendDataList = params => {
   return request({
     url: '/api/stockManage/getUpTrendDataList/',
     method: 'get',
+    timeout: 1000 * 60, // 60s
     params,
   })
 }

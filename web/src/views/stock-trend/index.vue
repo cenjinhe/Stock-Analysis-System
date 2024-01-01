@@ -13,9 +13,8 @@
     >
       <!-- 工具栏 -->
       <template #toolbar>
-        <el-button icon="Refresh" style="margin-right: 30px;" @click="updateData()">
-          刷新
-        </el-button>
+        <el-input-number v-model="num" :min="1" controls-position="right" style="margin-right: 10px;" />
+        <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">刷新</el-button>
       </template>
     </pro-table>
     <div style="padding: 20px;background: #fff;margin-top: 10px;">
@@ -102,7 +101,7 @@ export default defineComponent({
       slopeList: [],
       async getList(params) {
         // 获取table数据列表
-        const newParams = Object.assign(params, { count: 7 })
+        const newParams = Object.assign(params, { count: state.num })
         const { rawData } = await getUpTrendDataList(newParams)
         // 获取斜率数据列表
         if (rawData.length > 0) {
@@ -116,6 +115,8 @@ export default defineComponent({
           total: rawData.length,
         }
       },
+      // num数
+      num: 7,
     })
     const table = ref(null)
     const refresh = () => {
