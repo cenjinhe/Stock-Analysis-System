@@ -132,7 +132,7 @@ export default defineComponent({
                 // 如果是内部路由地址
                 router.push(targetPath)
               } else {
-                router.push('/stock-manage/stock-list')
+                router.push('/stock-list/list')
               }
               useApp().initToken(data)
             } else {

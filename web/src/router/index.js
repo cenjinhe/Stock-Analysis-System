@@ -39,6 +39,7 @@ import stockTrend from './modules/stock-trend'
 import stockTrade from './modules/stock-trade'
 import stockTradeMock from './modules/stock-trade-mock'
 import user from './modules/user'
+import stockAbout from './modules/stock-about'
 
 /* 菜单栏的路由 */
 // 固定菜单
@@ -50,7 +51,8 @@ export const fixedRoutes = [
   ...stockTrade,
   ...stockTradeMock,
   ...user,
-  ...test,
+  ...stockAbout,
+  // ...test,
 ]
 // 动态菜单
 export const asyncRoutes = []
