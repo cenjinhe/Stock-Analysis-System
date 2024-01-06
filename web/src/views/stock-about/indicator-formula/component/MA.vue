@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 2px 2px 2px 2px;">
+  <div style="padding: 0 2px 0 2px;">
     <h2 style="line-height: 40px;">MA 均线</h2>
     <el-input v-model="content" type="textarea" rows="18" />
     <span>说明：取n日数据的平均值作为均线</span>
