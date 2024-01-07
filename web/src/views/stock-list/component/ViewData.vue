@@ -452,8 +452,7 @@ async function initKLine() {
 }
 
 // 点击panel的时间
-function handleSetLineChartData(type) {
-}
+function handleSetLineChartData(type) {}
 
 // 请求函数
 async function getList(params) {
