@@ -3,6 +3,7 @@
     <h2 style="line-height: 40px;">EMA 指数平滑移动平均线</h2>
     <el-input v-model="content" type="textarea" rows="20" />
     <span>说明：取n日数据的平均值作为均线</span>
+  </div>
 </template>
 
 <script>
