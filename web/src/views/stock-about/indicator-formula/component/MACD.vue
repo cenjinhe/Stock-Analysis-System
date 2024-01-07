@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px 2px 2px 2px;line-height: 20px;">
+  <div style="padding: 20px 2px 2px 2px;line-height: 25px;">
     <el-card class="box-card">
       <template #header>
         <h2>EMA 指数平滑移动平均线(= DEA)</h2>
@@ -24,6 +24,14 @@
       <span style="line-height: 50px;">
       </span>
     </el-card>
+    <div style="margin-top: 40px;">
+      <h2>买入点条件：</h2>
+      <span style="color: red;">
+        1. DEA > DIF
+        <br />
+        2. MACD_当前值 > MACD_前回值
+      </span>
+    </div>
   </div>
 </template>
 

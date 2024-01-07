@@ -116,7 +116,7 @@ export default defineComponent({
         }
       },
       // num数
-      num: 7,
+      num: 3,
     })
     const table = ref(null)
     const refresh = () => {

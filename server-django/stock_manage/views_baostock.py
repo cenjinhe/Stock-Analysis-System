@@ -17,6 +17,7 @@ from stock_manage.utils import handler, 拟合斜率
 from stock_manage.models import StockListSZ, StockListSH
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
+COUNT = 3
 
 
 # 更新股票历史数据(单个股票的历史数据)
@@ -129,8 +130,8 @@ def _update_stock(market, stock_code, release_date, code, table):
             # except:
             #     pass
 
-            # 获取原始数据7件，计算趋势and斜率，并更新到数据库
-            result = 拟合斜率.getSlopeAndTrend(stock_code, row['date'], 7)
+            # 获取原始数据COUNT件，计算趋势and斜率，并更新到数据库
+            result = 拟合斜率.getSlopeAndTrend(stock_code, row['date'], COUNT)
             sql = models_sql.UPDATE_TREND.format(
                 TABLE_NAME=f'tb_{stock_code}',
                 slope=result['slope'],                      # 斜率
