@@ -1,8 +1,14 @@
 <template>
-  <div style="padding: 0 2px 0 2px;">
-    <h2 style="line-height: 40px;">MA 均线</h2>
-    <el-input v-model="content" type="textarea" rows="18" />
-    <span>说明：取n日数据的平均值作为均线</span>
+  <div style="padding: 20px 2px 2px 2px;line-height: 20px;">
+    <el-card class="box-card">
+      <template #header>
+        <h2>MA 均线</h2>
+      </template>
+      <el-input v-model="content" type="textarea" rows="18" />
+      <span style="line-height: 50px;">
+        说明：取n日数据的平均值作为均线
+      </span>
+    </el-card>
   </div>
 </template>
 
@@ -37,4 +43,22 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.box-card {
+  width: auto;
+}
+</style>

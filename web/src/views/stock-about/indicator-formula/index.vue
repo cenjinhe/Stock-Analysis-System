@@ -50,7 +50,7 @@ export default {
 
 <style scoped>
 .menu {
-  height: 800px;
+  height: 100%;
   background-color: #afc5e2;
 }
 .el-header {

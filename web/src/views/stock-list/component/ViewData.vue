@@ -31,6 +31,8 @@ import { defineEmits, defineProps, onMounted, ref } from 'vue'
 import PanelGroup from './PanelGroup.vue'
 import { getRawDataList } from '@/api/stock-manage'
 import * as echarts from 'echarts'
+import { calculateMA } from '@/utils/ma'
+import { calculateMACD } from '@/utils/macd'
 
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
@@ -102,101 +104,6 @@ async function initKLine() {
     }
   }
 
-  // 计算 MA 均线数据
-  function calculateMA(dayCount) {
-    const result = []
-    let len = data.values.length
-    for (let i = 0; i < len; i++) {
-      if (i < dayCount) {
-        result.push('-')
-        continue
-      }
-      let sum = 0
-      for (let j = 0; j < dayCount; j++) {
-        sum += parseFloat(data.values[i - j][1])
-      }
-      // 保留2位小数
-      result.push((sum / dayCount).toFixed(2))
-    }
-    return result
-  }
-
-  /*
-   * 计算EMA指数平滑移动平均线，用于MACD
-   * @param {number} n 时间窗口
-   * @param {array} data 输入数据
-   * @param {string} field 计算字段配置
-   */
-  function calculateEMA(n, data, field) {
-    let i, l, ema, a
-    a = 2 / (n + 1)
-    if (field) {
-      //二维数组
-      ema = [data[0][field]]
-      for (i = 1, l = data.length; i < l; i++) {
-        ema.push((a * data[i][field] + (1 - a) * ema[i - 1]).toFixed(3))
-      }
-    } else {
-      //普通一维数组
-      ema = [data[0]]
-      for (i = 1, l = data.length; i < l; i++) {
-        ema.push((a * data[i] + (1 - a) * ema[i - 1]).toFixed(3))
-      }
-    }
-    return ema
-  }
-
-  /*
-   * 计算DIF快线，用于MACD
-   * @param {number} short 快速EMA时间窗口
-   * @param {number} long 慢速EMA时间窗口
-   * @param {array} data 输入数据
-   * @param {string} field 计算字段配置
-   */
-  function calculateDIF(short, long, data, field) {
-    let i, l, dif, emaShort, emaLong
-    dif = []
-    emaShort = calculateEMA(short, data, field)
-    emaLong = calculateEMA(long, data, field)
-    for (i = 0, l = data.length; i < l; i++) {
-      dif.push((emaShort[i] - emaLong[i]).toFixed(3))
-    }
-    return dif
-  }
-
-  /*
-   * 计算DEA慢线，用于MACD
-   * @param {number} mid 对dif的时间窗口
-   * @param {array} dif 输入数据
-   */
-  function calculateDEA(mid, dif) {
-    return calculateEMA(mid, dif)
-  }
-
-  /*
-   * 计算MACD
-   * @param {number} short 快速EMA时间窗口
-   * @param {number} long 慢速EMA时间窗口
-   * @param {number} mid dea时间窗口
-   * @param {array} data 输入数据
-   * @param {string} field 计算字段配置
-   */
-  function calculateMACD(short, long, mid, data, field) {
-    let i, l, diffData, deaData, macdData
-    macdData = []
-    diffData = calculateDIF(short, long, data, field)
-    deaData = calculateDEA(mid, diffData)
-    for (i = 0, l = data.length; i < l; i++) {
-      macdData.push(((diffData[i] - deaData[i]) * 2).toFixed(3))
-    }
-
-    return {
-      macdData,
-      diffData,
-      deaData,
-    }
-  }
-
   // 计算滑块开始位置
   function startCount() {
     const base = 60
@@ -211,7 +118,8 @@ async function initKLine() {
   // 分割原始数据: x轴日期(categoryData), K线数据(values), 成交量数据(volumes)
   let data = splitData(rawData.reverse())
   // 计算 MACD 指标
-  let macdObj = calculateMACD(12, 26, 9, data.values, 1)
+  // let macdObj = calculateMACD(12, 26, 9, data.values, 1)
+  let macdObj = calculateMACD(10, 21, 9, data.values, 1)
   // 配置ECharts option
   const option = {
     animation: true,
@@ -438,7 +346,7 @@ async function initKLine() {
       {
         name: 'MA5', ///周均线
         type: 'line',
-        data: calculateMA(5),
+        data: calculateMA(5, data.values),
         smooth: true, // 是否平滑曲线显示
         lineStyle: {
           opacity: 0.5,
@@ -447,7 +355,7 @@ async function initKLine() {
       {
         name: 'MA10', ///两周均线
         type: 'line',
-        data: calculateMA(10),
+        data: calculateMA(10, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
@@ -456,7 +364,7 @@ async function initKLine() {
       {
         name: 'MA15', ///三周均线
         type: 'line',
-        data: calculateMA(15),
+        data: calculateMA(15, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
@@ -465,7 +373,7 @@ async function initKLine() {
       {
         name: 'MA20', ///四周均线
         type: 'line',
-        data: calculateMA(20),
+        data: calculateMA(20, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
@@ -474,7 +382,7 @@ async function initKLine() {
       {
         name: 'MA30', ///月均线
         type: 'line',
-        data: calculateMA(30),
+        data: calculateMA(30, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
