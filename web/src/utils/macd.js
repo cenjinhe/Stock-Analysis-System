@@ -63,7 +63,7 @@ function calculateDEA(mid, dif) {
  * @param {array} data  ˝æ›
  * @param {string} field º∆À„◊÷∂Œ≈‰÷√
  */
-export function calculateMACD(short, long, mid, data, field) {
+export function calculateMACD(short = 12, long = 26, mid = 9, data, field = 1) {
   let i, l, diffData, deaData, macdData
   macdData = []
   diffData = calculateDIF(short, long, data, field)
