@@ -443,7 +443,7 @@ async function initKLine() {
   const myChart = echarts.init(document.getElementById('main'))
   // 使用刚指定的配置项和数据显示图表。
   if (option && typeof option === 'object') {
-    myChart.setOption(option)
+    myChart.setOption(option, true)
   }
   // 随着屏幕大小调节ECharts图表
   window.addEventListener('resize', () => {

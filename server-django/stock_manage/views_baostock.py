@@ -122,21 +122,23 @@ def _update_stock(market, stock_code, release_date, code, table):
                 print(f'sql={sql}')
                 cursor.execute(sql)
 
-            # try:
-            #     # ######### 添加字段slope ########
-            #     sql = f"ALTER TABLE tb_{stock_code} ADD COLUMN slope float DEFAULT NULL COMMENT '斜率' AFTER isST"
-            #     with connection.cursor() as cursor:
-            #         cursor.execute(sql)
-            # except:
-            #     pass
+            try:
+                # ######### 添加字段pre_trend_status ########
+                sql = f"ALTER TABLE tb_{stock_code} ADD COLUMN pre_trend_status char(50) DEFAULT NULL COMMENT '前回斜率状态' AFTER trend_status"
+                with connection.cursor() as cursor:
+                    cursor.execute(sql)
+            except:
+                pass
 
             # 获取原始数据COUNT件，计算趋势and斜率，并更新到数据库
+            pre_result = 拟合斜率.getPreSlopeAndTrend(stock_code, row['date'], COUNT)
             result = 拟合斜率.getSlopeAndTrend(stock_code, row['date'], COUNT)
-            sql = models_sql.UPDATE_TREND.format(
+            sql = models_sql.UPDATE_TREND_PRE_AND_CUR.format(
                 TABLE_NAME=f'tb_{stock_code}',
-                slope=result['slope'],                      # 斜率
-                intercept=result['intercept'],              # 截距
-                trend_status=result['trend_status'],        # 斜率状态["上升", "下降", "波动", "平稳"]
+                slope=result['slope'],                        # 斜率
+                intercept=result['intercept'],                # 截距
+                pre_trend_status=pre_result['trend_status'],  # 前回斜率状态["上升", "下降", "波动", "平稳"]
+                trend_status=result['trend_status'],          # 当前斜率状态["上升", "下降", "波动", "平稳"]
                 date=row['date'])
             with connection.cursor() as cursor:
                 cursor.execute(sql)
@@ -163,6 +165,7 @@ def _update_stock_list(table, stock_code):
     slope = lastData[0]['slope'] if lastData else None
     intercept = lastData[0]['intercept'] if lastData else None
     trend_status = lastData[0]['trend_status'] if lastData else None
+    pre_trend_status = lastData[0]['pre_trend_status'] if lastData else None
     # 更新股票列表的状态（status: False） and 更新股票列表的更新时间（update_time）,及股票信息
     record = table.objects.filter(code=stock_code).first()
     table.objects.filter(code=stock_code).update(
@@ -175,9 +178,10 @@ def _update_stock_list(table, stock_code):
         pre_close=pre_close,    # 前一天收盘价
         ratio='{:.2f}'.format(pctChg) if pctChg else 0,  # 涨跌幅
         trade_status=trade_status if record.trade_status != 2 else record.trade_status,  # 退市交易状态不变
-        status=False,                   # 更新状态
-        slope=slope,                    # 斜率
-        intercept=intercept,            # 截距
-        trend_status=trend_status       # 斜率状态
+        status=False,                        # 更新状态
+        slope=slope,                         # 斜率
+        intercept=intercept,                 # 截距
+        trend_status=trend_status,           # 当前斜率状态
+        pre_trend_status=pre_trend_status    # 前回斜率状态
     )
 

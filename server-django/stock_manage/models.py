@@ -19,7 +19,8 @@ class StockListSZ(models.Model):
     status = models.IntegerField(default=False, null=True, verbose_name='更新状态')
     slope = models.FloatField(default=0, null=True, verbose_name='斜率')
     intercept = models.FloatField(default=0, null=True, verbose_name='截距')
-    trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='斜率状态')
+    pre_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='前回斜率状态')
+    trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='当前斜率状态')
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:
@@ -46,7 +47,8 @@ class StockListSH(models.Model):
     status = models.BooleanField(default=False, null=True, verbose_name='更新状态')
     slope = models.FloatField(default=0, null=True, verbose_name='斜率')
     intercept = models.FloatField(default=0, null=True, verbose_name='截距')
-    trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='斜率状态')
+    pre_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='前回斜率状态')
+    trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='当前斜率状态')
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:

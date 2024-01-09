@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 from datetime import datetime
+from django.db.models import Q
 from django.db import connection
 from django.http import HttpResponse
 from django.core.paginator import Paginator
@@ -23,13 +24,15 @@ def getStockList(request):
         trade_status = request.GET.get('trade_status', default=3)
         status = request.GET.get('status', default=2)
         market = request.GET.get('market', default='1')
-        trend_status = request.GET.get('trend', default=0)
+        trend_status = request.GET.get('trend', default='')
+        pre_trend_status = request.GET.get('pre_trend', default='')
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
         # 定义列表值
         status_list = ['0', '1']
         trade_status_list = ['0', '1', '2']
         trend_status_list = ['上升', '下降', '平稳', '波动']
+        pre_trend_status_list = ['上升', '下降', '平稳', '波动']
 
         # 获取字段名称和排序类型
         sortFieldName = 'code' if sortFieldName == '' else sortFieldName
@@ -40,10 +43,12 @@ def getStockList(request):
         status = [str(status)] if str(status) in status_list else status_list
         trade_status = [str(trade_status)] if str(status) in trade_status_list else trade_status_list
         trend_status = [str(trend_status)] if str(trend_status) in trend_status_list else trend_status_list
+        pre_trend_status = [str(pre_trend_status)] if str(pre_trend_status) in pre_trend_status_list else pre_trend_status_list
         records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                             name__contains=name,
                                                             trade_status__in=trade_status,
                                                             trend_status__in=trend_status,
+                                                            pre_trend_status__in=pre_trend_status,
                                                             status__in=status).order_by(sortFieldName)
         # 分页
         try:
@@ -67,6 +72,7 @@ def getStockList(request):
                              "slope": record.slope,
                              "intercept": record.intercept,
                              "trend_status": record.trend_status,
+                             "pre_trend_status": record.pre_trend_status,
                              "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
         json_data = {'list': listData, 'total': len(records)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})

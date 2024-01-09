@@ -61,9 +61,6 @@ import {
 
 export default defineComponent({
   name: 'HistoryData',
-  created() {
-    console.log('created')
-  },
   setup() {
     // const { proxy } = getCurrentInstance()
 

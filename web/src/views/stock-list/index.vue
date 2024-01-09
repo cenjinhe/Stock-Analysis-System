@@ -24,8 +24,11 @@
         <template #ratio="scope">
           <div :style="{color: getCloseColor(scope.row)}">{{ scope.row.ratio }}%</div>
         </template>
+        <template #pre_trend_status="{row}">
+          <div :style="{color: getTrendStatusColor(row, 'pre_trend_status')}">{{ row.pre_trend_status }}</div>
+        </template>
         <template #trend_status="{row}">
-          <div :style="{color: getTrendStatusColor(row)}">{{ row.trend_status }}</div>
+          <div :style="{color: getTrendStatusColor(row, 'trend_status')}">{{ row.trend_status }}</div>
         </template>
         <template #trade_status="{row}">
           <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
@@ -112,9 +115,16 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
-          label: '趋势',
+          label: '前回趋势',
+          prop: 'pre_trend_status',
+          minWidth: 110,
+          tdSlot: 'pre_trend_status',
+          sortable: 'custom',
+        },
+        {
+          label: '当前趋势',
           prop: 'trend_status',
-          minWidth: 100,
+          minWidth: 110,
           tdSlot: 'trend_status',
           // align: 'center',
           sortable: 'custom',
@@ -174,7 +184,35 @@ export default defineComponent({
             ],
           },
           {
-            label: '趋势状态',
+            label: '前回趋势',
+            name: 'pre_trend',
+            type: 'select',
+            defaultValue: 0,
+            options: [
+              {
+                name: '全部',
+                value: 0,
+              },
+              {
+                name: '上升',
+                value: '上升',
+              },
+              {
+                name: '下降',
+                value: '下降',
+              },
+              {
+                name: '平稳',
+                value: '平稳',
+              },
+              {
+                name: '波动',
+                value: '波动',
+              },
+            ],
+          },
+          {
+            label: '当前趋势',
             name: 'trend',
             type: 'select',
             defaultValue: 0,
@@ -233,12 +271,25 @@ export default defineComponent({
         }
       },
       // 设置[斜率状态]列显示的颜色
-      getTrendStatusColor(row) {
-        if (row.trend_status === '上升') {
+      getTrendStatusColor(row, field) {
+        let status = ''
+        switch (field) {
+          case 'trend_status': {
+            status = row.trend_status
+            break
+          }
+          case 'pre_trend_status': {
+            status = row.pre_trend_status
+            break
+          }
+          default:
+            break
+        }
+        if (status === '上升') {
           return 'red'
-        } else if (row.trend_status === '下降') {
+        } else if (status === '下降') {
           return 'green'
-        } else if (row.trend_status === '波动') {
+        } else if (status === '波动') {
           return 'blue'
         } else {
           return ''

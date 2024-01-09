@@ -102,6 +102,16 @@ SET
     trend_status='{trend_status}'
 WHERE date='{date}'
 """
+# 更新(前回and当前)拟合斜率
+UPDATE_TREND_PRE_AND_CUR = r"""
+UPDATE {TABLE_NAME}
+SET
+    slope='{slope}',
+    intercept='{intercept}',
+    pre_trend_status='{pre_trend_status}',
+    trend_status='{trend_status}'
+WHERE date='{date}'
+"""
 
 # 查询最后一条数据的日期
 SELECT_MAX_DATE = r"""

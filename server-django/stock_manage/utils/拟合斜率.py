@@ -72,3 +72,23 @@ def getSlopeAndTrend(code, date, count):
                    'intercept': '{:.6f}'.format(intercept),
                    'trend_status': trend_status}
     return retData
+
+
+def getPreSlopeAndTrend(code, date, count):
+    """
+    获取原始数据count件，计算(前回的)趋势and斜率
+    slope: 斜率
+    intercept: 截距
+    trend_status: 斜率状态["上升", "下降", "波动", "平稳"]
+    """
+    retData = {'slope': 0, 'intercept': 0, 'trend_status': ''}
+    rawData = handler.getRawDataListFromDate(code, date, count + 1)
+    if len(rawData) > 1:
+        rawData = rawData[1:]
+        closeData = [element[2] for element in rawData][::-1]
+        slope, intercept = _trend_line(closeData)
+        trend_status = _judge_trend((slope, intercept), closeData)
+        retData = {'slope': '{:.6f}'.format(slope),
+                   'intercept': '{:.6f}'.format(intercept),
+                   'trend_status': trend_status}
+    return retData
