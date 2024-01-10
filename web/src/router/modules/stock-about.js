@@ -1,7 +1,8 @@
 const Layout = () => import('@/layout/index.vue')
-const IndicatorFormula = () => import('@/views/stock-about/indicator-formula/index.vue')
 const MA = () => import('@/views/stock-about/indicator-formula/component/MA.vue')
 const MACD = () => import('@/views/stock-about/indicator-formula/component/MACD.vue')
+const IndicatorFormula = () => import('@/views/stock-about/indicator-formula/index.vue')
+const BaoStock = () => import('@/views/stock-about/baostock/index.vue')
 
 export default [
   {
@@ -41,6 +42,14 @@ export default [
             hidden: true,
           },
         ],
+      },
+      {
+        path: 'bao-stock',
+        name: 'BaoStock',
+        component: BaoStock,
+        meta: {
+          title: '证券宝官网',
+        },
       },
     ],
   },

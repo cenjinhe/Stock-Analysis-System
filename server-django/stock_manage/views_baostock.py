@@ -122,13 +122,13 @@ def _update_stock(market, stock_code, release_date, code, table):
                 print(f'sql={sql}')
                 cursor.execute(sql)
 
-            try:
-                # ######### 添加字段pre_trend_status ########
-                sql = f"ALTER TABLE tb_{stock_code} ADD COLUMN pre_trend_status char(50) DEFAULT NULL COMMENT '前回斜率状态' AFTER trend_status"
-                with connection.cursor() as cursor:
-                    cursor.execute(sql)
-            except:
-                pass
+            # try:
+            #     # ######### 添加字段pre_trend_status ########
+            #     sql = f"ALTER TABLE tb_{stock_code} ADD COLUMN pre_trend_status char(50) DEFAULT NULL COMMENT '前回斜率状态' AFTER trend_status"
+            #     with connection.cursor() as cursor:
+            #         cursor.execute(sql)
+            # except:
+            #     pass
 
             # 获取原始数据COUNT件，计算趋势and斜率，并更新到数据库
             pre_result = 拟合斜率.getPreSlopeAndTrend(stock_code, row['date'], COUNT)
