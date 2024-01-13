@@ -9,7 +9,7 @@ export default [
     meta: {
       title: '股票列表',
     },
-    icon: 'List',
+    icon: 'icon-trend',
     children: [
       {
         path: 'list',

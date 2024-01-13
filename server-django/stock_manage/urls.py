@@ -15,4 +15,6 @@ urlpatterns = [
     # trend
     path('getUpTrendDataList/', views_trend.getUpTrendDataList),
     path('postUpdateTrendStatus/', views_trend.postUpdateTrendStatus),
+    # stock select
+    path('getUpTrendDataList/', views_trend.getUpTrendDataList),
 ]

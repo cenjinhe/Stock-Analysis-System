@@ -2,7 +2,6 @@ import os
 import json
 import pandas as pd
 from datetime import datetime
-from django.db.models import Q
 from django.db import connection
 from django.http import HttpResponse
 from django.core.paginator import Paginator

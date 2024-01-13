@@ -41,14 +41,14 @@ def update_history_data_all(request):
         post_body = request.body
         json_param = json.loads(post_body.decode())
         market = json_param.get('market')
-        table = TABLE_MAP.get(str(market))
-
-        records = table.objects.all()
-        for record in records:
-            if record.status:
-                continue
-            str_code = f'SZ.{record.code}' if str(market) == '1' else f'SH.{record.code}'
-            _update_stock(market, record.code, record.date, str_code, table)
+        for market in [1, 0]:
+            table = TABLE_MAP.get(str(market))
+            records = table.objects.all()
+            for record in records:
+                if record.status:
+                    continue
+                str_code = f'SZ.{record.code}' if str(market) == '1' else f'SH.{record.code}'
+                _update_stock(market, record.code, record.date, str_code, table)
     return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 
 

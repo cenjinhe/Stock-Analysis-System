@@ -48,7 +48,7 @@ export default [
         name: 'BaoStock',
         component: BaoStock,
         meta: {
-          title: '证券宝官网',
+          title: '证券宝网',
         },
       },
     ],
