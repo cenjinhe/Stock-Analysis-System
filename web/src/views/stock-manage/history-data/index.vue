@@ -60,7 +60,7 @@
         </el-button>
       </template>
     </pro-table>
-    <el-dialog v-model="dialogVisible" title="更新数据" class="stock-dialog">
+    <el-dialog v-model="dialogVisible" title="更新数据" width="30%" class="stock-dialog">
       <el-tabs v-model="activeName" class="stock-tabs" @tab-click="handleClick">
         <el-tab-pane label="历史数据" name="historyData">
           <el-card shadow="never">
