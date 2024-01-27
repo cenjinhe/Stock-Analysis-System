@@ -1,50 +1,100 @@
 <template>
-  <pro-table
-    ref="table"
-    :title="`${currentMarket === 1 ? '深市' : '沪市'}股票列表`"
-    :request="getList"
-    :columns="columns"
-    :search="searchConfig"
-    :default-sort="{ prop: 'code', order: 'ascending' }"
-    @selectionChange="handleSelectionChange"
-  >
-    <!-- 工具栏 -->
-    <template #toolbar>
-      <el-button type="primary" @click="updateHistoryData">
-        更新数据
-      </el-button>
-      <el-button type="primary">
-        更新斜率
-      </el-button>
-      <el-button type="primary" @click="updateStockList">
-        更新列表
-      </el-button>
-      <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
-        刷新
-      </el-button>
-    </template>
-    <template #trade_status="{row}">
-      <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
-        {{ row.trade_status === 1 ? '正常' : (row.trade_status === 2 ? '退市' : '停牌') }}
-      </el-tag>
-    </template>
-    <template #status="{row}">
-      <el-tag :type="row.status === 0 || row.status === false ? 'success' : 'error'">
-        {{ row.status === 0 || row.status === false ? '已更新' : '更新中' }}
-      </el-tag>
-    </template>
-    <template #operate="scope">
-      <el-button size="small" type="primary" @click="btnUpdateData(scope.row)">
-        更新数据
-      </el-button>
-      <el-button size="small" type="danger" @click="btnDeleteRow(scope.row, scope.$index)">
-        删除
-      </el-button>
-      <el-button size="small" type="primary" @click="btnChangeStatus(scope.row)">
-        修改状态
-      </el-button>
-    </template>
-  </pro-table>
+  <div>
+    <pro-table
+      ref="table"
+      :title="`${currentMarket === 1 ? '深市' : '沪市'}股票列表`"
+      :request="getList"
+      :columns="columns"
+      :search="searchConfig"
+      :default-sort="{ prop: 'code', order: 'ascending' }"
+      @selectionChange="handleSelectionChange"
+    >
+      <!-- 工具栏 -->
+      <template #toolbar>
+        <el-button type="primary" @click="openUpdateHistoryDataDlg">
+          更新数据
+        </el-button>
+        <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
+          刷新
+        </el-button>
+      </template>
+      <template #trade_status="{row}">
+        <el-tag :type="row.trade_status === 1 ? 'success' : 'error'">
+          {{
+            row.trade_status === 1
+              ? '正常'
+              : row.trade_status === 2
+              ? '退市'
+              : '停牌'
+          }}
+        </el-tag>
+      </template>
+      <template #status="{row}">
+        <el-tag
+          :type="row.status === 0 || row.status === false ? 'success' : 'error'"
+        >
+          {{ row.status === 0 || row.status === false ? '已更新' : '更新中' }}
+        </el-tag>
+      </template>
+      <template #operate="scope">
+        <el-button
+          size="small"
+          type="primary"
+          @click="btnUpdateData(scope.row)"
+        >
+          更新数据
+        </el-button>
+        <el-button
+          size="small"
+          type="danger"
+          @click="btnDeleteRow(scope.row, scope.$index)"
+        >
+          删除
+        </el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="btnChangeStatus(scope.row)"
+        >
+          修改状态
+        </el-button>
+      </template>
+    </pro-table>
+    <el-dialog v-model="dialogVisible" title="更新数据" class="stock-dialog">
+      <el-tabs v-model="activeName" class="stock-tabs" @tab-click="handleClick">
+        <el-tab-pane label="历史数据" name="historyData">
+          <el-card shadow="never">
+            <el-checkbox-group v-model="checkedHistoryList">
+              <el-checkbox label="更新历史数据-深市" />
+              <br />
+              <el-checkbox label="更新历史数据-沪市" />
+            </el-checkbox-group>
+          </el-card>
+          <span style="margin-top: 10px;float: right">
+            <el-button type="primary" @click="updateHistoryData">
+              确定
+            </el-button>
+            <el-button @click="dialogVisible = false">取消</el-button>
+          </span>
+        </el-tab-pane>
+        <el-tab-pane label="股票列表" name="stockList">
+          <el-card shadow="never">
+            <el-checkbox-group v-model="checkedStockList">
+              <el-checkbox label="股票列表-深市" />
+              <br />
+              <el-checkbox label="股票列表-沪市" />
+            </el-checkbox-group>
+          </el-card>
+          <span style="margin-top: 10px;float: right">
+            <el-button type="primary" @click="updateStockList">
+              确定
+            </el-button>
+            <el-button @click="dialogVisible = false">取消</el-button>
+          </span>
+        </el-tab-pane>
+      </el-tabs>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -58,6 +108,13 @@ import {
   update_history_data_single,
   update_history_data_all,
 } from '@/api/stock-manage'
+
+const stockMap = {
+  '更新历史数据-沪市': 0,
+  '更新历史数据-深市': 1,
+  '股票列表-沪市': 0,
+  '股票列表-深市': 1,
+}
 
 export default defineComponent({
   name: 'HistoryData',
@@ -215,32 +272,42 @@ export default defineComponent({
         // 必须要返回一个对象，包含data数组和total总数
         return { data: data.list, total: data.total }
       },
+      // open【更新数据】dialog
+      async openUpdateHistoryDataDlg() {
+        state.dialogVisible = true
+      },
       // 【更新列表(深市or泸市)】按钮
       async updateStockList() {
-        const exchange = state.currentMarket === 1 ? '深市' : '泸市'
-        ElMessageBox.confirm(`更新${exchange}股票列表, 是否继续?`, '提示', {
+        ElMessageBox.confirm(`更新股票列表, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
         })
           .then(async () => {
-            const param = { market: state.currentMarket }
+            const marketList = state.checkedStockList.map(function(n) {
+              return stockMap[n]
+            })
+            state.dialogVisible = false
+            const param = { marketList: marketList }
             await updateStockList(param)
             refresh()
             ElMessage({ type: 'success', message: '更新成功' })
           })
           .catch(() => {})
       },
-      // 【更新数据(深市or泸市)】按钮-所有股票
+      // 【更新数据(深市or泸市)】-所有股票
       async updateHistoryData() {
-        const exchange = state.currentMarket === 1 ? '深市' : '泸市'
-        ElMessageBox.confirm(`更新${exchange}数据, 是否继续?`, '提示', {
+        ElMessageBox.confirm(`更新历史数据, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning',
         })
           .then(async () => {
-            const param = { market: state.currentMarket }
+            const marketList = state.checkedHistoryList.map(function(n) {
+              return stockMap[n]
+            })
+            state.dialogVisible = false
+            const param = { marketList: marketList }
             await update_history_data_all(param)
           })
           .catch(() => {})
@@ -324,6 +391,10 @@ export default defineComponent({
       },
       // 当前的证券交易所,默认1：深市
       currentMarket: 1,
+      dialogVisible: false,
+      activeName: 'historyData',
+      checkedHistoryList: ['更新历史数据-深市', '更新历史数据-沪市'],
+      checkedStockList: ['股票列表-深市', '股票列表-沪市'],
     })
     const table = ref(null)
     const refresh = () => {
@@ -335,8 +406,20 @@ export default defineComponent({
       table,
     }
   },
-  mounted(){
+  mounted() {
     console.log('mounted')
   },
 })
 </script>
+<style>
+.stock-tabs > .el-tabs__content {
+  margin-top: -20px;
+  padding: 20px;
+  color: #6b778c;
+  font-size: 32px;
+  font-weight: 600;
+}
+.stock-dialog > .el-dialog__body {
+  padding: 0 20px;
+}
+</style>

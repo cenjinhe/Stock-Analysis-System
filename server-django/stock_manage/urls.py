@@ -1,5 +1,5 @@
 from django.urls import include, path
-from stock_manage import views, views_baostock, views_trend
+from stock_manage import views, views_baostock, views_trend, views_stock_select
 
 
 urlpatterns = [
@@ -16,5 +16,5 @@ urlpatterns = [
     path('getUpTrendDataList/', views_trend.getUpTrendDataList),
     path('postUpdateTrendStatus/', views_trend.postUpdateTrendStatus),
     # stock select
-    path('getUpTrendDataList/', views_trend.getUpTrendDataList),
+    path('postUpdateStockSelect/', views_stock_select.postUpdateStockSelect),
 ]

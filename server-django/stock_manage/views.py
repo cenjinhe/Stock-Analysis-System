@@ -103,34 +103,36 @@ def updateStockList(request):
     if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
-        market = json_param.get('market')
+        marketList = json_param.get('marketList', [])
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
-        df = pd.read_excel(file, dtype={"A股代码": "object"})
-        print(f'file={file}')
-        # update 所有股票名称一览
-        for i in range(len(df)):
-            code = df['A股代码'][i]
-            name = df['A股简称'][i] if str(market) == '1' else df['证券简称'][i]
-            date = df['A股上市日期'][i] if str(market) == '1' else datetime.strptime(str(df['上市日期'][i]),
-                                                                                "%Y%m%d").strftime('%Y-%m-%d')
-            date = datetime.strptime(date, "%Y-%m-%d").date()
-            # 如果数据库中没有这条A股代码，就添加
-            record = TABLE_MAP.get(str(market)).objects.filter(code__exact=code)
-            if len(record) == 0:
-                print(f'code={code}', f'name={name}', f'date={date}')
-                TABLE_MAP.get(str(market)).objects.create(code=code, name=name, date=date)
-            else:
-                print(f'code={code}', f'name={name}')
-                TABLE_MAP.get(str(market)).objects.filter(code=code).update(name=name)
 
-        # update 退市股票的状态，不在A股列表中的code即为退市股票，交易状态设置为2（退市）
-        codes = df['A股代码'].tolist()
-        record_codes = list(TABLE_MAP.get(str(market)).objects.values_list('code', flat=True))
-        if codes and record_codes:
-            for record_code in record_codes:
-                if record_code not in codes:
-                    TABLE_MAP.get(str(market)).objects.filter(code=record_code).update(trade_status=2)
+        for market in marketList:
+            file = os.path.join(BASE_DIR, 'stock_manage', 'data', FILE_MAP.get(str(market)))
+            df = pd.read_excel(file, dtype={"A股代码": "object"})
+            print(f'file={file}')
+            # update 所有股票名称一览
+            for i in range(len(df)):
+                code = df['A股代码'][i]
+                name = df['A股简称'][i] if str(market) == '1' else df['证券简称'][i]
+                date = df['A股上市日期'][i] if str(market) == '1' else datetime.strptime(str(df['上市日期'][i]),
+                                                                                    "%Y%m%d").strftime('%Y-%m-%d')
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+                # 如果数据库中没有这条A股代码，就添加
+                record = TABLE_MAP.get(str(market)).objects.filter(code__exact=code)
+                if len(record) == 0:
+                    print(f'code={code}', f'name={name}', f'date={date}')
+                    TABLE_MAP.get(str(market)).objects.create(code=code, name=name, date=date)
+                else:
+                    print(f'code={code}', f'name={name}')
+                    TABLE_MAP.get(str(market)).objects.filter(code=code).update(name=name)
+
+            # update 退市股票的状态，不在A股列表中的code即为退市股票，交易状态设置为2（退市）
+            codes = df['A股代码'].tolist()
+            record_codes = list(TABLE_MAP.get(str(market)).objects.values_list('code', flat=True))
+            if codes and record_codes:
+                for record_code in record_codes:
+                    if record_code not in codes:
+                        TABLE_MAP.get(str(market)).objects.filter(code=record_code).update(trade_status=2)
 
         result = {'data': {}, 'code': '200', 'message': '更新成功!'}
         return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")

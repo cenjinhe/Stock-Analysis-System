@@ -40,8 +40,8 @@ def update_history_data_all(request):
     if request.method == 'PUT':
         post_body = request.body
         json_param = json.loads(post_body.decode())
-        market = json_param.get('market')
-        for market in [1, 0]:
+        marketList = json_param.get('marketList', [])
+        for market in marketList:
             table = TABLE_MAP.get(str(market))
             records = table.objects.all()
             for record in records:
