@@ -1,15 +1,15 @@
 <template>
   <pro-table
     ref="table"
-    :title="'推荐列表'"
+    :title="'推荐股票'"
     :request="getList"
     :columns="columns"
     :search="searchConfig"
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" icon="Upload" @click="updateData">
-        更新
+      <el-button type="primary" @click="updateData">
+        更新数据
       </el-button>
       <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
         刷新
@@ -29,28 +29,17 @@ export default defineComponent({
     const state = reactive({
       columns: [
         { type: 'selection', width: 56 },
-        { label: 'test/list.index', type: 'index', width: 80 },
+        { label: '序号', type: 'index', width: 80 },
         {
-          label: 'test/list.name',
-          prop: 'nickName',
-          sortable: true,
-          width: 180,
+          label: 'A股代码',
+          prop: 'code',
+          minWidth: 120,
+          sortable: 'custom',
         },
         {
-          label: 'test/list.email',
-          prop: 'userEmail',
-          minWidth: 200,
-        },
-        {
-          label: 'public.status',
-          tdSlot: 'status',
-          width: 180,
-        },
-        {
-          label: 'public.operate',
-          width: 180,
-          align: 'center',
-          tdSlot: 'operate', // �Զ��嵥Ԫ�����ݵĲ������
+          label: 'A股简称',
+          prop: 'name',
+          minWidth: 120,
         },
       ],
       searchConfig: {
@@ -92,7 +81,7 @@ export default defineComponent({
       // 更新
       async updateData() {
         const param = {}
-        await postUpdateStockSelect(param)
+        await 0(param)
       },
     })
     const table = ref(null)
