@@ -65,9 +65,9 @@
         <el-tab-pane label="历史数据" name="historyData">
           <el-card shadow="never">
             <el-checkbox-group v-model="checkedHistoryList">
-              <el-checkbox label="更新历史数据-深市" />
+              <el-checkbox label="历史数据-深市" />
               <br />
-              <el-checkbox label="更新历史数据-沪市" />
+              <el-checkbox label="历史数据-沪市" />
             </el-checkbox-group>
           </el-card>
           <span style="margin-top: 10px;float: right">
@@ -393,7 +393,7 @@ export default defineComponent({
       currentMarket: 1,
       dialogVisible: false,
       activeName: 'historyData',
-      checkedHistoryList: ['更新历史数据-深市', '更新历史数据-沪市'],
+      checkedHistoryList: ['历史数据-深市', '历史数据-沪市'],
       checkedStockList: ['股票列表-深市', '股票列表-沪市'],
     })
     const table = ref(null)
