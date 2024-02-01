@@ -275,6 +275,7 @@ export default defineComponent({
       // open【更新数据】dialog
       async openUpdateHistoryDataDlg() {
         state.dialogVisible = true
+        state.activeName = 'historyData'
       },
       // 【更新列表(深市or泸市)】按钮
       async updateStockList() {
