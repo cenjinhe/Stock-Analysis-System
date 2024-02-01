@@ -295,7 +295,7 @@ export default defineComponent({
           })
           .catch(() => {})
       },
-      // 【更新数据(深市or泸市)】-所有股票
+      // 【更新数据】按钮-所有股票
       async updateHistoryData() {
         ElMessageBox.confirm(`更新历史数据, 是否继续?`, '提示', {
           confirmButtonText: '确定',
