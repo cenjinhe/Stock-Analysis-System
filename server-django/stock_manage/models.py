@@ -57,6 +57,7 @@ class StockListSH(models.Model):
         verbose_name_plural = '股票列表(沪市)'
 
 
+# 用于存储推荐股票信息/
 class StockOnAnalysis(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
     code = models.CharField(max_length=50, verbose_name='A股代码')
