@@ -42,3 +42,4 @@ def postUpdateStockSelect(request):
         # 3根据code，计算x-1日上次的斜率状态
         # 4根据code，更新或插入数据
         return HttpResponse(json.dumps([], ensure_ascii=False), content_type="application/json,charset=utf-8")
+

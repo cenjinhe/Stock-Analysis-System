@@ -1,5 +1,5 @@
 const Layout = () => import('@/layout/index.vue')
-const StockSelect = () => import('@/views/stock-select/index.vue')
+const StockRecommend = () => import('@/views/stock-recommend/index.vue')
 
 export default [
   {
@@ -13,7 +13,7 @@ export default [
     children: [
       {
         path: '',
-        component: StockSelect,
+        component: StockRecommend,
         meta: {
           title: '筛选股票',
         },
