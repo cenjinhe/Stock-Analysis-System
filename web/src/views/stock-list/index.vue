@@ -14,8 +14,8 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button icon="Download" type="primary">
-            导出Excel
+          <el-button icon="Download" type="primary" disabled>
+            导出
           </el-button>
           <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
             刷新
