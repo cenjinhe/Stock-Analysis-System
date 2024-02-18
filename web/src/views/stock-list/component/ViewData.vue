@@ -92,9 +92,11 @@ async function initKLine() {
     const values = []
     const volumes = []
     for (let i = 0; i < rawData.length; i++) {
+      // 日期(date)数据
       categoryData.push(rawData[i].splice(0, 1)[0])
+      // 开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)数据
       values.push(rawData[i])
-      // 成交量数据
+      // 成交量(volume)数据
       volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1])
     }
     return {
