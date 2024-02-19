@@ -1,17 +1,42 @@
 <template>
   <div>
     <div style="text-align: center;">
-      <el-button size="small" type="primary" icon="Back" style="float: left;" @click="btnReturn">返回</el-button>
-      <el-select v-model="dataCount" value-key="id" style="float: right;padding-right: 5%;" @change="initKLine">
-        <el-option v-for="item in dataOptions" :key="item.id" :label="item.label" :value="item.value"/>
+      <el-button
+        size="small"
+        type="primary"
+        icon="Back"
+        style="float: left;"
+        @click="btnReturn"
+      >
+        返回
+      </el-button>
+      <el-select
+        v-model="dataCount"
+        value-key="id"
+        style="float: right;padding-right: 5%;"
+        @change="initKLine"
+      >
+        <el-option
+          v-for="item in dataOptions"
+          :key="item.id"
+          :label="item.label"
+          :value="item.value"
+        />
       </el-select>
-    </div><br />
+    </div>
+    <br />
     <!--面板组展示-->
     <div style="padding-right: 5%;margin-top: 30px;">
-      <panel-group :code="row.code" @handleSetLineChartData1="handleSetLineChartData" />
+      <panel-group
+        :code="row.code"
+        @handleSetLineChartData1="handleSetLineChartData"
+      />
     </div>
     <!--k线图-->
-    <div id="main" style="margin-top: 30px;width: 100%; height: 600px;float: left;"></div>
+    <div
+      id="main"
+      style="margin-top: 30px;width: 100%; height: 600px;float: left;"
+    ></div>
     <!--乾坤六道法-->
     <div style="margin-top: 50px;height: 600px;">
       <h1 style="font-weight: bold;color: #303133;">乾坤六道法</h1>
@@ -74,11 +99,11 @@ async function initKLine() {
   const downColor = '#00da3c'
   const downBorderColor = '#008F28'
   const colorList = [
-    '#c23531', // MA5
-    '#2f4554', // MA10
-    '#61a0a8', // MA15
-    '#d48265', // MA20
-    '#91c7ae', // MA30
+    '#c23531', // MA3
+    '#2f4554', // MA5
+    '#61a0a8', // MA10
+    '#d48265', // MA15
+    '#91c7ae', // MA20
     '#749f83', // 成交量
     '#ca8622', // MACD
     '#bda29a', // DIFF
@@ -116,7 +141,10 @@ async function initKLine() {
   //=================================================
   // 获取原始数据
   // 数据意义：日期(date)，开盘(open)，收盘(close)，最低(low)，最高(high)，成交量(volume)
-  const { rawData } = await getRawDataList({ count: dataCount.value, code: props.row.code })
+  const { rawData } = await getRawDataList({
+    count: dataCount.value,
+    code: props.row.code,
+  })
   // 分割原始数据: x轴日期(categoryData), K线数据(values), 成交量数据(volumes)
   let data = splitData(rawData.reverse())
   // 计算 MACD 指标
@@ -137,17 +165,17 @@ async function initKLine() {
       left: 'center',
       data: [
         '日K',
+        'MA3',
         'MA5',
         'MA10',
         'MA15',
         'MA20',
-        'MA30',
         '成交量',
         'MACD',
         'DIFF',
         'DEA',
       ],
-      selected: { MA30: false }, // 不需要显示的图例设置为false
+      selected: { MA10: false, MA15: false, MA20: false }, // 不需要显示的图例设置为false
     },
     // 提示框 （即鼠标移动到柱状图会显示内容）
     tooltip: {
@@ -346,16 +374,25 @@ async function initKLine() {
         },
       },
       {
-        name: 'MA5', ///周均线
+        name: 'MA3', ///3日均线
         type: 'line',
-        data: calculateMA(5, data.values),
+        data: calculateMA(3, data.values),
         smooth: true, // 是否平滑曲线显示
         lineStyle: {
           opacity: 0.5,
         },
       },
       {
-        name: 'MA10', ///两周均线
+        name: 'MA5', ///5日均线
+        type: 'line',
+        data: calculateMA(5, data.values),
+        smooth: true,
+        lineStyle: {
+          opacity: 0.5,
+        },
+      },
+      {
+        name: 'MA10', //10日均线
         type: 'line',
         data: calculateMA(10, data.values),
         smooth: true,
@@ -364,7 +401,7 @@ async function initKLine() {
         },
       },
       {
-        name: 'MA15', ///三周均线
+        name: 'MA15', //15日周均线
         type: 'line',
         data: calculateMA(15, data.values),
         smooth: true,
@@ -373,18 +410,9 @@ async function initKLine() {
         },
       },
       {
-        name: 'MA20', ///四周均线
+        name: 'MA20', //20日均线
         type: 'line',
         data: calculateMA(20, data.values),
-        smooth: true,
-        lineStyle: {
-          opacity: 0.5,
-        },
-      },
-      {
-        name: 'MA30', ///月均线
-        type: 'line',
-        data: calculateMA(30, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,
