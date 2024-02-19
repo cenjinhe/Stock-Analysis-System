@@ -8,7 +8,7 @@
   >
     <!-- 工具栏 -->
     <template #toolbar>
-      <el-button type="primary" @click="updateData">
+      <el-button type="primary" @click="updateStockRecommend">
         更新数据
       </el-button>
       <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
@@ -21,7 +21,7 @@
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { getUsers } from '@/api/test'
-import { postUpdateStockSelect } from '@/api/stock-select'
+import { postUpdateStockRecommend } from '@/api/stock-recommend'
 
 export default defineComponent({
   setup() {
@@ -78,10 +78,10 @@ export default defineComponent({
           total: +data.total,
         }
       },
-      // 更新
-      async updateData() {
+      // 【更新数据】按钮
+      async updateStockRecommend() {
         const param = {}
-        await 0(param)
+        await postUpdateStockRecommend(param)
       },
     })
     const table = ref(null)
