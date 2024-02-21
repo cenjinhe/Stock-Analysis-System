@@ -21,7 +21,8 @@ def calculateEMA(n, data, field=0):
         length = len(data)
         i = 1
         while i < length:
-            ema.push((a * data[i][field] + (1 - a) * ema[i - 1]).toFixed(3))
+            element = a * float(data[i][field]) + (1 - a) * float(ema[i - 1])
+            ema.append('{:.3f}'.format(element))
             i += 1
     else:
         # 普通一维数组
@@ -29,7 +30,8 @@ def calculateEMA(n, data, field=0):
         length = len(data)
         i = 1
         while i < length:
-            ema.push((a * data[i] + (1 - a) * ema[i - 1]).toFixed(3))
+            element = a * float(data[i]) + (1 - a) * float(ema[i - 1])
+            ema.append('{:.3f}'.format(element))
             i += 1
     return ema
 
@@ -49,7 +51,8 @@ def calculateDIF(short, long, data, field=0):
     length = len(data)
     i = 0
     while i < length:
-        dif.push((emaShort[i] - emaLong[i]).toFixed(3))
+        element = float(emaShort[i]) - float(emaLong[i])
+        dif.append('{:.3f}'.format(element))
         i += 1
     return dif
 
@@ -73,6 +76,7 @@ def calculateMACD(short=12, long=26, mid=9, data=None, field=0):
     length = len(data)
     i = 0
     while i < length:
-        macd_data.push(((dif_data[i] - dea_data[i]) * 2).toFixed(3))
+        element = (float(dif_data[i]) - float(dea_data[i])) * 2
+        macd_data.append('{:.3f}'.format(element))
         i += 1
-    return {macd_data, dif_data, dea_data}
+    return macd_data, dif_data, dea_data
