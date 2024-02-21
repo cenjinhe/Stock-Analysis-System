@@ -7,9 +7,9 @@
  * 计算EMA指数平滑移动平均线，用于MACD
  * @param {number} n short or long
  * @param {array} data 数据
- * @param {number} field 计算字段配置
+ * @param {number} field 计算数据的哪个字段,如: 收盘(close)
  */
-export function calculateEMA(n, data, field = 1) {
+export function calculateEMA(n, data, field = 0) {
   let i, l, ema, a
   a = 2 / (n + 1)
   if (field) {
@@ -33,9 +33,9 @@ export function calculateEMA(n, data, field = 1) {
  * @param {number} short  快速EMA
  * @param {number} long 慢速EMA
  * @param {array} data 数据
- * @param {number} field 计算字段配置
+ * @param {number} field 计算数据的哪个字段,如: 收盘(close)
  */
-export function calculateDIF(short, long, data, field = 1) {
+export function calculateDIF(short, long, data, field = 0) {
   let i, l, dif, emaShort, emaLong
   dif = []
   emaShort = calculateEMA(short, data, field)
@@ -61,9 +61,9 @@ function calculateDEA(mid, dif) {
  * @param {number} long 慢速EMA
  * @param {number} mid dea时间窗口
  * @param {array} data 数据
- * @param {string} field 计算字段配置
+ * @param {string} field 计算数据的哪个字段,如: 收盘(close)
  */
-export function calculateMACD(short = 12, long = 26, mid = 9, data, field = 1) {
+export function calculateMACD(short = 12, long = 26, mid = 9, data, field = 0) {
   let i, l, diffData, deaData, macdData
   macdData = []
   diffData = calculateDIF(short, long, data, field)
