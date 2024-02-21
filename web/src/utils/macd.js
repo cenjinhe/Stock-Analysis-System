@@ -9,7 +9,7 @@
  * @param {array} data 数据
  * @param {number} field 计算字段配置
  */
-export function calculateEMA(n, data, field) {
+export function calculateEMA(n, data, field = 1) {
   let i, l, ema, a
   a = 2 / (n + 1)
   if (field) {
@@ -35,7 +35,7 @@ export function calculateEMA(n, data, field) {
  * @param {array} data 数据
  * @param {number} field 计算字段配置
  */
-export function calculateDIF(short, long, data, field) {
+export function calculateDIF(short, long, data, field = 1) {
   let i, l, dif, emaShort, emaLong
   dif = []
   emaShort = calculateEMA(short, data, field)
