@@ -36,7 +36,7 @@ import test from './modules/test'
 import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
 import stockTrend from './modules/stock-trend'
-import stockSelect from './modules/stock-recommend'
+import stockRecommend from './modules/stock-recommend'
 import stockTrade from './modules/stock-trade'
 import stockTradeMock from './modules/stock-trade-mock'
 import user from './modules/user'
@@ -47,11 +47,11 @@ import stockAbout from './modules/stock-about'
 export const fixedRoutes = [
   ...home,
   ...stockList,
-  ...stockManage,
+  ...stockRecommend,
   ...stockTrend,
-  ...stockSelect,
   ...stockTrade,
   ...stockTradeMock,
+  ...stockManage,
   ...user,
   ...stockAbout,
   // ...test,
