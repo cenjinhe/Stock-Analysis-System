@@ -7,7 +7,7 @@ export default [
     component: Layout,
     name: 'stock-list',
     meta: {
-      title: '股票列表',
+      title: '所有股票',
     },
     icon: 'icon-trend',
     children: [

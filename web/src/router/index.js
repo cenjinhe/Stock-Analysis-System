@@ -46,8 +46,8 @@ import stockAbout from './modules/stock-about'
 // 固定菜单
 export const fixedRoutes = [
   ...home,
-  ...stockList,
   ...stockRecommend,
+  ...stockList,
   ...stockTrend,
   ...stockTrade,
   ...stockTradeMock,

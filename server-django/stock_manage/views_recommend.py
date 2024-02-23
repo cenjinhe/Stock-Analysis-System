@@ -19,8 +19,9 @@ def postUpdateStockRecommend(request):
             # 遍历股票列表
             for row in stockList:
                 code = row['code']
+                name = row['name']
                 # 定义一个变量，用于存储个股的解析结果
-                result = {'code': code}
+                result = {'code': code, 'name': name}
                 # 获取原始数据
                 rawData = handler.getRawDataList(code, COUNT)
                 if len(rawData) <= 2:
