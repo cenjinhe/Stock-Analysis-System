@@ -20,7 +20,6 @@
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { getUsers } from '@/api/test'
 import { postUpdateStockRecommend } from '@/api/stock-recommend'
 
 export default defineComponent({
@@ -72,10 +71,12 @@ export default defineComponent({
       },
       // 请求函数
       async getList(params) {
-        const { data } = await getUsers(params)
+        // const { data } = await getUsers(params)
         return {
-          data: data.list,
-          total: +data.total,
+          // data: data.list,
+          // total: +data.total,
+          data: [],
+          total: 1,
         }
       },
       // 【更新数据】按钮

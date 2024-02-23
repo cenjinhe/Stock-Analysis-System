@@ -32,7 +32,6 @@ import error from './modules/error'
 import login from './modules/login'
 import lock from './modules/lock'
 import home from './modules/home'
-import test from './modules/test'
 import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
 import stockTrend from './modules/stock-trend'
@@ -46,15 +45,14 @@ import stockAbout from './modules/stock-about'
 // 固定菜单
 export const fixedRoutes = [
   ...home,
-  ...stockRecommend,
-  ...stockList,
+  ...stockRecommend, // 每日推荐
+  ...stockList, // 所有股票
+  ...stockManage, // 数据管理
   ...stockTrend,
   ...stockTrade,
   ...stockTradeMock,
-  ...stockManage,
   ...user,
   ...stockAbout,
-  // ...test,
 ]
 // 动态菜单
 export const asyncRoutes = []
