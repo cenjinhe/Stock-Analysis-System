@@ -57,14 +57,22 @@ class StockListSH(models.Model):
         verbose_name_plural = '股票列表(沪市)'
 
 
-# 用于存储推荐股票信息/
+# 用于存储推荐股票信息
 class StockOnAnalysis(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
+    # 股票基本信息
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
-    market = models.IntegerField(default=1, verbose_name='1深市0沪市')
-    pre_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='上次的斜率状态')
-    current_trend_status = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的斜率状态')
+    market = models.IntegerField(default=1, verbose_name='1深市 0沪市')
+    # MACD指标
+    previous_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的MACD值')
+    current_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的MACD值')
+    previous_dif = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的DIF值')
+    current_dif = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的DIF值')
+    previous_dea = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的DEA值')
+    current_dea = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的DEA值')
+    # 更新时间
+    update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 
     class Meta:
         db_table = 'stock_on_analysis'

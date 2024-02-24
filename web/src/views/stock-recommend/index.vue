@@ -20,7 +20,10 @@
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { postUpdateStockRecommend } from '@/api/stock-recommend'
+import {
+  getStockRecommendResults,
+  postUpdateStockRecommend,
+} from '@/api/stock-recommend'
 
 export default defineComponent({
   setup() {
@@ -40,43 +43,61 @@ export default defineComponent({
           prop: 'name',
           minWidth: 120,
         },
+        {
+          label: 'MACD(前一天)',
+          prop: 'previous_macd',
+          minWidth: 120,
+        },
+        {
+          label: 'MACD(现在)',
+          prop: 'current_macd',
+          minWidth: 120,
+        },
+        {
+          label: 'DIF(前一天)',
+          prop: 'previous_dif',
+          minWidth: 120,
+        },
+        {
+          label: 'DIF(现在)',
+          prop: 'current_dif',
+          minWidth: 120,
+        },
+        {
+          label: 'DEA(前一天)',
+          prop: 'previous_dea',
+          minWidth: 120,
+        },
+        {
+          label: 'DEA(现在)',
+          prop: 'current_dea',
+          minWidth: 120,
+        },
       ],
       searchConfig: {
-        labelWidth: '45px',
+        labelWidth: '90px',
         inputWidth: '150px',
         fields: [
           {
             type: 'text',
-            label: '名称',
-            name: 'nickName',
-            defaultValue: 'abc',
+            label: 'A股代码',
+            name: 'code',
+            defaultValue: '',
           },
           {
-            label: '状态',
-            name: 'status',
-            type: 'select',
-            defaultValue: 1,
-            options: [
-              {
-                name: '已发布',
-                value: 1,
-              },
-              {
-                name: '未发布',
-                value: 0,
-              },
-            ],
+            type: 'text',
+            label: 'A股简称',
+            name: 'name',
+            defaultValue: '',
           },
         ],
       },
       // 请求函数
       async getList(params) {
-        // const { data } = await getUsers(params)
+        const { data } = await getStockRecommendResults(params)
         return {
-          // data: data.list,
-          // total: +data.total,
-          data: [],
-          total: 1,
+          data: data.list,
+          total: +data.total,
         }
       },
       // 【更新数据】按钮

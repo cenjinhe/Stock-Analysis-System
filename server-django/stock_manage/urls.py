@@ -17,5 +17,6 @@ urlpatterns = [
     path('getUpTrendDataList/', views_trend.getUpTrendDataList),
     path('postUpdateTrendStatus/', views_trend.postUpdateTrendStatus),
     # views_recommend
+    path('getStockRecommendResults/', views_recommend.getStockRecommendResults),
     path('postUpdateStockRecommend/', views_recommend.postUpdateStockRecommend),
 ]
