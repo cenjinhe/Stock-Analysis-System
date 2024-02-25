@@ -71,6 +71,11 @@ class StockOnAnalysis(models.Model):
     current_dif = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的DIF值')
     previous_dea = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的DEA值')
     current_dea = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的DEA值')
+    # MA指标
+    previous_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MA均线')
+    current_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
+    previous_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MA均线')
+    current_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
     # 更新时间
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 

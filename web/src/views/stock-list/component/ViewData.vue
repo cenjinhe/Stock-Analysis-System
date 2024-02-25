@@ -326,7 +326,7 @@ async function initKLine() {
         splitLine: { show: false },
       },
     ],
-    // 背景se
+    // 背景颜色
     // backgroundColor: '#b8b886',
     // 滑动块组件
     dataZoom: [

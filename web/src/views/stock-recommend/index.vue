@@ -1,36 +1,65 @@
 <template>
-  <pro-table
-    ref="table"
-    :title="'推荐股票'"
-    :request="getList"
-    :columns="columns"
-    :search="searchConfig"
-  >
-    <!-- 工具栏 -->
-    <template #toolbar>
-      <el-button type="primary" @click="updateStockRecommend">
-        更新数据
-      </el-button>
-      <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
-        刷新
-      </el-button>
-    </template>
-    <!-- table栏 -->
-    <template #operate="scope">
-      <el-button size="small" type="success" disabled @click="btnViewData(scope.row)">查看</el-button>
-      <el-button size="small" type="success" disabled @click="btnViewData(scope.row)">买入</el-button>
-    </template>
-  </pro-table>
+  <div>
+    <keep-alive>
+      <pro-table
+        v-if="pageShow === 'stock-list'"
+        ref="table"
+        :title="'推荐股票'"
+        :request="getList"
+        :columns="columns"
+        :search="searchConfig"
+      >
+        <!-- 工具栏 -->
+        <template #toolbar>
+          <el-button type="primary" @click="updateStockRecommend">
+            更新数据
+          </el-button>
+          <el-button
+            icon="Refresh"
+            style="margin-right: 30px;"
+            @click="refresh"
+          >
+            刷新
+          </el-button>
+        </template>
+        <!-- table栏 -->
+        <template #operate="scope">
+          <el-button
+            size="small"
+            type="success"
+            @click="btnViewData(scope.row)"
+          >
+            详情
+          </el-button>
+          <el-button
+            size="small"
+            type="primary"
+            disabled
+            @click="btnViewData(scope.row)"
+          >
+            买入
+          </el-button>
+        </template>
+      </pro-table>
+    </keep-alive>
+    <view-data
+      v-if="pageShow === 'view-data'"
+      v-model:pageShow="pageShow"
+      v-model:row="row"
+    />
+  </div>
 </template>
 
 <script>
 import { defineComponent, reactive, ref, toRefs } from 'vue'
+import ViewData from '@/views/stock-list/component/ViewData.vue'
 import {
   getStockRecommendResults,
   postUpdateStockRecommend,
 } from '@/api/stock-recommend'
 
 export default defineComponent({
+  components: { ViewData },
   setup() {
     // const { proxy } = getCurrentInstance()
     const state = reactive({
@@ -64,6 +93,16 @@ export default defineComponent({
         {
           label: 'DEA',
           prop: 'current_dea',
+          minWidth: 120,
+        },
+        {
+          label: 'MA_3',
+          prop: 'current_ma_3',
+          minWidth: 120,
+        },
+        {
+          label: 'MA_5',
+          prop: 'current_ma_5',
           minWidth: 120,
         },
         {
@@ -104,6 +143,13 @@ export default defineComponent({
       async updateStockRecommend() {
         const param = {}
         await postUpdateStockRecommend(param)
+      },
+      // 【查看数据)】按钮
+      pageShow: 'stock-list',
+      row: {},
+      async btnViewData(row) {
+        state.pageShow = 'view-data'
+        state.row = row
       },
     })
     const table = ref(null)
