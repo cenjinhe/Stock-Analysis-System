@@ -24,6 +24,7 @@
         <template #close="scope">
           <div :style="{color: getCloseColor(scope.row)}">{{scope.row.close}}</div>
         </template>
+        <!-- table栏 -->
         <template #ratio="scope">
           <div :style="{color: getCloseColor(scope.row)}">{{ scope.row.ratio }}%</div>
         </template>

@@ -15,6 +15,11 @@
         刷新
       </el-button>
     </template>
+    <!-- table栏 -->
+    <template #operate="scope">
+      <el-button size="small" type="success" disabled @click="btnViewData(scope.row)">查看</el-button>
+      <el-button size="small" type="success" disabled @click="btnViewData(scope.row)">买入</el-button>
+    </template>
   </pro-table>
 </template>
 
@@ -30,8 +35,11 @@ export default defineComponent({
     // const { proxy } = getCurrentInstance()
     const state = reactive({
       columns: [
-        { type: 'selection', width: 56 },
-        { label: '序号', type: 'index', width: 80 },
+        {
+          label: 'ID',
+          prop: 'id',
+          minWidth: 60,
+        },
         {
           label: 'A股代码',
           prop: 'code',
@@ -44,34 +52,26 @@ export default defineComponent({
           minWidth: 120,
         },
         {
-          label: 'MACD(前一天)',
-          prop: 'previous_macd',
-          minWidth: 120,
-        },
-        {
-          label: 'MACD(现在)',
+          label: 'MACD',
           prop: 'current_macd',
           minWidth: 120,
         },
         {
-          label: 'DIF(前一天)',
-          prop: 'previous_dif',
-          minWidth: 120,
-        },
-        {
-          label: 'DIF(现在)',
+          label: 'DIF',
           prop: 'current_dif',
           minWidth: 120,
         },
         {
-          label: 'DEA(前一天)',
-          prop: 'previous_dea',
+          label: 'DEA',
+          prop: 'current_dea',
           minWidth: 120,
         },
         {
-          label: 'DEA(现在)',
-          prop: 'current_dea',
-          minWidth: 120,
+          label: '操作',
+          minWidth: 140,
+          align: 'center',
+          tdSlot: 'operate', // 自定义单元格内容的插槽名称
+          fixed: 'right',
         },
       ],
       searchConfig: {
