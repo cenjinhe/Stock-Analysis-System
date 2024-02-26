@@ -99,15 +99,15 @@ async function initKLine() {
   const downColor = '#00da3c'
   const downBorderColor = '#008F28'
   const colorList = [
-    '#c23531', // MA3
-    '#2f4554', // MA5
-    '#61a0a8', // MA10
-    '#d48265', // MA15
-    '#91c7ae', // MA20
-    '#749f83', // 成交量
-    '#ca8622', // MACD
-    '#bda29a', // DIFF
-    '#6e7074', // DEA
+    '#d48265',
+    '#c23531',
+    '#91c7ae',
+    '#bda29a',
+    '#2f4554',
+    '#61a0a8',
+    '#749f83',
+    '#ca8622',
+    '#6e7074',
     '#546570',
   ]
 
@@ -165,17 +165,17 @@ async function initKLine() {
       left: 'center',
       data: [
         '日K',
+        'MA1',
         'MA3',
         'MA5',
+        'MA7',
         'MA10',
-        'MA15',
-        'MA20',
         '成交量',
         'MACD',
         'DIFF',
         'DEA',
       ],
-      selected: { MA10: false, MA15: false, MA20: false }, // 不需要显示的图例设置为false
+      selected: { MA1: false, MA7: false, MA10: false }, // 不需要显示的图例设置为false
     },
     // 提示框 （即鼠标移动到柱状图会显示内容）
     tooltip: {
@@ -374,16 +374,25 @@ async function initKLine() {
         },
       },
       {
-        name: 'MA3', ///3日均线
+        name: 'MA1', // 1日均线
         type: 'line',
-        data: calculateMA(3, data.values),
+        data: calculateMA(1, data.values),
         smooth: true, // 是否平滑曲线显示
         lineStyle: {
           opacity: 0.5,
         },
       },
       {
-        name: 'MA5', ///5日均线
+        name: 'MA3', // 3日均线
+        type: 'line',
+        data: calculateMA(3, data.values),
+        smooth: true,
+        lineStyle: {
+          opacity: 0.5,
+        },
+      },
+      {
+        name: 'MA5', // 5日均线
         type: 'line',
         data: calculateMA(5, data.values),
         smooth: true,
@@ -392,27 +401,18 @@ async function initKLine() {
         },
       },
       {
-        name: 'MA10', //10日均线
+        name: 'MA7', // 7日周均线
+        type: 'line',
+        data: calculateMA(7, data.values),
+        smooth: true,
+        lineStyle: {
+          opacity: 0.5,
+        },
+      },
+      {
+        name: 'MA10', // 10日均线
         type: 'line',
         data: calculateMA(10, data.values),
-        smooth: true,
-        lineStyle: {
-          opacity: 0.5,
-        },
-      },
-      {
-        name: 'MA15', //15日周均线
-        type: 'line',
-        data: calculateMA(15, data.values),
-        smooth: true,
-        lineStyle: {
-          opacity: 0.5,
-        },
-      },
-      {
-        name: 'MA20', //20日均线
-        type: 'line',
-        data: calculateMA(20, data.values),
         smooth: true,
         lineStyle: {
           opacity: 0.5,

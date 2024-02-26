@@ -55,6 +55,7 @@ def _get_shake(coeffs, data, shake):
         return "平稳"
 
 
+# 计算(现在的)趋势and斜率
 def getSlopeAndTrend(code, date, count):
     """
     获取原始数据count件，计算趋势and斜率
@@ -74,6 +75,7 @@ def getSlopeAndTrend(code, date, count):
     return retData
 
 
+# 计算(前一天的)趋势and斜率
 def getPreSlopeAndTrend(code, date, count):
     """
     获取原始数据count件，计算(前回的)趋势and斜率
@@ -91,4 +93,34 @@ def getPreSlopeAndTrend(code, date, count):
         retData = {'slope': '{:.6f}'.format(slope),
                    'intercept': '{:.6f}'.format(intercept),
                    'trend_status': trend_status}
+    return retData
+
+
+# 根据数据,直接计算趋势and斜率
+def getSlopeAndTrendByData(data, field=0):
+    """
+    :param data: 数据
+    :param field: 计算数据的哪个字段,如: 收盘(close)
+    :return: 斜率,截距,斜率状态
+    """
+    retData = {'slope': 0, 'intercept': 0, 'trend_status': ''}
+    rawData = data
+    if field:
+        # 二维数组
+        if len(rawData) > 0:
+            closeData = [element[field] for element in rawData]
+            slope, intercept = _trend_line(closeData)
+            trend_status = _judge_trend((slope, intercept), closeData)
+            retData = {'slope': '{:.6f}'.format(slope),
+                       'intercept': '{:.6f}'.format(intercept),
+                       'trend_status': trend_status}
+    else:
+        # 普通一维数组
+        if len(rawData) > 0:
+            closeData = [float(element) for element in rawData]
+            slope, intercept = _trend_line(closeData)
+            trend_status = _judge_trend((slope, intercept), closeData)
+            retData = {'slope': '{:.6f}'.format(slope),
+                       'intercept': '{:.6f}'.format(intercept),
+                       'trend_status': trend_status}
     return retData

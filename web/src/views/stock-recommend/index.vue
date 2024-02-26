@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import ViewData from '@/views/stock-list/component/ViewData.vue'
 import {
@@ -141,8 +142,24 @@ export default defineComponent({
       },
       // 【更新数据】按钮
       async updateStockRecommend() {
-        const param = {}
-        await postUpdateStockRecommend(param)
+        ElMessageBox.confirm(`更新数据, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(async () => {
+            const param = {}
+            const { code, message } = await postUpdateStockRecommend(param)
+            if (code === '200') {
+              refresh()
+              ElMessage({ type: 'success', message: '更新成功' })
+            } else if (code === '201') {
+              ElMessage({ type: 'warning', message: message })
+            } else {
+              console.log('done')
+            }
+          })
+          .catch(() => {})
       },
       // 【查看数据)】按钮
       pageShow: 'stock-list',

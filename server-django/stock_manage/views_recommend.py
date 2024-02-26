@@ -53,7 +53,6 @@ def getStockRecommendResults(request):
 # 更新股票推荐分析结果
 def postUpdateStockRecommend(request):
     if request.method == 'POST':
-        results = []
         index = 1
         # 遍历[深市, 沪市]
         for market in [1]:
@@ -106,12 +105,17 @@ def postUpdateStockRecommend(request):
                 result['current_ma_5'] = ma_5_data[lenght-1]
                 # ---------------计算MA 5日均线 end---------------
 
-                # ---------------存储个股的解析结果 start-----------
-                # results.append(result)
-                # ---------------存储个股的解析结果 end-------------
-
-                # test code
-                # break
+                # ---------------计算 MACD的拟合斜率 start-----------
+                # num件，计算趋势and斜率
+                num = 3
+                trend_data = 拟合斜率.getSlopeAndTrendByData(macd_data[-num:], 0)
+                result['slope'] = trend_data['slope']
+                result['trend_status'] = trend_data['trend_status']
+                print(macd_data[-num:], result['slope'], result['trend_status'])
+                # 判断 => 只解析 拟合斜率为'上升'状态的股票
+                if result['trend_status'] != '上升':
+                    continue
+                # ---------------计算 拟合斜率 end-------------
 
                 # ---------------解析结果入库 start-------------
                 # 删除表所有数据
@@ -134,8 +138,12 @@ def postUpdateStockRecommend(request):
                     previous_ma_5=result['previous_ma_5'],
                     current_ma_5=result['current_ma_5']
                 )
+                # ---------------解析结果入库 end---------------
+                # 解析下一个数据
                 index += 1
                 # 打印信息
                 print('result=', result)
-                # ---------------解析结果入库 end---------------
-        return HttpResponse(json.dumps([], ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+                # test code
+                break
+        return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
