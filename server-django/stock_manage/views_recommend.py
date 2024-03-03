@@ -1,5 +1,6 @@
-import json
-from django.http import HttpResponse
+import os
+import shlex
+import subprocess
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator
 from stock_manage.utils import handler, 拟合斜率, MACD, MA
@@ -17,10 +18,16 @@ def getStockRecommendResults(request):
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
         market = request.GET.get('market', default='1')
+        sortFieldName = request.GET.get('column', default='')
+        order = request.GET.get('order', default='ascending')
         listData = []
 
+        # 获取字段名称和排序类型
+        sortFieldName = 'code' if sortFieldName == '' else sortFieldName
+        sortFieldName = sortFieldName if order == 'ascending' else '-' + sortFieldName
+
         # 查询
-        records = StockOnAnalysis.objects.filter(code__contains=code, name__contains=name).order_by('id')
+        records = StockOnAnalysis.objects.filter(code__contains=code, name__contains=name).order_by(sortFieldName)
 
         # 分页
         try:
@@ -56,6 +63,17 @@ def postUpdateStockRecommend(request):
         index = 1
         # 遍历[深市, 沪市]
         for market in [1]:
+            # ---------------test code start---------------
+            # shell_cmd = f'python ' \
+            #             f'-u ' \
+            #             f'{os.getcwd()}/stock_manage/script/script_recommend.py'
+            # cmd = shlex.split(shell_cmd)
+            # print('shell_cmd=', shell_cmd)
+            # print(os.getcwd())
+            # p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            # break
+            # ---------------test code end-----------------
+
             # 分别获取[深市, 沪市]的股票列表
             queryset = TABLE_MAP.get(str(market)).objects.all().values()
             stockList = list(queryset)
@@ -145,5 +163,5 @@ def postUpdateStockRecommend(request):
                 print('result=', result)
 
                 # test code
-                break
+                # break
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})

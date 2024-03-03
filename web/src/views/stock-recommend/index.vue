@@ -8,6 +8,7 @@
         :request="getList"
         :columns="columns"
         :search="searchConfig"
+        @sort-change="changeTableSort"
       >
         <!-- 工具栏 -->
         <template #toolbar>
@@ -85,26 +86,31 @@ export default defineComponent({
           label: 'MACD',
           prop: 'current_macd',
           minWidth: 120,
+          sortable: 'custom',
         },
         {
           label: 'DIF',
           prop: 'current_dif',
           minWidth: 120,
+          sortable: 'custom',
         },
         {
           label: 'DEA',
           prop: 'current_dea',
           minWidth: 120,
+          sortable: 'custom',
         },
         {
           label: 'MA_3',
           prop: 'current_ma_3',
           minWidth: 120,
+          sortable: 'custom',
         },
         {
           label: 'MA_5',
           prop: 'current_ma_5',
           minWidth: 120,
+          sortable: 'custom',
         },
         {
           label: '操作',
@@ -167,6 +173,20 @@ export default defineComponent({
       async btnViewData(row) {
         state.pageShow = 'view-data'
         state.row = row
+      },
+      // 排序
+      changeTableSort(column) {
+        // 获取字段名称和排序类型
+        const fieldName = column.prop
+        const order = column.order
+        // 发起后端请求的接口
+        const params = Object.assign(
+          table.value.searchModel,
+          { column: fieldName },
+          { order: order }
+        )
+        state.getList(params)
+        refresh()
       },
     })
     const table = ref(null)
