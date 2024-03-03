@@ -1,6 +1,3 @@
-import os
-import shlex
-import subprocess
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator
 from stock_manage.utils import handler, 拟合斜率, MACD, MA
@@ -8,6 +5,10 @@ from stock_manage.models import StockListSZ, StockListSH, StockOnAnalysis
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 COUNT = 200
+
+"""
+只存储macd上升的股票
+"""
 
 
 # 更新股票推荐分析结果
@@ -17,12 +18,10 @@ def getStockRecommendResults(request):
         current = request.GET.get('current', default=1)
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
-        market = request.GET.get('market', default='1')
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
-        listData = []
 
-        # 获取字段名称和排序类型
+        # 获取排序的字段名称和排序类型
         sortFieldName = 'code' if sortFieldName == '' else sortFieldName
         sortFieldName = sortFieldName if order == 'ascending' else '-' + sortFieldName
 
@@ -36,6 +35,7 @@ def getStockRecommendResults(request):
             print(ex)
             return JsonResponse({'data': {}, 'code': '200', 'message': 'No data'})
 
+        listData = []
         for record in page_info:
             # 加入到数据列表中
             listData.append({"id": record.id,
@@ -63,17 +63,6 @@ def postUpdateStockRecommend(request):
         index = 1
         # 遍历[深市, 沪市]
         for market in [1]:
-            # ---------------test code start---------------
-            # shell_cmd = f'python ' \
-            #             f'-u ' \
-            #             f'{os.getcwd()}/stock_manage/script/script_recommend.py'
-            # cmd = shlex.split(shell_cmd)
-            # print('shell_cmd=', shell_cmd)
-            # print(os.getcwd())
-            # p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-            # break
-            # ---------------test code end-----------------
-
             # 分别获取[深市, 沪市]的股票列表
             queryset = TABLE_MAP.get(str(market)).objects.all().values()
             stockList = list(queryset)
@@ -103,18 +92,12 @@ def postUpdateStockRecommend(request):
                 result['current_dif'] = dif_data[lenght-1]
                 result['previous_dea'] = dea_data[lenght-2]
                 result['current_dea'] = dea_data[lenght-1]
-                # 判断 => 只解析 DIF > DEA 的股票
-                if float(result['current_dif']) < float(result['current_dea']):
-                    continue
                 # ---------------计算MACD指标 end-----------------
 
                 # ---------------计算MA 3日均线 start-------------
                 ma_3_data = MA.calculateMA(3, data, 2)
                 result['previous_ma_3'] = ma_3_data[lenght-2]
                 result['current_ma_3'] = ma_3_data[lenght-1]
-                # 判断 => 只解析 3日MA均线 上升的股票
-                if float(result['current_ma_3']) < float(result['previous_ma_3']):
-                    continue
                 # ---------------计算MA 3日均线 end---------------
 
                 # ---------------计算MA 5日均线 start-------------
@@ -129,10 +112,6 @@ def postUpdateStockRecommend(request):
                 trend_data = 拟合斜率.getSlopeAndTrendByData(macd_data[-num:], 0)
                 result['slope'] = trend_data['slope']
                 result['trend_status'] = trend_data['trend_status']
-                print(macd_data[-num:], result['slope'], result['trend_status'])
-                # 判断 => 只解析 拟合斜率为'上升'状态的股票
-                if result['trend_status'] != '上升':
-                    continue
                 # ---------------计算 拟合斜率 end-------------
 
                 # ---------------解析结果入库 start-------------
