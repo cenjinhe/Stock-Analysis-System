@@ -20,9 +20,9 @@ def getStockList(request):
         current = request.GET.get('current', default=1)
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
-        trade_status = request.GET.get('trade_status', default=3)
-        status = request.GET.get('status', default=2)
-        market = request.GET.get('market', default='1')
+        trade_status = request.GET.get('trade_status', default=3)   # 交易状态（0:停牌, 1:正常, 2:退市, 3:全部）
+        status = request.GET.get('status', default=2)               # 更新状态（0:已更新, 1:更新中, 2:全部）
+        market = request.GET.get('market', default='1')             # 证券交易所（0:沪市, 1:深市）
         trend_status = request.GET.get('trend', default='')
         pre_trend_status = request.GET.get('pre_trend', default='')
         sortFieldName = request.GET.get('column', default='')
@@ -40,7 +40,7 @@ def getStockList(request):
         # 筛选条件
         listData = []
         status = [str(status)] if str(status) in status_list else status_list
-        trade_status = [str(trade_status)] if str(status) in trade_status_list else trade_status_list
+        trade_status = [str(trade_status)] if str(trade_status) in trade_status_list else trade_status_list
         trend_status = [str(trend_status)] if str(trend_status) in trend_status_list else trend_status_list
         pre_trend_status = [str(pre_trend_status)] if str(pre_trend_status) in pre_trend_status_list else pre_trend_status_list
         records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,

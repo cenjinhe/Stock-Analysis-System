@@ -7,7 +7,6 @@
         :title="'推荐股票'"
         :request="getList"
         :columns="columns"
-        :search="searchConfig"
         @sort-change="changeTableSort"
       >
         <!-- 工具栏 -->
@@ -120,24 +119,6 @@ export default defineComponent({
           fixed: 'right',
         },
       ],
-      searchConfig: {
-        labelWidth: '90px',
-        inputWidth: '150px',
-        fields: [
-          {
-            type: 'text',
-            label: 'A股代码',
-            name: 'code',
-            defaultValue: '',
-          },
-          {
-            type: 'text',
-            label: 'A股简称',
-            name: 'name',
-            defaultValue: '',
-          },
-        ],
-      },
       // 请求函数
       async getList(params) {
         const { data } = await getStockRecommendResults(params)
