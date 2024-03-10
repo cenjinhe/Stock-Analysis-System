@@ -82,6 +82,12 @@ export default defineComponent({
           minWidth: 120,
         },
         {
+          label: '收盘价',
+          prop: 'close',
+          minWidth: 100,
+          sortable: 'custom',
+        },
+        {
           label: 'MACD',
           prop: 'current_macd',
           minWidth: 120,

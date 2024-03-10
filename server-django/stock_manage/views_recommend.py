@@ -11,7 +11,7 @@ COUNT = 200
 """
 
 
-# 更新股票推荐分析结果
+# get股票推荐分析结果
 def getStockRecommendResults(request):
     if request.method == 'GET':
         size = request.GET.get('size', default=10)
@@ -42,6 +42,7 @@ def getStockRecommendResults(request):
                              "code": record.code,
                              "name": record.name,
                              "market": record.market,
+                             "close": record.close,
                              "previous_macd": record.previous_macd,
                              "current_macd": record.current_macd,
                              "previous_dif": record.previous_dif,
@@ -57,7 +58,7 @@ def getStockRecommendResults(request):
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
 
 
-# 更新股票推荐分析结果
+# update股票推荐分析结果
 def postUpdateStockRecommend(request):
     if request.method == 'POST':
         index = 1
@@ -70,8 +71,9 @@ def postUpdateStockRecommend(request):
             for row in stockList:
                 code = row['code']
                 name = row['name']
+                close = row['close']
                 # 定义一个变量，用于存储个股的解析结果
-                result = {'code': code, 'name': name, 'market': market}
+                result = {'code': code, 'name': name, 'market': market, 'close': close}
                 # 获取原始数据
                 rawData = handler.getRawDataList(code, COUNT)
                 if len(rawData) <= 2:
@@ -124,6 +126,7 @@ def postUpdateStockRecommend(request):
                     code=result['code'],
                     name=result['name'],
                     market=result['market'],
+                    close=result['close'],
                     previous_macd=result['previous_macd'],
                     current_macd=result['current_macd'],
                     previous_dif=result['previous_dif'],
@@ -142,5 +145,5 @@ def postUpdateStockRecommend(request):
                 print('result=', result)
 
                 # test code
-                # break
+                break
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
