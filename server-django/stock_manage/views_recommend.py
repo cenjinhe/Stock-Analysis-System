@@ -145,5 +145,5 @@ def postUpdateStockRecommend(request):
                 print('result=', result)
 
                 # test code
-                break
+                # break
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
