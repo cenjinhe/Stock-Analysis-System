@@ -23,6 +23,11 @@
           </el-button>
         </template>
         <!-- table栏 -->
+        <template #current_close="scope">
+          <div :style="{ color: getColor(scope.row.close, scope.row.current_close) }">
+            {{ scope.row.current_close }}
+          </div>
+        </template>
         <template #operate="scope">
           <el-button
             size="small"
@@ -85,6 +90,13 @@ export default defineComponent({
           label: '收盘价',
           prop: 'close',
           minWidth: 100,
+          sortable: 'custom',
+        },
+        {
+          label: '当前收盘价',
+          prop: 'current_close',
+          minWidth: 120,
+          tdSlot: 'current_close',
           sortable: 'custom',
         },
         {
@@ -174,6 +186,16 @@ export default defineComponent({
         )
         state.getList(params)
         refresh()
+      },
+      // 设置颜色 上涨red, 下跌green
+      getColor(value1, value2) {
+        if (value2 > value1) {
+          return 'red'
+        } else if (value2 < value1) {
+          return 'green'
+        } else {
+          return ''
+        }
       },
     })
     const table = ref(null)

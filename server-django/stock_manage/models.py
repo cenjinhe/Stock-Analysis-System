@@ -77,6 +77,8 @@ class StockOnAnalysis(models.Model):
     current_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
     previous_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MA均线')
     current_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
+    # 当前收盘价
+    current_close = models.FloatField(default=0, null=True, verbose_name='当前收盘价')
     # 更新时间
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 

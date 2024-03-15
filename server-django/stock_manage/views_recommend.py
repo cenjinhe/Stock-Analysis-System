@@ -43,6 +43,7 @@ def getStockRecommendResults(request):
                              "name": record.name,
                              "market": record.market,
                              "close": record.close,
+                             "current_close": record.current_close,
                              "previous_macd": record.previous_macd,
                              "current_macd": record.current_macd,
                              "previous_dif": record.previous_dif,
