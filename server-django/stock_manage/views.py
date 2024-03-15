@@ -31,7 +31,6 @@ def getStockList(request):
         status_list = ['0', '1']
         trade_status_list = ['0', '1', '2']
         trend_status_list = ['上升', '下降', '平稳', '波动']
-        pre_trend_status_list = ['上升', '下降', '平稳', '波动']
 
         # 获取字段名称和排序类型
         sortFieldName = 'code' if sortFieldName == '' else sortFieldName
@@ -42,7 +41,7 @@ def getStockList(request):
         status = [str(status)] if str(status) in status_list else status_list
         trade_status = [str(trade_status)] if str(trade_status) in trade_status_list else trade_status_list
         trend_status = [str(trend_status)] if str(trend_status) in trend_status_list else trend_status_list
-        pre_trend_status = [str(pre_trend_status)] if str(pre_trend_status) in pre_trend_status_list else pre_trend_status_list
+        pre_trend_status = [str(pre_trend_status)] if str(pre_trend_status) in trend_status_list else trend_status_list
         records = TABLE_MAP.get(str(market)).objects.filter(code__contains=code,
                                                             name__contains=name,
                                                             trade_status__in=trade_status,

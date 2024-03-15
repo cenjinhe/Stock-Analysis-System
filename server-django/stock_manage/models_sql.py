@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS {TABLE_NAME} (
         slope float NULL,
         intercept float NULL,
         trend_status char(50) NULL,
+        pre_trend_status char(50) NULL,
         update_time timestamp NULL default CURRENT_TIMESTAMP
 )
 """
