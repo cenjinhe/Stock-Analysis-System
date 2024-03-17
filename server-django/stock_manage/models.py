@@ -68,6 +68,10 @@ class StockOnAnalysis(models.Model):
     # MACD指标
     previous_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的MACD值')
     current_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的MACD值')
+    previous_macd_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MACD值')
+    current_macd_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MACD值')
+    previous_macd_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的5日MACD值')
+    current_macd_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的5日MACD值')
     previous_dif = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的DIF值')
     current_dif = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的DIF值')
     previous_dea = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的DEA值')
@@ -75,8 +79,8 @@ class StockOnAnalysis(models.Model):
     # MA指标
     previous_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MA均线')
     current_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
-    previous_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的3日MA均线')
-    current_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
+    previous_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的5日MA均线')
+    current_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的5日MA均线')
     # 当前收盘价
     current_close = models.FloatField(default=0, null=True, verbose_name='当前收盘价')
     # 更新时间

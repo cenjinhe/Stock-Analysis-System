@@ -68,13 +68,14 @@ def postUpdateStockRecommend(request):
             # 分别获取[深市, 沪市]的股票列表
             queryset = TABLE_MAP.get(str(market)).objects.all().values()
             stockList = list(queryset)
-            # 遍历股票列表
+            # 遍历[深市, 沪市]股票列表
             for row in stockList:
                 code = row['code']
                 name = row['name']
                 close = row['close']
                 # 定义一个变量，用于存储个股的解析结果
                 result = {'code': code, 'name': name, 'market': market, 'close': close}
+                print('解析：', result)
                 # 获取原始数据
                 rawData = handler.getRawDataList(code, COUNT)
                 if len(rawData) <= 2:
@@ -103,11 +104,92 @@ def postUpdateStockRecommend(request):
                 result['current_ma_3'] = ma_3_data[lenght-1]
                 # ---------------计算MA 3日均线 end---------------
 
+                # ---------------计算3日均线的 MACD指标 start---------------
+                data_3 = list(map(map_mcad_data, data, ma_3_data))
+                macd_data_3, dif_data_3, dea_data_3 = MACD.calculateMACD(10, 21, 9, data_3, 2)
+                result['previous_macd_3'] = macd_data_3[lenght-2]
+                result['current_macd_3'] = macd_data_3[lenght-1]
+                # 判断 => 只解析3日均线的 macd上升的股票
+                if float(result['current_macd_3']) < float(result['previous_macd_3']):
+                    continue
+                result['previous_dif_3'] = dif_data_3[lenght-2]
+                result['current_dif_3'] = dif_data_3[lenght-1]
+                # ---------------计算3日均线的 MACD指标 end-----------------
+
                 # ---------------计算MA 5日均线 start-------------
                 ma_5_data = MA.calculateMA(5, data, 2)
                 result['previous_ma_5'] = ma_5_data[lenght-2]
                 result['current_ma_5'] = ma_5_data[lenght-1]
                 # ---------------计算MA 5日均线 end---------------
+
+                # ---------------计算5日均线的 MACD指标 start---------------
+                data_5 = list(map(map_mcad_data, data, ma_5_data))
+                macd_data_5, dif_data_5, dea_data_5 = MACD.calculateMACD(10, 21, 9, data_5, 2)
+                lenght = len(macd_data_5)
+                result['previous_macd_5'] = macd_data_5[lenght-2]
+                result['current_macd_5'] = macd_data_5[lenght-1]
+                # 判断 => 只解析5日均线的 macd上升的股票
+                if float(result['current_macd_5']) < float(result['previous_macd_5']):
+                    continue
+                result['previous_dif_5'] = dif_data_5[lenght-2]
+                result['current_dif_5'] = dif_data_5[lenght-1]
+                # ---------------计算5日均线的 MACD指标 end-----------------
+
+                # ---------------计算7日均线的 MACD指标 start---------------
+                ma_7_data = MA.calculateMA(7, data, 2)
+                data_7 = list(map(map_mcad_data, data, ma_7_data))
+                macd_data_7, dif_data_7, dea_data_7 = MACD.calculateMACD(10, 21, 9, data_7, 2)
+                lenght = len(macd_data_7)
+                result['previous_macd_7'] = macd_data_7[lenght-2]
+                result['current_macd_7'] = macd_data_7[lenght-1]
+                # 判断 => 只解析7日均线的 macd上升的股票
+                if float(result['current_macd_7']) < float(result['previous_macd_7']):
+                    continue
+                result['previous_dif_7'] = dif_data_7[lenght-2]
+                result['current_dif_7'] = dif_data_7[lenght-1]
+                # ---------------计算7日均线的 MACD指标 end-----------------
+
+                # ---------------计算14日均线的 MACD指标 start---------------
+                ma_14_data = MA.calculateMA(14, data, 2)
+                data_14 = list(map(map_mcad_data, data, ma_14_data))
+                macd_data_14, dif_data_14, dea_data_14 = MACD.calculateMACD(10, 21, 9, data_14, 2)
+                lenght = len(macd_data_14)
+                result['previous_macd_14'] = macd_data_14[lenght-2]
+                result['current_macd_14'] = macd_data_14[lenght-1]
+                # 判断 => 只解析14日均线的 macd上升的股票
+                if float(result['current_macd_14']) < float(result['previous_macd_14']):
+                    continue
+                result['previous_dif_14'] = dif_data_14[lenght-2]
+                result['current_dif_14'] = dif_data_14[lenght-1]
+                # ---------------计算14日均线的 MACD指标 end-----------------
+
+                # ---------------计算20日均线的 MACD指标 start---------------
+                ma_20_data = MA.calculateMA(20, data, 2)
+                data_20 = list(map(map_mcad_data, data, ma_20_data))
+                macd_data_20, dif_data_20, dea_data_20 = MACD.calculateMACD(10, 21, 9, data_20, 2)
+                lenght = len(macd_data_20)
+                result['previous_macd_20'] = macd_data_20[lenght-2]
+                result['current_macd_20'] = macd_data_20[lenght-1]
+                # 判断 => 只解析20日均线的 macd上升的股票
+                if float(result['current_macd_20']) < float(result['previous_macd_20']):
+                    continue
+                result['previous_dif_20'] = dif_data_20[lenght-2]
+                result['current_dif_20'] = dif_data_20[lenght-1]
+                # ---------------计算20日均线的 MACD指标 end-----------------
+
+                # ---------------计算30日均线的 MACD指标 start---------------
+                ma_30_data = MA.calculateMA(30, data, 2)
+                data_30 = list(map(map_mcad_data, data, ma_30_data))
+                macd_data_30, dif_data_30, dea_data_30 = MACD.calculateMACD(10, 21, 9, data_30, 2)
+                lenght = len(macd_data_30)
+                result['previous_macd_30'] = macd_data_30[lenght-2]
+                result['current_macd_30'] = macd_data_30[lenght-1]
+                # 判断 => 只解析30日均线的 macd上升的股票
+                if float(result['current_macd_30']) < float(result['previous_macd_30']):
+                    continue
+                result['previous_dif_30'] = dif_data_30[lenght-2]
+                result['current_dif_30'] = dif_data_30[lenght-1]
+                # ---------------计算30日均线的 MACD指标 end-----------------
 
                 # ---------------计算 MACD的拟合斜率 start-----------
                 # num件，计算趋势and斜率
@@ -128,12 +210,19 @@ def postUpdateStockRecommend(request):
                     name=result['name'],
                     market=result['market'],
                     close=result['close'],
+                    current_close=result['close'],
+                    # MACD
                     previous_macd=result['previous_macd'],
                     current_macd=result['current_macd'],
+                    previous_macd_3=result['previous_macd_3'],
+                    current_macd_3=result['current_macd_3'],
+                    previous_macd_5=result['previous_macd_5'],
+                    current_macd_5=result['current_macd_5'],
                     previous_dif=result['previous_dif'],
                     current_dif=result['current_dif'],
                     previous_dea=result['previous_dea'],
                     current_dea=result['current_dea'],
+                    # MA
                     previous_ma_3=result['previous_ma_3'],
                     current_ma_3=result['current_ma_3'],
                     previous_ma_5=result['previous_ma_5'],
@@ -142,9 +231,14 @@ def postUpdateStockRecommend(request):
                 # ---------------解析结果入库 end---------------
                 # 解析下一个数据
                 index += 1
-                # 打印信息
-                print('result=', result)
 
                 # test code
                 # break
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
+
+
+def map_mcad_data(x, y):
+    if y == '-':
+        y = 0
+    x[2] = float(y)
+    return x
