@@ -1,15 +1,16 @@
 const Layout = () => import('@/layout/index.vue')
-const Trend = () => import('@/views/stock-trend/index.vue')
+const Trend = () => import('@/views/stock-analysis/stock-trend/index.vue')
 
 export default [
   {
-    path: '/stock-trend',
+    path: '/data-analysis',
     component: Layout,
-    name: 'stockTrend',
+    name: 'dataAnalysis',
     meta: {
-      title: '拟合斜率',
+      title: '数据分析',
     },
-    icon: 'Histogram',
+    icon: 'DataAnalysis',
+    alwaysShow: true,
     children: [
       {
         path: 'trend',

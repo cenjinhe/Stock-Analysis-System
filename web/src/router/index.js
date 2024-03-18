@@ -34,7 +34,7 @@ import lock from './modules/lock'
 import home from './modules/home'
 import stockList from './modules/stock-list'
 import stockManage from './modules/stock-manage'
-import stockTrend from './modules/stock-trend'
+import stockAnalysis from './modules/stock-analysis'
 import stockRecommend from './modules/stock-recommend'
 import stockTrade from './modules/stock-trade'
 import stockTradeMock from './modules/stock-trade-mock'
@@ -48,11 +48,11 @@ export const fixedRoutes = [
   ...stockRecommend, // 每日推荐
   ...stockList, // 所有股票
   ...stockManage, // 数据管理
-  ...stockTrend,
-  ...stockTrade,
-  ...stockTradeMock,
-  ...user,
-  ...stockAbout,
+  ...stockAnalysis, // 数据分析
+  ...stockTrade, // 自动交易
+  ...stockTradeMock, // 模拟交易
+  ...user, // 用户管理
+  ...stockAbout, // 关于我们
 ]
 // 动态菜单
 export const asyncRoutes = []

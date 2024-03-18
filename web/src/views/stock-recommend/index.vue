@@ -1,5 +1,16 @@
 <template>
   <div>
+    <el-card style="margin-bottom: 10px;" shadow="never">
+      <el-collapse v-model="activeNames">
+        <el-collapse-item title="搜索选项" name="1">
+          <div>
+            Consistent with real life: in line with the process and logic of
+            real real real life, and comply with languages and habits that the
+            users used to;
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+    </el-card>
     <keep-alive>
       <pro-table
         v-if="pageShow === 'stock-list'"
@@ -11,8 +22,11 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="primary" @click="updateStockRecommend">
+          <el-button type="warning" @click="updateStockRecommend">
             更新数据
+          </el-button>
+          <el-button type="primary" @click="updateStockRecommend">
+            更新当前收盘价
           </el-button>
           <el-button
             icon="Refresh"
@@ -197,6 +211,8 @@ export default defineComponent({
           return ''
         }
       },
+      // 筛选条件
+      activeNames: ['1'],
     })
     const table = ref(null)
     const refresh = () => {
