@@ -19,4 +19,5 @@ urlpatterns = [
     # views_recommend
     path('getStockRecommendResults/', views_recommend.getStockRecommendResults),
     path('postUpdateStockRecommend/', views_recommend.postUpdateStockRecommend),
+    path('postUpdateCurrentClose/', views_recommend.postUpdateCurrentClose),
 ]

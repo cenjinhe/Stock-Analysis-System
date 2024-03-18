@@ -76,6 +76,7 @@ import ViewData from '@/views/stock-list/component/ViewData.vue'
 import {
   getStockRecommendResults,
   postUpdateStockRecommend,
+  postUpdateCurrentClose,
 } from '@/api/stock-recommend'
 
 export default defineComponent({
@@ -169,6 +170,27 @@ export default defineComponent({
           .then(async () => {
             const param = {}
             const { code, message } = await postUpdateStockRecommend(param)
+            if (code === '200') {
+              refresh()
+              ElMessage({ type: 'success', message: '更新成功' })
+            } else if (code === '201') {
+              ElMessage({ type: 'warning', message: message })
+            } else {
+              console.log('done')
+            }
+          })
+          .catch(() => {})
+      },
+      // 【更新当前收盘价】按钮
+      async updateCurrentClose() {
+        ElMessageBox.confirm(`更新当前收盘价, 是否继续?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        })
+          .then(async () => {
+            const param = {}
+            const { code, message } = await postUpdateCurrentClose(param)
             if (code === '200') {
               refresh()
               ElMessage({ type: 'success', message: '更新成功' })

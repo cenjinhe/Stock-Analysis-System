@@ -64,7 +64,10 @@ class StockOnAnalysis(models.Model):
     code = models.CharField(max_length=50, verbose_name='A股代码')
     name = models.CharField(max_length=50, verbose_name='A股简称')
     market = models.IntegerField(default=1, verbose_name='1深市 0沪市')
+    # 收盘价
     close = models.FloatField(default=0, null=True, verbose_name='今日收盘价')
+    # 当前收盘价
+    current_close = models.FloatField(default=0, null=True, verbose_name='当前收盘价')
     # MACD指标
     previous_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的MACD值')
     current_macd = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的MACD值')
@@ -81,8 +84,6 @@ class StockOnAnalysis(models.Model):
     current_ma_3 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的3日MA均线')
     previous_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='前一天的5日MA均线')
     current_ma_5 = models.CharField(max_length=50, default=None, null=True, verbose_name='现在的5日MA均线')
-    # 当前收盘价
-    current_close = models.FloatField(default=0, null=True, verbose_name='当前收盘价')
     # 更新时间
     update_time = models.DateTimeField(default=datetime.datetime.now(), verbose_name="更新时间")
 

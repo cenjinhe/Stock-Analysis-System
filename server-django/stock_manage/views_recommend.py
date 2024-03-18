@@ -237,6 +237,26 @@ def postUpdateStockRecommend(request):
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 
 
+# 更新当前收盘价
+def postUpdateCurrentClose(request):
+    if request.method == 'POST':
+        queryset = StockOnAnalysis.objects.all().values()
+        stockList = list(queryset)
+        # 遍历列表
+        for row in stockList:
+            code = row['code']
+            name = row['name']
+            # 获取当前收盘价
+            for market in [1, 0]:
+                record = TABLE_MAP.get(str(market)).objects.filter(code=code, name=name).first()
+                if not record:
+                    continue
+                # 更新当前收盘价
+                StockOnAnalysis.objects.filter(code=code, name=name).update(current_close=record.close)
+
+        return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
+
+
 def map_mcad_data(x, y):
     """将MA数据转换为MACD数据"""
     if y == '-':
