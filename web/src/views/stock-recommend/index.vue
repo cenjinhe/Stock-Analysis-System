@@ -22,10 +22,10 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="warning" @click="updateStockRecommend">
+          <el-button type="warning" @click="updateStockRecommend()">
             更新数据
           </el-button>
-          <el-button type="primary" @click="updateStockRecommend">
+          <el-button type="primary" @click="updateCurrentClose()">
             更新当前收盘价
           </el-button>
           <el-button
