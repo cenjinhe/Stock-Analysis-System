@@ -7,7 +7,7 @@ export default [
     component: Layout,
     name: 'StockSelect',
     meta: {
-      title: '每日推荐',
+      title: '推荐股票',
     },
     icon: 'icon-recommend2',
     children: [
