@@ -1,44 +1,91 @@
 <template>
-  <div class="myDiv">
-    <div class="nav-left"><el-button>向左</el-button></div>
-    <div class="nav-center"><el-button>居中</el-button></div>
-    <div class="nav-right"><el-button>向右</el-button></div>
-  </div>
+  <el-card shadow="never">
+    <div :class="advanced ? 'search' : null">
+      <el-form>
+        <div :class="advanced ? null : 'fold'">
+          <el-row :gutter="20">
+            <el-col :md="8" :sm="24">
+              <el-form-item label="规则编号">
+                <el-input placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="使用状态">
+                <el-select placeholder="请选择" style="width: 100%">
+                  <el-select-option value="1">关闭</el-select-option>
+                  <el-select-option value="2">运行中</el-select-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="调用次数">
+                <el-input-number style="width: 100%" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-if="advanced" :gutter="20">
+            <el-col :md="8" :sm="24">
+              <el-form-item label="更新日期">
+                <el-date-picker
+                  style="width: 100%"
+                  placeholder="请输入更新日期"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="使用状态">
+                <el-select placeholder="请选择" style="width: 100%">
+                  <el-select-option value="1">关闭</el-select-option>
+                  <el-select-option value="2">运行中</el-select-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :md="8" :sm="24">
+              <el-form-item label="描    述">
+                <el-input placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <span style="float: right; margin-top: 3px;">
+          <el-button type="primary">查询</el-button>
+          <el-button style="margin-left: 8px">重置</el-button>
+          <a @click="toggleAdvanced" style="margin-left: 8px">
+            {{ advanced ? '收起' : '展开' }}
+            <el-icon>
+              <component :is="advanced ? 'ArrowUp' : 'ArrowDown'" />
+            </el-icon>
+          </a>
+        </span>
+      </el-form>
+    </div>
+  </el-card>
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      advanced: false, // 是否展开，默认收起
+    }
+  },
+  methods: {
+    toggleAdvanced() {
+      this.advanced = !this.advanced
+    },
+  },
+}
 </script>
 
 <style scoped>
-.myDiv {
-  padding: 10px;
-  color: #fff;
-  background: #3296fa;
-  display: flex;       /* 设为Flex布局 */
-  align-items: center; /* 子元素在竖直方向居中 */
+.search {
+  margin-bottom: 40px;
 }
-
-.myDiv > * {
-  flex: 1;             /* 子元素占满整个多余部分而不进行挤压 */
+.fold {
+  width: calc(100% - 216px);
+  display: inline-block;
 }
-
-.myDiv .nav-left {
-  display: -webkit-box;
-  display: flex;
-  align-items: center;
-}
-
-.myDiv .nav-center {
-  flex: none;
-  width: 600px;
-  text-align: center;
-}
-
-.myDiv .nav-right {
-  display: flex;
-  align-items: center;       /* 子元素在竖直方向居中 */
-  justify-content: flex-end; /*定义子元素在主轴上的对齐方式为右对齐*/
-  /*text-align: right;*/
+.operator {
+  margin-bottom: 18px;
 }
 </style>

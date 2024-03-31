@@ -7,7 +7,7 @@ export default [
     component: Layout,
     name: 'auto-trade-mock',
     meta: {
-      title: '模拟',
+      title: '模拟交易',
     },
     icon: 'icon-test',
     children: [
