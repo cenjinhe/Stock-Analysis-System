@@ -3,6 +3,7 @@ const MA = () => import('@/views/stock-about/indicator-formula/component/MA.vue'
 const MACD = () => import('@/views/stock-about/indicator-formula/component/MACD.vue')
 const IndicatorFormula = () => import('@/views/stock-about/indicator-formula/index.vue')
 const BaoStock = () => import('@/views/stock-about/baostock/index.vue')
+const LearningNotes = () => import('@/views/stock-about/learning-notes/index.vue')
 
 export default [
   {
@@ -49,6 +50,14 @@ export default [
         component: BaoStock,
         meta: {
           title: '证券宝网',
+        },
+      },
+      {
+        path: 'learning-notes',
+        name: 'LearningNotes',
+        component: LearningNotes,
+        meta: {
+          title: '学习笔记',
         },
       },
     ],

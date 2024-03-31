@@ -2,6 +2,14 @@ import datetime
 from django.db import models
 
 
+# config
+class Config(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
+    type = models.CharField(max_length=50, default=None, verbose_name='type')
+    name = models.CharField(max_length=50, default=None, verbose_name='name')
+    value = models.CharField(max_length=5000, default=None, verbose_name='value')
+
+
 # Create your models here.
 class StockListSZ(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')

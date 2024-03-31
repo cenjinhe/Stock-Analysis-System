@@ -1,5 +1,5 @@
 const Layout = () => import('@/layout/index.vue')
-const StockTrade = () => import('@/views/stock-trade/index.vue')
+const StockTrade = () => import('@/views/stock-trade-mock/index.vue')
 
 export default [
   {
@@ -7,7 +7,7 @@ export default [
     component: Layout,
     name: 'auto-trade-mock',
     meta: {
-      title: '模拟交易',
+      title: '模拟',
     },
     icon: 'icon-test',
     children: [

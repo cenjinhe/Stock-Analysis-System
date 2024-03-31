@@ -39,6 +39,7 @@ import stockRecommend from './modules/stock-recommend'
 import stockTrade from './modules/stock-trade'
 import stockTradeMock from './modules/stock-trade-mock'
 import user from './modules/user'
+import stockSystem from './modules/stock-system'
 import stockAbout from './modules/stock-about'
 
 /* 菜单栏的路由 */
@@ -52,6 +53,7 @@ export const fixedRoutes = [
   ...stockTrade, // 自动交易
   ...stockTradeMock, // 模拟交易
   ...user, // 用户管理
+  ...stockSystem, // 系统配置
   ...stockAbout, // 关于我们
 ]
 // 动态菜单

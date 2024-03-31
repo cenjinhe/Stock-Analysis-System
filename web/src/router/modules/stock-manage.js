@@ -1,5 +1,6 @@
 const Layout = () => import('@/layout/index.vue')
 const StockUpdate = () => import('@/views/stock-manage/history-data/index.vue')
+const WorkFlow = () => import('@/views/stock-manage/work-flow/index.vue')
 
 export default [
   {
@@ -27,6 +28,14 @@ export default [
         component: StockUpdate,
         meta: {
           title: '历史数据-同花顺',
+        },
+      },
+      {
+        path: 'work-flow',
+        name: 'WorkFlow',
+        component: WorkFlow,
+        meta: {
+          title: '更新数据-工作流',
         },
       },
     ],

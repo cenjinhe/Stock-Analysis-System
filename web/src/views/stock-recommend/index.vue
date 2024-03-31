@@ -1,15 +1,10 @@
 <template>
   <div>
     <el-card style="margin-bottom: 10px;" shadow="never">
-      <el-collapse v-model="activeNames">
-        <el-collapse-item title="搜索选项" name="1">
-          <div>
-            Consistent with real life: in line with the process and logic of
-            real real real life, and comply with languages and habits that the
-            users used to;
-          </div>
-        </el-collapse-item>
-      </el-collapse>
+      <a @click="toggleAdvanced" style="margin-left: 8px">
+        {{advanced ? '收起' : '展开'}}
+        <a-icon :type="advanced ? 'up' : 'down'" />
+      </a>
     </el-card>
     <keep-alive>
       <pro-table
