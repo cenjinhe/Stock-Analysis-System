@@ -1,5 +1,5 @@
 const Layout = () => import('@/layout/index.vue')
-const StockTrade = () => import('@/views/stock-trade/index.vue')
+const System = () => import('@/views/system/index.vue')
 
 export default [
   {
@@ -11,7 +11,7 @@ export default [
     children: [
       {
         path: '',
-        component: StockTrade,
+        component: System,
         meta: { title: '系统配置' },
       },
     ],
