@@ -1,4 +1,5 @@
 import json
+import datetime
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator
 from stock_manage.utils import handler, 拟合斜率, MACD, MA
@@ -41,6 +42,7 @@ def getStockRecommendResults(request):
         for record in page_info:
             # 加入到数据列表中
             listData.append({"id": record.id,
+                             "date": record.date.strftime("%Y-%m-%d"),
                              "code": record.code,
                              "name": record.name,
                              "market": record.market,
@@ -70,8 +72,10 @@ def postUpdateStockRecommend(request):
         checkedMACD = json_param.get('checkedMACD', [])
         macdNum = json_param.get('macdNum', NUM_MACD)
         trendNum = json_param.get('trendNum', NUM_TREND)
-        print(checkedMACD, macdNum, trendNum)
-        macdList = ['1日', '3日', '5日', '7日', '14日']
+        date = json_param.get('date', datetime.date.today())
+        if not date:
+            date = datetime.date.today()
+        print(checkedMACD, macdNum, trendNum, date)
 
         index = 1
         # 遍历[深市, 沪市]
@@ -83,14 +87,15 @@ def postUpdateStockRecommend(request):
             for row in stockList:
                 code = row['code']
                 name = row['name']
-                close = row['close']
-                # 定义一个变量，用于存储个股的解析结果
-                result = {'code': code, 'name': name, 'market': market, 'close': close}
-                print('解析：', result)
+
                 # 获取原始数据
-                rawData = handler.getRawDataList(code, macdNum)
+                rawData = handler.getRawDataListFromDate(code, date, macdNum)
                 if len(rawData) <= 2:
                     continue
+
+                # 定义一个变量result，用于存储个股的解析结果
+                result = {'date': rawData[0][0], 'code': code, 'name': name, 'market': market, 'close': rawData[0][2]}
+                print('解析：', result)
 
                 # 分割原始数据 如:[[日期(date), 开盘(open)，收盘(close)，最低(low)，最高(high)]]，并倒序(日期从小到大)
                 data = [[element[0], element[1], element[2], element[3], element[4]] for element in rawData][::-1]
@@ -219,6 +224,7 @@ def postUpdateStockRecommend(request):
                 # 重新插入新数据
                 StockOnAnalysis.objects.create(
                     id=index,
+                    date=result['date'],
                     code=result['code'],
                     name=result['name'],
                     market=result['market'],
@@ -265,7 +271,8 @@ def postUpdateCurrentClose(request):
                 if not record:
                     continue
                 # 更新当前收盘价
-                StockOnAnalysis.objects.filter(code=code, name=name).update(current_close=record.close)
+                StockOnAnalysis.objects.filter(code=code, name=name).update(current_close=record.close,
+                                                                            update_time=datetime.datetime.now())
 
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 

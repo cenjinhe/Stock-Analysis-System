@@ -142,6 +142,11 @@ export default defineComponent({
           minWidth: 60,
         },
         {
+          label: '行情日期',
+          prop: 'date',
+          minWidth: 120,
+        },
+        {
           label: 'A股代码',
           prop: 'code',
           minWidth: 120,
@@ -194,6 +199,11 @@ export default defineComponent({
           prop: 'current_ma_5',
           minWidth: 120,
           sortable: 'custom',
+        },
+        {
+          label: '更新日期',
+          prop: 'update_time',
+          minWidth: 180,
         },
         {
           label: '操作',
