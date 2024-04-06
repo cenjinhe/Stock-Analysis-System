@@ -6,13 +6,13 @@
           <div :class="advanced ? null : 'fold'">
             <el-row :gutter="20">
               <el-col :md="8" :sm="24">
-                <el-form-item label="ST股票">
-                  <el-switch v-model="formData.hasST" active-text="包含" inactive-text="不包含"/>
+                <el-form-item label="A股代码">
+                  <el-input v-model="formData.code" placeholder="A股代码" style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
-                <el-form-item label="行情日期">
-                  <el-date-picker v-model="formData.date" style="width: 100%" placeholder="请输入更新日期"/>
+                <el-form-item label="A股简称">
+                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
@@ -21,30 +21,30 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row v-if="advanced" :gutter="20">
-              <el-col :md="8" :sm="24">
-                <el-form-item label="更新日期">
-                  <el-date-picker v-model="formData.date" style="width: 100%" placeholder="请输入更新日期"/>
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="使用状态">
-                  <el-select placeholder="请选择" style="width: 100%">
-                    <el-select-option value="1">关闭</el-select-option>
-                    <el-select-option value="2">运行中</el-select-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="描    述">
-                  <el-input placeholder="请输入" />
-                </el-form-item>
-              </el-col>
-            </el-row>
+<!--            <el-row v-if="advanced" :gutter="20">-->
+<!--              <el-col :md="8" :sm="24">-->
+<!--                <el-form-item label="更新日期">-->
+<!--                  <el-date-picker v-model="formData.date" style="width: 100%" placeholder="请输入更新日期"/>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--              <el-col :md="8" :sm="24">-->
+<!--                <el-form-item label="使用状态">-->
+<!--                  <el-select placeholder="请选择" style="width: 100%">-->
+<!--                    <el-select-option value="1">关闭</el-select-option>-->
+<!--                    <el-select-option value="2">运行中</el-select-option>-->
+<!--                  </el-select>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--              <el-col :md="8" :sm="24">-->
+<!--                <el-form-item label="ST股票">-->
+<!--                  <el-switch v-model="formData.hasST" active-text="包含" inactive-text="不包含"/>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
           </div>
           <span style="float: right; margin-top: 3px;">
-            <el-button type="primary" @click="updateStockRecommend()">查询</el-button>
-            <el-button style="margin-left: 8px" >重置</el-button>
+            <el-button type="primary" @click="btn_query()">查询</el-button>
+            <el-button style="margin-left: 8px" @click="btn_reset()">重置</el-button>
             <a @click="toggleAdvanced" style="margin-left: 8px">
               {{ advanced ? '收起' : '展开' }}
               <el-icon><component :is="advanced ? 'ArrowUp' : 'ArrowDown'" /></el-icon>
@@ -64,11 +64,11 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="warning" @click="updataDialog(true)">
+          <el-button type="warning" @click="btn_updataDialog(true)">
             更新推荐股票
           </el-button>
-          <el-button type="primary" @click="updateCurrentClose()">
-            更新当前收盘价
+          <el-button type="primary" @click="btn_updateCurrentClose()">
+            更新收盘价(现在)
           </el-button>
           <el-button
             icon="Refresh"
@@ -114,7 +114,7 @@
     />
     <UpData
       :dialogVisible="dialogUpDataVisible.visible"
-      @closeDialog="updataDialog"
+      @closeDialog="btn_updataDialog"
     ></UpData>
   </div>
 </template>
@@ -126,7 +126,6 @@ import ViewData from '@/views/stock-list/component/ViewData.vue'
 import UpData from '@/views/stock-recommend/component/Updata.vue'
 import {
   getStockRecommendResults,
-  postUpdateStockRecommend,
   postUpdateCurrentClose,
 } from '@/api/stock-recommend'
 
@@ -158,15 +157,15 @@ export default defineComponent({
           minWidth: 120,
         },
         {
-          label: '收盘价',
+          label: '收盘价(之前)',
           prop: 'close',
-          minWidth: 100,
+          minWidth: 130,
           sortable: 'custom',
         },
         {
-          label: '当前收盘价',
+          label: '收盘价(现在)',
           prop: 'current_close',
-          minWidth: 120,
+          minWidth: 130,
           tdSlot: 'current_close',
           sortable: 'custom',
         },
@@ -214,36 +213,29 @@ export default defineComponent({
         },
       ],
       // 请求函数
-      async getList(params) {
-        const { data } = await getStockRecommendResults(params)
+      async getList(params = null) {
+        const queryParams = params
+          ? Object.assign(params, state.formData)
+          : Object.assign(table.value.searchModel, state.formData)
+        const { data } = await getStockRecommendResults(queryParams)
         return {
           data: data.list,
           total: +data.total,
         }
       },
-      // 【更新数据】按钮
-      async updateStockRecommend() {
-        ElMessageBox.confirm(`更新数据, 是否继续?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        })
-          .then(async () => {
-            const param = {}
-            const { code, message } = await postUpdateStockRecommend(param)
-            if (code === '200') {
-              refresh()
-              ElMessage({ type: 'success', message: '更新成功' })
-            } else if (code === '201') {
-              ElMessage({ type: 'warning', message: message })
-            } else {
-              console.log('done')
-            }
-          })
-          .catch(() => {})
+      // 【查询】按钮
+      async btn_query() {
+        await state.getList()
+        refresh()
+      },
+      // 【重置】按钮
+      async btn_reset() {
+        state.formData = { code: '', name: '' }
+        await state.getList()
+        refresh()
       },
       // 【更新当前收盘价】按钮
-      async updateCurrentClose() {
+      async btn_updateCurrentClose() {
         ElMessageBox.confirm(`更新当前收盘价, 是否继续?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -300,13 +292,12 @@ export default defineComponent({
         this.advanced = !this.advanced
       },
       formData: {
-        hasST: true,
-        date: new Date(),
-        fiveMACD: true,
+        code: '',
+        name: '',
       },
       // 工具栏
       dialogUpDataVisible: { visible: false },
-      updataDialog(flg, isRefresh = false) {
+      btn_updataDialog(flg, isRefresh = false) {
         state.dialogUpDataVisible.visible = flg
         if (isRefresh) refresh()
       },

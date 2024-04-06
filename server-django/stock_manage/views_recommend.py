@@ -17,10 +17,13 @@ NUM_TREND = 3
 # get股票推荐分析结果
 def getStockRecommendResults(request):
     if request.method == 'GET':
+        # page页
         size = request.GET.get('size', default=10)
         current = request.GET.get('current', default=1)
+        # 查询条件
         code = request.GET.get('code', default='')
         name = request.GET.get('name', default='')
+        # 排序字段
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
 
