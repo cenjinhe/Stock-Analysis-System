@@ -293,7 +293,7 @@ export default defineComponent({
       },
       // 获取涨跌幅
       getRatio(row) {
-        // 公式：100* (现在的收盘价 - 之前的收盘价)/ (之前的收盘价)
+        // 公式：100* (现在的收盘价 - 之前的收盘价) / 之前的收盘价)
         const value = 100 * ((row.current_close - row.close) / row.close)
         return value.toFixed(1)
       },
