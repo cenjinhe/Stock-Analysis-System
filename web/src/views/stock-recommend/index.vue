@@ -80,13 +80,12 @@
         </template>
         <!-- table栏 -->
         <template #current_close="scope">
-          <div
-            :style="{
-              color: getColor(scope.row.close, scope.row.current_close),
-            }"
-          >
+          <div :style="{color: getColor(scope.row.close, scope.row.current_close)}">
             {{ scope.row.current_close }}
           </div>
+        </template>
+        <template #ratio="scope">
+          <div :style="{color: getColor(scope.row.close, scope.row.current_close)}">{{ getRatio(scope.row) }}%</div>
         </template>
         <template #operate="scope">
           <el-button
@@ -168,6 +167,12 @@ export default defineComponent({
           minWidth: 130,
           tdSlot: 'current_close',
           sortable: 'custom',
+        },
+        {
+          label: '涨跌幅',
+          prop: 'ratio',
+          minWidth: 100,
+          tdSlot: 'ratio',
         },
         {
           label: 'MACD',
@@ -285,6 +290,12 @@ export default defineComponent({
         } else {
           return ''
         }
+      },
+      // 获取涨跌幅
+      getRatio(row) {
+        // 公式：100* (现在的收盘价 - 之前的收盘价)/ (之前的收盘价)
+        const value = 100 * ((row.current_close - row.close) / row.close)
+        return value.toFixed(1)
       },
       // 条件栏
       advanced: false, // 是否展开，默认收起
