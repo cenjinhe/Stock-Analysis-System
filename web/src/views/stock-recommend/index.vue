@@ -16,35 +16,47 @@
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
-                <el-form-item label="5日_MACD上升">
-                  <el-switch v-model="formData.fiveMACD" inline-prompt active-text="是" inactive-text="否"/>
+                <el-form-item label="MACD范围">
+                  <!-- 只能输入数字，允许输入小数点和负号，且只能输入两位小数（正数、负数、0）-->
+                  <el-input
+                    v-model.trim="formData.macdStart"
+                    maxlength="16"
+                    oninput="value=value.replace(/^([0-9-]\d*\.?\d{0,2})?.*$/,'$1')"
+                    style="width: 45%;"
+                    @blur="formData.macdStart = $event.target.value"
+                  />
+                  <span style="width: 10%;text-align: center;">-</span>
+                  <el-input
+                    v-model.trim="formData.macdEnd"
+                    maxlength="16"
+                    oninput="value=value.replace(/^([0-9-]\d*\.?\d{0,2})?.*$/,'$1')"
+                    style="width: 45%;"
+                    @blur="formData.macdEnd = $event.target.value"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
-<!--            <el-row v-if="advanced" :gutter="20">-->
-<!--              <el-col :md="8" :sm="24">-->
-<!--                <el-form-item label="更新日期">-->
-<!--                  <el-date-picker v-model="formData.date" style="width: 100%" placeholder="请输入更新日期"/>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col :md="8" :sm="24">-->
-<!--                <el-form-item label="使用状态">-->
-<!--                  <el-select placeholder="请选择" style="width: 100%">-->
-<!--                    <el-select-option value="1">关闭</el-select-option>-->
-<!--                    <el-select-option value="2">运行中</el-select-option>-->
-<!--                  </el-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col :md="8" :sm="24">-->
-<!--                <el-form-item label="ST股票">-->
-<!--                  <el-switch v-model="formData.hasST" active-text="包含" inactive-text="不包含"/>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-row v-if="advanced" :gutter="20">
+              <el-col :md="8" :sm="24">
+                <el-form-item label="A股代码">
+                  <el-input v-model="formData.code" placeholder="A股代码" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="A股简称">
+                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="A股简称">
+                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
           <span style="float: right; margin-top: 3px;">
-            <el-button type="primary" @click="btn_query()">查询</el-button>
-            <el-button style="margin-left: 8px" @click="btn_reset()">重置</el-button>
+            <el-button type="primary" icon="Search" @click="btn_query()">查询</el-button>
+            <el-button style="margin-left: 8px" icon="RefreshRight" @click="btn_reset()">重置</el-button>
             <a @click="toggleAdvanced" style="margin-left: 8px">
               {{ advanced ? '收起' : '展开' }}
               <el-icon><component :is="advanced ? 'ArrowUp' : 'ArrowDown'" /></el-icon>
@@ -297,7 +309,7 @@ export default defineComponent({
         const value = 100 * ((row.current_close - row.close) / row.close)
         return value.toFixed(1)
       },
-      // 条件栏
+      // 查询条件栏
       advanced: false, // 是否展开，默认收起
       toggleAdvanced() {
         this.advanced = !this.advanced
@@ -305,6 +317,8 @@ export default defineComponent({
       formData: {
         code: '',
         name: '',
+        macdStart: '',
+        macdEnd: '',
       },
       // 工具栏
       dialogUpDataVisible: { visible: false },
@@ -327,10 +341,10 @@ export default defineComponent({
   margin-bottom: 40px;
 }
 .fold {
-  width: calc(100% - 216px);
+  width: calc(100% - 230px);
   display: inline-block;
 }
-.operator {
-  margin-bottom: 18px;
-}
+/*.operator {*/
+/*  margin-bottom: 18px;*/
+/*}*/
 </style>
