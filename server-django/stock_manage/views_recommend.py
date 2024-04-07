@@ -1,3 +1,6 @@
+"""
+Django models filter筛选条件详解: https://www.cnblogs.com/qq128/p/13428278.html
+"""
 import json
 import datetime
 from django.http.response import JsonResponse
@@ -34,17 +37,14 @@ def getStockRecommendResults(request):
         sortFieldName = sortFieldName if order == 'ascending' else '-' + sortFieldName
 
         # 查询条件为空值时的处理
-        if not macdStart:
-            macdStart = -100
-        if not macdEnd:
-            macdEnd = 100
+        macdStart = -100 if not macdStart else macdStart
+        macdEnd = 100 if not macdEnd else macdEnd
 
         # 查询
         records = StockOnAnalysis.objects.filter(
             code__contains=code,
-            name__contains=name).filter(
-                # StockOnAnalysis.current_macd >= macdStart,
-                # StockOnAnalysis.current_macd <= macdEnd
+            name__contains=name,
+            current_macd__range=(macdStart, macdEnd)
             ).order_by(sortFieldName)
 
         # 分页

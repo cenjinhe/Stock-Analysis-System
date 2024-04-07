@@ -38,7 +38,7 @@
             </el-row>
             <el-row v-if="advanced" :gutter="20">
               <el-col :md="8" :sm="24">
-                <el-form-item label="A股代码">
+                <el-form-item label="不看*ST">
                   <el-input v-model="formData.code" placeholder="A股代码" style="width: 100%" />
                 </el-form-item>
               </el-col>
@@ -247,7 +247,12 @@ export default defineComponent({
       },
       // 【重置】按钮
       async btn_reset() {
-        state.formData = { code: '', name: '' }
+        state.formData = {
+          code: '',
+          name: '',
+          macdStart: -0.1,
+          macdEnd: 0.1,
+        }
         await state.getList()
         refresh()
       },
@@ -310,15 +315,15 @@ export default defineComponent({
         return value.toFixed(1)
       },
       // 查询条件栏
-      advanced: false, // 是否展开，默认收起
+      advanced: true, // 是否展开，默认收起
       toggleAdvanced() {
         this.advanced = !this.advanced
       },
       formData: {
         code: '',
         name: '',
-        macdStart: '',
-        macdEnd: '',
+        macdStart: -0.1,
+        macdEnd: 0.1,
       },
       // 工具栏
       dialogUpDataVisible: { visible: false },
