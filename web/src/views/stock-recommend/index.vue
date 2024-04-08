@@ -7,12 +7,12 @@
             <el-row :gutter="20">
               <el-col :md="8" :sm="24">
                 <el-form-item label="A股代码">
-                  <el-input v-model="formData.code" placeholder="A股代码" style="width: 100%" />
+                  <el-input v-model="formData.code" placeholder="A股代码" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
                 <el-form-item label="A股简称">
-                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
+                  <el-input v-model="formData.name" placeholder="A股简称" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
@@ -39,17 +39,17 @@
             <el-row v-if="advanced" :gutter="20">
               <el-col :md="8" :sm="24">
                 <el-form-item label="不看*ST">
-                  <el-input v-model="formData.code" placeholder="A股代码" style="width: 100%" />
+                  <el-input v-model="formData.code" placeholder="A股代码" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
                 <el-form-item label="A股简称">
-                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
+                  <el-input v-model="formData.name" placeholder="A股简称" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
                 <el-form-item label="A股简称">
-                  <el-input v-model="formData.name" placeholder="A股简称" style="width: 100%" />
+                  <el-input v-model="formData.name" placeholder="A股简称" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
             </el-row>

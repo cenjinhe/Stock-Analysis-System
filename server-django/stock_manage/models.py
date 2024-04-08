@@ -3,14 +3,19 @@ from django.db import models
 
 
 # config
-class Config(models.Model):
+class StockConfig(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
-    type = models.CharField(max_length=50, default=None, verbose_name='type')
     name = models.CharField(max_length=50, default=None, verbose_name='name')
     value = models.CharField(max_length=5000, default=None, verbose_name='value')
 
+    class Meta:
+        db_table = 'stock_config'
+        # 为这个类定义一个说明
+        verbose_name = '股票配置'
+        # 不加这个的话在我们的verbose_name在admin里面会被自动加上s
+        verbose_name_plural = '股票配置'
 
-# Create your models here.
+
 class StockListSZ(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
     code = models.CharField(max_length=50, verbose_name='A股代码')
@@ -33,9 +38,7 @@ class StockListSZ(models.Model):
 
     class Meta:
         db_table = 'stock_list_sz'
-        # 为这个类定义一个说明
         verbose_name = '股票列表(深市)'
-        # 不加这个的话在我们的verbose_name在admin里面会被自动加上s
         verbose_name_plural = '股票列表(深市)'
 
 
