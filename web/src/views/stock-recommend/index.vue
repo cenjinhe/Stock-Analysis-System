@@ -55,8 +55,8 @@
             </el-row>
           </div>
           <span style="float: right; margin-top: 3px;">
-            <el-button type="primary" icon="Search" @click="btn_query()">查询</el-button>
-            <el-button style="margin-left: 8px" icon="RefreshRight" @click="btn_reset()">重置</el-button>
+            <el-button type="primary" icon="Search" @click="btn_query()">查 询</el-button>
+            <el-button style="margin-left: 8px" icon="RefreshRight" @click="btn_reset()">重 置</el-button>
             <a @click="toggleAdvanced" style="margin-left: 8px">
               {{ advanced ? '收起' : '展开' }}
               <el-icon><component :is="advanced ? 'ArrowUp' : 'ArrowDown'" /></el-icon>
@@ -69,24 +69,20 @@
       <pro-table
         v-if="pageShow === 'stock-list'"
         ref="table"
-        :title="'推荐股票'"
+        :title="status==='updating' ? `推荐股票 (status: ${status})` : '推荐股票'"
         :request="getList"
         :columns="columns"
         @sort-change="changeTableSort"
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="warning" @click="btn_updataDialog(true)">
+          <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
             更新推荐股票
           </el-button>
-          <el-button type="primary" @click="btn_updateCurrentClose()">
+          <el-button type="primary" :disabled="status==='updating'" @click="btn_updateCurrentClose()">
             更新收盘价(现在)
           </el-button>
-          <el-button
-            icon="Refresh"
-            style="margin-right: 30px;"
-            @click="refresh"
-          >
+          <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
             刷新
           </el-button>
         </template>
@@ -100,29 +96,16 @@
           <div :style="{color: getColor(scope.row.close, scope.row.current_close)}">{{ getRatio(scope.row) }}%</div>
         </template>
         <template #operate="scope">
-          <el-button
-            size="small"
-            type="success"
-            @click="btnViewData(scope.row)"
-          >
+          <el-button size="small" type="success" @click="btnViewData(scope.row)">
             详情
           </el-button>
-          <el-button
-            size="small"
-            type="primary"
-            disabled
-            @click="btnViewData(scope.row)"
-          >
+          <el-button size="small" type="primary" disabled @click="btnViewData(scope.row)">
             买入
           </el-button>
         </template>
       </pro-table>
     </keep-alive>
-    <view-data
-      v-if="pageShow === 'view-data'"
-      v-model:pageShow="pageShow"
-      v-model:row="row"
-    />
+    <view-data v-if="pageShow === 'view-data'" v-model:pageShow="pageShow" v-model:row="row" />
     <UpData
       :dialogVisible="dialogUpDataVisible.visible"
       @closeDialog="btn_updataDialog"
@@ -135,6 +118,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import ViewData from '@/views/stock-list/component/ViewData.vue'
 import UpData from '@/views/stock-recommend/component/Updata.vue'
+import { putUpdateConfig, getConfigValue } from '@/api/stock-config'
 import {
   getStockRecommendResults,
   postUpdateCurrentClose,
@@ -264,16 +248,10 @@ export default defineComponent({
           type: 'warning',
         })
           .then(async () => {
-            const param = {}
-            const { code, message } = await postUpdateCurrentClose(param)
-            if (code === '200') {
-              refresh()
-              ElMessage({ type: 'success', message: '更新成功' })
-            } else if (code === '201') {
-              ElMessage({ type: 'warning', message: message })
-            } else {
-              console.log('done')
-            }
+            postUpdateCurrentClose({})
+            await putUpdateConfig({ name: 'status_recommend', value: 'updating' })
+            // 设定状态定时器
+            state.setStatusTimer()
           })
           .catch(() => {})
       },
@@ -326,17 +304,40 @@ export default defineComponent({
         macdEnd: 0.1,
       },
       // 工具栏
+      timer: null,
+      status: 'completed',
       dialogUpDataVisible: { visible: false },
-      btn_updataDialog(flg, isRefresh = false) {
+      async btn_updataDialog(flg, isRefresh = false) {
         state.dialogUpDataVisible.visible = flg
-        if (isRefresh) refresh()
+        if (isRefresh) {
+          // 更新状态
+          await putUpdateConfig({ name: 'status_recommend', value: 'updating' })
+          // 设定状态定时器
+          state.setStatusTimer()
+        }
+      },
+      // 设定状态定时器
+      setStatusTimer() {
+        if (!state.timer) {
+          state.timer = setInterval(async () => {
+            // 获取最新状态,如果状态为completed,则清除定时器
+            const { data } = await getConfigValue({ name: 'status_recommend' })
+            if (data.value === 'completed') {
+              clearInterval(state.timer)
+              state.timer = null
+            }
+            if (data.value !== state.status) state.status = data.value
+            refresh()
+          }, 1000) // 1000毫秒，即1秒
+        }
       },
     })
     const table = ref(null)
     const refresh = () => {
       table.value.refresh()
     }
-
+    // 在组件挂载时启动定时器，更新中时页面切换，防止更新中时再执行更新
+    state.setStatusTimer()
     return { ...toRefs(state), refresh, table }
   },
 })

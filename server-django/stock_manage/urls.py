@@ -10,6 +10,8 @@ urlpatterns = [
     path('updateStockList/', views.updateStockList),
     path('updateStatus/', views.updateStatus),
     path('deleteStockRecord/', views.deleteStockRecord),
+    path('putUpdateConfig/', views.putUpdateConfig),
+    path('getConfigValue/', views.getConfigValue),
     # views_baostock
     path('update_history_data_single/', views_baostock.update_history_data_single),
     path('update_history_data_all/', views_baostock.update_history_data_all),

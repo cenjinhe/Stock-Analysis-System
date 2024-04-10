@@ -54,17 +54,12 @@ const formData = ref({
   trendNum: 3,
   date: new Date(),
 })
-async function onSubmit() {
-  const { code, message } = await postUpdateStockRecommend(formData.value)
-  if (code === '200') {
-    ElMessage({ type: 'success', message: '更新成功' })
-    emit('closeDialog', false, true)
-  } else if (code === '201') {
-    ElMessage({ type: 'warning', message: message })
-  } else {
-    emit('closeDialog', false, false)
-  }
+// 【确定】
+function onSubmit() {
+  postUpdateStockRecommend(formData.value)
+  emit('closeDialog', false, true)
 }
+// 【取消】
 function onCancel() {
   emit('closeDialog', false, false)
 }

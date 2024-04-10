@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 from django.http.response import JsonResponse
 from stock_manage import models_sql
 from stock_manage.utils import handler
-from stock_manage.models import StockListSZ, StockListSH
+from stock_manage.models import StockListSZ, StockListSH, StockConfig
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 
@@ -179,3 +179,41 @@ def deleteStockRecord(request):
         result = {'data': {}, 'code': '200', 'message': '删除成功!'}
         # return JsonResponse(data=result) # 这种方式返回简单，但是message中文会乱码，所以改成HttpResponse来返回json数据
         return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+
+# 更新config
+def putUpdateConfig(request):
+    if request.method == 'PUT':
+        post_body = request.body
+        json_param = json.loads(post_body.decode())
+        name = json_param.get('name', None)
+        value = json_param.get('value', '')
+
+        if not name:
+            result = {'data': {}, 'code': '201', 'message': '未更新,参数中没有指定name!'}
+            return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+        record = StockConfig.objects.filter(name=name).first()
+        if record:
+            # 更新
+            StockConfig.objects.filter(name=name).update(value=value)
+        else:
+            # 增加
+            StockConfig.objects.create(name=name, value=value)
+
+        result = {'data': {}, 'code': '200', 'message': '更新成功!'}
+        return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json,charset=utf-8")
+
+
+# 获取config
+def getConfigValue(request):
+    if request.method == 'GET':
+        name = request.GET.get('name', default=None)
+        if not name:
+            return JsonResponse({'data': {}, 'code': '200', 'message': '获取失败,参数中未指定name!'})
+
+        record = StockConfig.objects.filter(name=name).first()
+        if not record:
+            return JsonResponse({'data': {}, 'code': '200', 'message': f'获取失败,数据库中没有name={name}!'})
+
+        return JsonResponse({'data': {'value': record.value}, 'code': '200', 'message': '获取成功!'})
