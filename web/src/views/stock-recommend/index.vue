@@ -309,12 +309,8 @@ export default defineComponent({
       dialogUpDataVisible: { visible: false },
       async btn_updataDialog(flg, isRefresh = false) {
         state.dialogUpDataVisible.visible = flg
-        if (isRefresh) {
-          // 更新状态
-          await putUpdateConfig({ name: 'status_recommend', value: 'updating' })
-          // 设定状态定时器
-          state.setStatusTimer()
-        }
+        // 设定状态定时器
+        if (isRefresh) state.setStatusTimer()
       },
       // 设定状态定时器
       setStatusTimer() {

@@ -37,6 +37,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, computed } from 'vue'
 import { postUpdateStockRecommend } from '@/api/stock-recommend'
+import { getNowFormatDate } from '@/utils/common'
 import { ElMessage } from 'element-plus'
 
 const props = defineProps(['dialogVisible'])
@@ -56,7 +57,13 @@ const formData = ref({
 })
 // 【确定】
 function onSubmit() {
-  postUpdateStockRecommend(formData.value)
+  const params = {
+    checkedMACD: formData.value.checkedMACD,
+    macdNum: formData.value.macdNum,
+    trendNum: formData.value.trendNum,
+    date: getNowFormatDate(formData.value.date),
+  }
+  postUpdateStockRecommend(params)
   emit('closeDialog', false, true)
 }
 // 【取消】
