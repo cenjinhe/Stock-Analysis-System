@@ -94,6 +94,9 @@ def postUpdateStockRecommend(request):
                 date = datetime.date.today()
             print(checkedMACD, macdNum, trendNum, date)
 
+            # 更新状态:updating
+            StockConfig.setConfigValue(name='status_recommend', value='updating')
+
             index = 1
             # 遍历[深市, 沪市]
             for market in [1]:
@@ -273,7 +276,7 @@ def postUpdateStockRecommend(request):
         except Exception as ex:
             print(ex)
         finally:
-            # 更新状态
+            # 更新状态:completed
             StockConfig.setConfigValue(name='status_recommend', value='completed')
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 
