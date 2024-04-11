@@ -285,6 +285,9 @@ def postUpdateStockRecommend(request):
 def postUpdateCurrentClose(request):
     if request.method == 'POST':
         try:
+            # 更新状态:updating
+            StockConfig.setConfigValue(name='status_recommend', value='updating')
+
             queryset = StockOnAnalysis.objects.all().values()
             stockList = list(queryset)
             # 遍历列表
@@ -302,7 +305,7 @@ def postUpdateCurrentClose(request):
         except Exception as ex:
             print(ex)
         finally:
-            # 更新状态
+            # 更新状态:completed
             StockConfig.setConfigValue(name='status_recommend', value='completed')
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 

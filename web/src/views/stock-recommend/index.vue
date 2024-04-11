@@ -118,7 +118,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import ViewData from '@/views/stock-list/component/ViewData.vue'
 import UpData from '@/views/stock-recommend/component/Updata.vue'
-import { putUpdateConfig, getConfigValue } from '@/api/stock-config'
+import { getConfigValue } from '@/api/stock-config'
 import {
   getStockRecommendResults,
   postUpdateCurrentClose,
@@ -249,7 +249,6 @@ export default defineComponent({
         })
           .then(async () => {
             postUpdateCurrentClose({})
-            await putUpdateConfig({ name: 'status_recommend', value: 'updating' })
             // 设定状态定时器
             state.setStatusTimer()
           })
