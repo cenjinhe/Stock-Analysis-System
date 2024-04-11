@@ -7,6 +7,7 @@ class StockConfig(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True, verbose_name='ID')
     name = models.CharField(max_length=50, default=None, verbose_name='name')
     value = models.CharField(max_length=5000, default=None, verbose_name='value')
+    default = models.CharField(max_length=5000, default=None, verbose_name='default value')
 
     class Meta:
         db_table = 'stock_config'
