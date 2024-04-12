@@ -38,8 +38,15 @@
             </el-row>
             <el-row v-if="advanced" :gutter="20">
               <el-col :md="8" :sm="24">
-                <el-form-item label="不看*ST">
-                  <el-input v-model="formData.code" placeholder="A股代码" clearable style="width: 100%" />
+                <el-form-item label="对比日期">
+                  <el-select v-model="formData.compareDate" placeholder="请选择" style="width: 100%">
+                    <el-option label="现在的收盘价" value="0" />
+                    <el-option label="5日后的收盘价" value="5" />
+                    <el-option label="7日后的收盘价" value="7" />
+                    <el-option label="10日后的收盘价" value="10" />
+                    <el-option label="15日后的收盘价" value="15" />
+                    <el-option label="30日后的收盘价" value="30" />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
@@ -301,6 +308,7 @@ export default defineComponent({
         name: '',
         macdStart: -0.1,
         macdEnd: 0.1,
+        compareDate: '0',
       },
       // 工具栏
       timer: null,
@@ -345,7 +353,4 @@ export default defineComponent({
   width: calc(100% - 230px);
   display: inline-block;
 }
-/*.operator {*/
-/*  margin-bottom: 18px;*/
-/*}*/
 </style>
