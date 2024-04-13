@@ -7,16 +7,36 @@ from django.db import connection
 from stock_manage import models_sql
 
 
-def getRawDataListFromDate(code, date, count):
+def getRawDataListFromStartDate(code, endDate, count):
     """
-    获取原始数据列表(列表)
+    根据开始日期,获取原始数据列表(列表)
     """
     rawData = []
     try:
         if str(count) == '0':
-            sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=date)
+            sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_START_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=endDate)
         else:
-            sql = f'{models_sql.SELECT_RAW_DATA_FROM_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=date, COUNT=count)
+            sql = f'{models_sql.SELECT_RAW_DATA_FROM_START_DATE}'.format(TABLE_NAME=f'tb_{code}',
+                                                                         DATE=endDate, COUNT=count)
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            rawData = cursor.fetchall()
+    except Exception as ex:
+        pass
+    return rawData
+
+
+def getRawDataListFromEndDate(code, endDate, count):
+    """
+    根据终了日期,获取原始数据列表(列表)
+    """
+    rawData = []
+    try:
+        if str(count) == '0':
+            sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_END_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=endDate)
+        else:
+            sql = f'{models_sql.SELECT_RAW_DATA_FROM_END_DATE}'.format(TABLE_NAME=f'tb_{code}',
+                                                                       DATE=endDate, COUNT=count)
         with connection.cursor() as cursor:
             cursor.execute(sql)
             rawData = cursor.fetchall()

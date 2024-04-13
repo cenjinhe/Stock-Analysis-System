@@ -28,6 +28,7 @@ def getStockRecommendResults(request):
         name = request.GET.get('name', default='')
         macdStart = request.GET.get('macdStart', default=-100)
         macdEnd = request.GET.get('macdEnd', default=100)
+        compareDate = request.GET.get('compareDate', default='0')
         # 排序字段
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
@@ -45,7 +46,7 @@ def getStockRecommendResults(request):
             code__contains=code,
             name__contains=name,
             current_macd__range=(macdStart, macdEnd)
-            ).order_by(sortFieldName)
+        ).order_by(sortFieldName)
 
         # 分页
         try:
@@ -56,6 +57,8 @@ def getStockRecommendResults(request):
 
         listData = []
         for record in page_info:
+            # 获取对比日期的收盘价
+            compare_date, compare_close = _queryCloseFromStartDate(record.code, record.date, compareDate)
             # 加入到数据列表中
             listData.append({"id": record.id,
                              "date": record.date.strftime("%Y-%m-%d"),
@@ -63,7 +66,7 @@ def getStockRecommendResults(request):
                              "name": record.name,
                              "market": record.market,
                              "close": record.close,
-                             "current_close": record.current_close,
+                             "compare_close": compare_close,
                              "previous_macd": record.previous_macd,
                              "current_macd": record.current_macd,
                              "previous_dif": record.previous_dif,
@@ -74,7 +77,7 @@ def getStockRecommendResults(request):
                              "current_ma_3": record.current_ma_3,
                              "previous_ma_5": record.previous_ma_5,
                              "current_ma_5": record.current_ma_5,
-                             "update_time": record.update_time.strftime("%Y-%m-%d %H:%M:%S")})
+                             "update_time": compare_date.strftime("%Y-%m-%d")})
         json_data = {'list': listData, 'total': len(records)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
 
@@ -109,12 +112,13 @@ def postUpdateStockRecommend(request):
                     name = row['name']
 
                     # 获取原始数据
-                    rawData = handler.getRawDataListFromDate(code, date, macdNum)
+                    rawData = handler.getRawDataListFromEndDate(code, date, macdNum)
                     if len(rawData) <= 2:
                         continue
 
                     # 定义一个变量result，用于存储个股的解析结果
-                    result = {'date': rawData[0][0], 'code': code, 'name': name, 'market': market, 'close': rawData[0][2]}
+                    result = {'date': rawData[0][0], 'code': code, 'name': name, 'market': market,
+                              'close': rawData[0][2]}
                     print('解析：', result)
 
                     # 分割原始数据 如:[[日期(date), 开盘(open)，收盘(close)，最低(low)，最高(high)]]，并倒序(日期从小到大)
@@ -281,38 +285,18 @@ def postUpdateStockRecommend(request):
         return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
 
 
-# 更新当前收盘价
-def postUpdateCurrentClose(request):
-    if request.method == 'POST':
-        try:
-            # 更新状态:updating
-            StockConfig.setConfigValue(name='status_recommend', value='updating')
-
-            queryset = StockOnAnalysis.objects.all().values()
-            stockList = list(queryset)
-            # 遍历列表
-            for row in stockList:
-                code = row['code']
-                name = row['name']
-                # 获取当前收盘价
-                for market in [1, 0]:
-                    record = TABLE_MAP.get(str(market)).objects.filter(code=code, name=name).first()
-                    if not record:
-                        continue
-                    # 更新当前收盘价
-                    StockOnAnalysis.objects.filter(code=code, name=name).update(current_close=record.close,
-                                                                                update_time=datetime.datetime.now())
-        except Exception as ex:
-            print(ex)
-        finally:
-            # 更新状态:completed
-            StockConfig.setConfigValue(name='status_recommend', value='completed')
-        return JsonResponse({'data': {}, 'code': '200', 'message': '更新成功!!'})
-
-
 def map_mcad_data(x, y):
     """将MA数据转换为MACD数据"""
     if y == '-':
         y = 0
     x[2] = float(y)
     return x
+
+
+def _queryCloseFromStartDate(code, date, count):
+    """获取对比日期的收盘价"""
+    rawData = handler.getRawDataListFromStartDate(code, date, count)
+    # data：(日期(date)，开盘(open)，今日收盘(close)，最低(low)，最高(high)，成交量(volume)，昨日收盘(pre_close))
+    data = rawData[0]
+
+    return data[0], data[2]

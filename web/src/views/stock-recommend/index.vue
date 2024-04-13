@@ -86,21 +86,18 @@
           <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
             更新推荐股票
           </el-button>
-          <el-button type="primary" :disabled="status==='updating'" @click="btn_updateCurrentClose()">
-            更新收盘价(现在)
-          </el-button>
           <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
             刷新
           </el-button>
         </template>
         <!-- table栏 -->
-        <template #current_close="scope">
-          <div :style="{color: getColor(scope.row.close, scope.row.current_close)}">
-            {{ scope.row.current_close }}
+        <template #compare_close="scope">
+          <div :style="{color: getColor(scope.row.close, scope.row.compare_close)}">
+            {{ scope.row.compare_close }}
           </div>
         </template>
         <template #ratio="scope">
-          <div :style="{color: getColor(scope.row.close, scope.row.current_close)}">{{ getRatio(scope.row) }}%</div>
+          <div :style="{color: getColor(scope.row.close, scope.row.compare_close)}">{{ getRatio(scope.row) }}%</div>
         </template>
         <template #operate="scope">
           <el-button size="small" type="success" @click="btnViewData(scope.row)">
@@ -128,7 +125,6 @@ import UpData from '@/views/stock-recommend/component/Updata.vue'
 import { getConfigValue } from '@/api/stock-config'
 import {
   getStockRecommendResults,
-  postUpdateCurrentClose,
 } from '@/api/stock-recommend'
 
 export default defineComponent({
@@ -165,10 +161,10 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
-          label: '收盘价(现在)',
-          prop: 'current_close',
+          label: '收盘价(对比)',
+          prop: 'compare_close',
           minWidth: 130,
-          tdSlot: 'current_close',
+          tdSlot: 'compare_close',
           sortable: 'custom',
         },
         {
@@ -210,7 +206,7 @@ export default defineComponent({
         {
           label: '更新日期',
           prop: 'update_time',
-          minWidth: 180,
+          minWidth: 120,
         },
         {
           label: '操作',
@@ -247,20 +243,20 @@ export default defineComponent({
         await state.getList()
         refresh()
       },
-      // 【更新当前收盘价】按钮
-      async btn_updateCurrentClose() {
-        ElMessageBox.confirm(`更新当前收盘价, 是否继续?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        })
-          .then(async () => {
-            postUpdateCurrentClose({})
-            // 设定状态定时器
-            state.setStatusTimer()
-          })
-          .catch(() => {})
-      },
+      // // 【更新当前收盘价】按钮
+      // async btn_updateCurrentClose() {
+      //   ElMessageBox.confirm(`更新当前收盘价, 是否继续?`, '提示', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning',
+      //   })
+      //     .then(async () => {
+      //       postUpdateCurrentClose({})
+      //       // 设定状态定时器
+      //       state.setStatusTimer()
+      //     })
+      //     .catch(() => {})
+      // },
       // 【查看数据)】按钮
       pageShow: 'stock-list',
       row: {},
@@ -295,7 +291,7 @@ export default defineComponent({
       // 获取涨跌幅
       getRatio(row) {
         // 公式：100* (现在的收盘价 - 之前的收盘价) / 之前的收盘价)
-        const value = 100 * ((row.current_close - row.close) / row.close)
+        const value = 100 * ((row.compare_close - row.close) / row.close)
         return value.toFixed(1)
       },
       // 查询条件栏
@@ -308,7 +304,7 @@ export default defineComponent({
         name: '',
         macdStart: -0.1,
         macdEnd: 0.1,
-        compareDate: '0',
+        compareDate: '5',
       },
       // 工具栏
       timer: null,

@@ -64,7 +64,7 @@ def getSlopeAndTrend(code, date, count):
     trend_status: 斜率状态["上升", "下降", "波动", "平稳"]
     """
     retData = {'slope': 0, 'intercept': 0, 'trend_status': ''}
-    rawData = handler.getRawDataListFromDate(code, date, count)
+    rawData = handler.getRawDataListFromEndDate(code, date, count)
     if len(rawData) > 0:
         closeData = [element[2] for element in rawData][::-1]
         slope, intercept = _trend_line(closeData)
