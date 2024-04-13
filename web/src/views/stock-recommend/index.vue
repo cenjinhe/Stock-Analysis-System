@@ -207,12 +207,14 @@ export default defineComponent({
           prop: 'current_ma_3',
           minWidth: 120,
           sortable: 'custom',
+          isShow: false,
         },
         {
           label: 'MA_5',
           prop: 'current_ma_5',
           minWidth: 120,
           sortable: 'custom',
+          isShow: false,
         },
         {
           label: '对比日期',
@@ -227,6 +229,15 @@ export default defineComponent({
           fixed: 'right',
         },
       ],
+      // 是否显示列
+      showColumn: {
+        current_macd: true,
+        current_dif: true,
+        current_dea: true,
+        current_ma_3: true,
+        current_ma_5: true,
+        update_time: true,
+      },
       // 请求函数
       async getList(params = null) {
         const queryParams = params

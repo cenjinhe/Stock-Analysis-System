@@ -220,21 +220,22 @@
         @selection-change="handleSelectionChange"
         @sort-change="changeTableSort"
       >
-        <el-table-column
-          v-for="item in columns"
-          :key="item.label"
-          :filter-method="item.filters && filterHandler"
-          :show-overflow-tooltip="!item.wrap"
-          v-bind="item"
-          :label="item.label ? $t(item.label) : ''"
-        >
-          <template #header="scope" v-if="!!item.labelSlot">
-            <slot :name="item.labelSlot" v-bind="scope"></slot>
-          </template>
-          <template #default="scope" v-if="!!item.tdSlot">
-            <slot :name="item.tdSlot" v-bind="scope"></slot>
-          </template>
+        <template v-for="item in columns" :key="item.label">
+          <el-table-column
+            :filter-method="item.filters && filterHandler"
+            :show-overflow-tooltip="!item.wrap"
+            v-bind="item"
+            :label="item.label ? $t(item.label) : ''"
+            v-if="item.isShow || item.isShow === undefined"
+          >
+            <template #header="scope" v-if="!!item.labelSlot">
+              <slot :name="item.labelSlot" v-bind="scope"></slot>
+            </template>
+            <template #default="scope" v-if="!!item.tdSlot">
+              <slot :name="item.tdSlot" v-bind="scope"></slot>
+            </template>
         </el-table-column>
+        </template>
       </el-table>
     </div>
     <!-- 分页 -->
