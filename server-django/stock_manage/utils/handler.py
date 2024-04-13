@@ -9,9 +9,9 @@ from stock_manage import models_sql
 
 def getRawDataListFromStartDate(code, endDate, count):
     """
-    根据开始日期,获取原始数据列表(列表)
+    根据开始日期,获取原始数据列表([字典])
     """
-    rawData = []
+    newData = []
     try:
         if str(count) == '0':
             sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_START_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=endDate)
@@ -20,17 +20,28 @@ def getRawDataListFromStartDate(code, endDate, count):
                                                                          DATE=endDate, COUNT=count)
         with connection.cursor() as cursor:
             cursor.execute(sql)
+            # 获取结果
             rawData = cursor.fetchall()
+            # 获取字段名
+            fieldDict = _get_field_dict(cursor)
+            # 转化成dict格式（默认是tuple格式）
+            for data in rawData:
+                temp = dict()
+                for field in fieldDict:
+                    temp[field] = data[fieldDict[field]]
+                newData.append(temp)
     except Exception as ex:
         pass
-    return rawData
+    # 倒序, 行情日期从小到大排序
+    newData = newData[::-1] if newData else []
+    return newData
 
 
 def getRawDataListFromEndDate(code, endDate, count):
     """
-    根据终了日期,获取原始数据列表(列表)
+    根据终了日期,获取原始数据列表(元组)
     """
-    rawData = []
+    rawData = ()
     try:
         if str(count) == '0':
             sql = f'{models_sql.SELECT_RAW_DATA_ALL_FROM_END_DATE}'.format(TABLE_NAME=f'tb_{code}', DATE=endDate)
@@ -47,9 +58,9 @@ def getRawDataListFromEndDate(code, endDate, count):
 
 def getRawDataList(code, count):
     """
-    获取原始数据列表(列表)
+    获取原始数据列表(元组)
     """
-    rawData = []
+    rawData = ()
     try:
         if str(count) == '0':
             sql = f'{models_sql.SELECT_RAW_DATA_ALL}'.format(TABLE_NAME=f'tb_{code}')
@@ -65,7 +76,7 @@ def getRawDataList(code, count):
 
 def getRawDataDict(code, count):
     """
-    获取原始数据列表(字典)
+    获取原始数据列表([字典])
     """
     newData = []
     try:

@@ -296,7 +296,5 @@ def map_mcad_data(x, y):
 def _queryCloseFromStartDate(code, date, count):
     """获取对比日期的收盘价"""
     rawData = handler.getRawDataListFromStartDate(code, date, count)
-    # data：(日期(date)，开盘(open)，今日收盘(close)，最低(low)，最高(high)，成交量(volume)，昨日收盘(pre_close))
     data = rawData[0]
-
-    return data[0], data[2]
+    return data['date'], data['close']
