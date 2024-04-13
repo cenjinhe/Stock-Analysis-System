@@ -204,7 +204,7 @@ export default defineComponent({
           sortable: 'custom',
         },
         {
-          label: '更新日期',
+          label: '对比日期',
           prop: 'update_time',
           minWidth: 120,
         },
