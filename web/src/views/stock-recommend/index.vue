@@ -315,7 +315,7 @@ export default defineComponent({
         macdStart: -0.1,
         macdEnd: 0.1,
         compareDate: '5',
-        stStock: '0',
+        stStock: '1', // 0: 不包含ST, 1: 包含ST
         code: '',
         name: '',
       },
