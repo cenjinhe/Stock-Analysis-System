@@ -135,9 +135,7 @@ import { defineComponent, reactive, ref, toRefs } from 'vue'
 import ViewData from '@/views/stock-list/component/ViewData.vue'
 import UpData from '@/views/stock-recommend/component/Updata.vue'
 import { getConfigValue } from '@/api/stock-config'
-import {
-  getStockRecommendResults,
-} from '@/api/stock-recommend'
+import { getStockRecommendResults } from '@/api/stock-recommend'
 
 export default defineComponent({
   components: { ViewData, UpData },
@@ -229,15 +227,6 @@ export default defineComponent({
           fixed: 'right',
         },
       ],
-      // 是否显示列
-      showColumn: {
-        current_macd: true,
-        current_dif: true,
-        current_dea: true,
-        current_ma_3: true,
-        current_ma_5: true,
-        update_time: true,
-      },
       // 请求函数
       async getList(params = null) {
         const queryParams = params
