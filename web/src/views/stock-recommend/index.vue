@@ -98,7 +98,7 @@
           <el-button icon="Pointer" type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
             更新
           </el-button>
-          <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
+          <el-button icon="Refresh" style="margin-right: 60px;" @click="refresh">
             刷新
           </el-button>
         </template>
@@ -177,7 +177,6 @@ export default defineComponent({
           prop: 'compare_close',
           minWidth: 130,
           tdSlot: 'compare_close',
-          sortable: 'custom',
         },
         {
           label: '涨跌幅',
