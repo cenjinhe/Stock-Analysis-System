@@ -6,16 +6,6 @@
           <div :class="advanced ? null : 'fold'">
             <el-row :gutter="20">
               <el-col :md="8" :sm="24">
-                <el-form-item label="A股代码">
-                  <el-input v-model="formData.code" placeholder="A股代码" clearable style="width: 100%" />
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
-                <el-form-item label="A股简称">
-                  <el-input v-model="formData.name" placeholder="A股简称" clearable style="width: 100%" />
-                </el-form-item>
-              </el-col>
-              <el-col :md="8" :sm="24">
                 <el-form-item label="MACD范围">
                   <!-- 只能输入数字，允许输入小数点和负号，且只能输入两位小数（正数、负数、0）-->
                   <el-input
@@ -35,12 +25,11 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row v-if="advanced" :gutter="20">
               <el-col :md="8" :sm="24">
                 <el-form-item label="对比日期">
                   <el-select v-model="formData.compareDate" placeholder="请选择" style="width: 100%">
                     <el-option label="现在的收盘价" value="0" />
+                    <el-option label="3日后的收盘价" value="3" />
                     <el-option label="5日后的收盘价" value="5" />
                     <el-option label="7日后的收盘价" value="7" />
                     <el-option label="10日后的收盘价" value="10" />
@@ -50,8 +39,31 @@
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
-                <el-form-item label="A股简称">
-                  <el-input v-model="formData.name" placeholder="A股简称" clearable style="width: 100%" />
+                <el-form-item label="ST股票">
+                  <el-select v-model="formData.stStock" placeholder="请选择" style="width: 100%">
+                    <el-option label="不包含ST股票" value="0" />
+                    <el-option label="包含ST股票" value="1" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="advanced" :gutter="20">
+              <el-col :md="8" :sm="24">
+                <el-form-item label="对比日期">
+                  <el-select v-model="formData.compareDate" placeholder="请选择" style="width: 100%">
+                    <el-option label="现在的收盘价" value="0" />
+                    <el-option label="3日后的收盘价" value="3" />
+                    <el-option label="5日后的收盘价" value="5" />
+                    <el-option label="7日后的收盘价" value="7" />
+                    <el-option label="10日后的收盘价" value="10" />
+                    <el-option label="15日后的收盘价" value="15" />
+                    <el-option label="30日后的收盘价" value="30" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :md="8" :sm="24">
+                <el-form-item label="A股代码">
+                  <el-input v-model="formData.code" placeholder="A股代码" clearable style="width: 100%" />
                 </el-form-item>
               </el-col>
               <el-col :md="8" :sm="24">
@@ -61,7 +73,7 @@
               </el-col>
             </el-row>
           </div>
-          <span style="float: right; margin-top: 3px;">
+          <span style="float: right;">
             <el-button type="primary" icon="Search" @click="btn_query()">查 询</el-button>
             <el-button style="margin-left: 8px" icon="RefreshRight" @click="btn_reset()">重 置</el-button>
             <a @click="toggleAdvanced" style="margin-left: 8px">
@@ -83,8 +95,8 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
-            更新推荐股票
+          <el-button icon="Pointer" type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
+            更新
           </el-button>
           <el-button icon="Refresh" style="margin-right: 30px;" @click="refresh">
             刷新
@@ -295,16 +307,17 @@ export default defineComponent({
         return value.toFixed(1)
       },
       // 查询条件栏
-      advanced: true, // 是否展开，默认收起
+      advanced: false, // 是否展开，默认收起
       toggleAdvanced() {
         this.advanced = !this.advanced
       },
       formData: {
-        code: '',
-        name: '',
         macdStart: -0.1,
         macdEnd: 0.1,
         compareDate: '5',
+        stStock: '0',
+        code: '',
+        name: '',
       },
       // 工具栏
       timer: null,
@@ -346,7 +359,7 @@ export default defineComponent({
   margin-bottom: 40px;
 }
 .fold {
-  width: calc(100% - 230px);
+  width: calc(100% - 250px);
   display: inline-block;
 }
 </style>

@@ -100,6 +100,9 @@ def postUpdateStockRecommend(request):
             # 更新状态:updating
             StockConfig.setConfigValue(name='status_recommend', value='updating')
 
+            # 清空数据库表
+            StockOnAnalysis.objects.all().delete()
+
             index = 1
             # 遍历[深市, 沪市]
             for market in [1]:
@@ -242,10 +245,7 @@ def postUpdateStockRecommend(request):
                     # ---------------计算 拟合斜率 end-------------
 
                     # ---------------解析结果入库 start-------------
-                    # 删除表所有数据
-                    if index == 1:
-                        StockOnAnalysis.objects.all().delete()
-                    # 重新插入新数据
+                    # 增加数据
                     StockOnAnalysis.objects.create(
                         id=index,
                         date=result['date'],
