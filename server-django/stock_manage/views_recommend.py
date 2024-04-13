@@ -42,7 +42,7 @@ def getStockRecommendResults(request):
         macdStart = -100 if not macdStart else macdStart
         macdEnd = 100 if not macdEnd else macdEnd
 
-        # 查询
+        # 查询 & 字段排序
         querySet = StockOnAnalysis.objects.filter(
             code__contains=code,
             name__contains=name,

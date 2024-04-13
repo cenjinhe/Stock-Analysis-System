@@ -255,20 +255,6 @@ export default defineComponent({
         await state.getList()
         refresh()
       },
-      // // 【更新当前收盘价】按钮
-      // async btn_updateCurrentClose() {
-      //   ElMessageBox.confirm(`更新当前收盘价, 是否继续?`, '提示', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     type: 'warning',
-      //   })
-      //     .then(async () => {
-      //       postUpdateCurrentClose({})
-      //       // 设定状态定时器
-      //       state.setStatusTimer()
-      //     })
-      //     .catch(() => {})
-      // },
       // 【查看数据)】按钮
       pageShow: 'stock-list',
       row: {},
