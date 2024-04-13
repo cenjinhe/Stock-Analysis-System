@@ -29,6 +29,7 @@ def getStockRecommendResults(request):
         macdStart = request.GET.get('macdStart', default=-100)
         macdEnd = request.GET.get('macdEnd', default=100)
         compareDate = request.GET.get('compareDate', default='0')
+        stStock = request.GET.get('stStock', default=1)
         # 排序字段
         sortFieldName = request.GET.get('column', default='')
         order = request.GET.get('order', default='ascending')
@@ -42,15 +43,19 @@ def getStockRecommendResults(request):
         macdEnd = 100 if not macdEnd else macdEnd
 
         # 查询
-        records = StockOnAnalysis.objects.filter(
+        querySet = StockOnAnalysis.objects.filter(
             code__contains=code,
             name__contains=name,
             current_macd__range=(macdStart, macdEnd)
         ).order_by(sortFieldName)
 
+        # 过滤ST股票
+        if str(stStock) == '0':
+            querySet = querySet.exclude(name__icontains='ST')
+
         # 分页
         try:
-            page_info = Paginator(records, size).page(number=current)
+            page_info = Paginator(querySet, size).page(number=current)
         except Exception as ex:
             print(ex)
             return JsonResponse({'data': {}, 'code': '200', 'message': 'No data'})
@@ -78,7 +83,7 @@ def getStockRecommendResults(request):
                              "previous_ma_5": record.previous_ma_5,
                              "current_ma_5": record.current_ma_5,
                              "update_time": compare_date.strftime("%Y-%m-%d")})
-        json_data = {'list': listData, 'total': len(records)}
+        json_data = {'list': listData, 'total': len(querySet)}
         return JsonResponse({'data': json_data, 'code': '200', 'message': '获取成功!'})
 
 
