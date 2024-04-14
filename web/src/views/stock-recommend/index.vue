@@ -98,7 +98,7 @@
         <!-- 工具栏 -->
         <template #toolbar>
           <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
-            更新
+            {{ status==='updating' ? '更新中...' : '更新' }}
           </el-button>
           <el-button icon="Refresh" style="margin-right: 10px;" @click="refresh">
             刷新
