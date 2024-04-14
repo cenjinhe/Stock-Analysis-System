@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 筛选条件 -->
     <el-card v-if="pageShow === 'stock-list'" style="margin-bottom: 10px;" shadow="never">
       <div :class="advanced ? 'search' : null">
         <el-form :modal="formData" label-width="auto">
@@ -76,7 +77,7 @@
           <span style="float: right;">
             <el-button type="primary" icon="Search" @click="btn_query()">查 询</el-button>
             <el-button style="margin-left: 8px" icon="RefreshRight" @click="btn_reset()">重 置</el-button>
-            <a @click="toggleAdvanced" style="margin-left: 8px">
+            <a style="margin-left: 8px" @click="toggleAdvanced">
               {{ advanced ? '收起' : '展开' }}
               <el-icon><component :is="advanced ? 'ArrowUp' : 'ArrowDown'" /></el-icon>
             </a>
@@ -84,6 +85,7 @@
         </el-form>
       </div>
     </el-card>
+    <!-- table表 -->
     <keep-alive>
       <pro-table
         v-if="pageShow === 'stock-list'"
@@ -95,12 +97,17 @@
       >
         <!-- 工具栏 -->
         <template #toolbar>
-          <el-button icon="Pointer" type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
+          <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
             更新
           </el-button>
-          <el-button icon="Refresh" style="margin-right: 60px;" @click="refresh">
+          <el-button icon="Refresh" style="margin-right: 10px;" @click="refresh">
             刷新
           </el-button>
+          <!-- table列显示/隐藏 -->
+          <a style="margin-right: 30px;">
+            <el-icon><Setting /></el-icon>
+            <!-- table列显示or隐藏dropdown -->
+          </a>
         </template>
         <!-- table栏 -->
         <template #compare_close="scope">
@@ -121,11 +128,10 @@
         </template>
       </pro-table>
     </keep-alive>
+    <!-- 详情 -->
     <view-data v-if="pageShow === 'view-data'" v-model:pageShow="pageShow" v-model:row="row" />
-    <UpData
-      :dialogVisible="dialogUpDataVisible.visible"
-      @closeDialog="btn_updataDialog"
-    ></UpData>
+    <!-- 更新dialog -->
+    <up-data :dialogVisible="dialogUpDataVisible.visible" @closeDialog="btn_updataDialog" />
   </div>
 </template>
 
@@ -308,6 +314,7 @@ export default defineComponent({
       timer: null,
       status: 'completed',
       dialogUpDataVisible: { visible: false },
+      // 【更新】按钮
       async btn_updataDialog(flg, isRefresh = false) {
         state.dialogUpDataVisible.visible = flg
         // 设定状态定时器
