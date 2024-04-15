@@ -84,7 +84,7 @@ def getPreSlopeAndTrend(code, date, count):
     trend_status: 斜率状态["上升", "下降", "波动", "平稳"]
     """
     retData = {'slope': 0, 'intercept': 0, 'trend_status': ''}
-    rawData = handler.getRawDataListFromDate(code, date, count + 1)
+    rawData = handler.getRawDataListFromEndDate(code, date, count + 1)
     if len(rawData) > 1:
         rawData = rawData[1:]
         closeData = [element[2] for element in rawData][::-1]
