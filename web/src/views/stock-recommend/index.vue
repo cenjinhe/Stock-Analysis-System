@@ -100,7 +100,7 @@
           <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
             {{ status === 'updating' ? '更新中...' : '更新' }}
           </el-button>
-          <el-button icon="Refresh" style="margin-right: 10px;" @click="refresh">
+          <el-button style="margin-right: 10px;" @click="refresh">
             刷新
           </el-button>
           <!-- 列名显示/隐藏 -->
