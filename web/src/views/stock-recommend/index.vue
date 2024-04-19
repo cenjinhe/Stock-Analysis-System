@@ -98,15 +98,14 @@
         <!-- 工具栏 -->
         <template #toolbar>
           <el-button type="warning" :disabled="status==='updating'" @click="btn_updataDialog(true)">
-            {{ status==='updating' ? '更新中...' : '更新' }}
+            {{ status === 'updating' ? '更新中...' : '更新' }}
           </el-button>
           <el-button icon="Refresh" style="margin-right: 10px;" @click="refresh">
             刷新
           </el-button>
-          <!-- table列显示/隐藏 -->
-          <a style="margin-right: 30px;">
-            <el-icon><Setting /></el-icon>
-            <!-- table列显示or隐藏dropdown -->
+          <!-- 列名显示/隐藏 -->
+          <a style="margin-right: 30px;display: inline-block;">
+            <columns-dropdown :columns="columnsShowStatus()" @changeItem="changeDropdownItem"/>
           </a>
         </template>
         <!-- table栏 -->
@@ -140,11 +139,12 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { defineComponent, reactive, ref, toRefs } from 'vue'
 import ViewData from '@/views/stock-list/component/ViewData.vue'
 import UpData from '@/views/stock-recommend/component/Updata.vue'
+import ColumnsDropdown from '@/views/stock-recommend/component/ColumnsDropdown.vue'
 import { getConfigValue } from '@/api/stock-config'
 import { getStockRecommendResults } from '@/api/stock-recommend'
 
 export default defineComponent({
-  components: { ViewData, UpData },
+  components: { ViewData, UpData, ColumnsDropdown },
   setup() {
     // const { proxy } = getCurrentInstance()
     const state = reactive({
@@ -334,6 +334,22 @@ export default defineComponent({
             refresh()
           }, 1000) // 1000毫秒，即1秒
         }
+      },
+      // 获取列名-列表
+      columnsShowStatus() {
+        const columnsStatus = []
+        state.columns.forEach(column => {
+          if ('isShow' in column) {
+            columnsStatus.push({ label: column.label, isShow: column.isShow })
+          } else {
+            columnsStatus.push({ label: column.label, isShow: true })
+          }
+        })
+        return columnsStatus
+      },
+      // 设置列名显示 or 隐藏
+      changeDropdownItem(command) {
+
       },
     })
     const table = ref(null)
