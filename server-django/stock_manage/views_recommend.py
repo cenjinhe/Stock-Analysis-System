@@ -28,7 +28,7 @@ def getStockRecommendResults(request):
         name = request.GET.get('name', default='')
         macdStart = request.GET.get('macdStart', default=-100)
         macdEnd = request.GET.get('macdEnd', default=100)
-        compareDate = request.GET.get('compareDate', default='0')
+        numDay = request.GET.get('compareDate', default='0')
         stStock = request.GET.get('stStock', default=1)
         # 排序字段
         sortFieldName = request.GET.get('column', default='')
@@ -63,7 +63,7 @@ def getStockRecommendResults(request):
         listData = []
         for record in page_info:
             # 获取对比日期的收盘价
-            compare_date, compare_close = _queryCloseFromStartDate(record.code, record.date, compareDate)
+            compare_date, compare_close = _queryCloseFromStartDate(record.code, record.date, numDay)
             # 加入到数据列表中
             listData.append({"id": record.id,
                              "date": record.date.strftime("%Y-%m-%d"),
