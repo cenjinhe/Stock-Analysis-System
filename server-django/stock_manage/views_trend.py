@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.forms import model_to_dict
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
-from stock_manage import models_sql
+from config import models_sql
 from stock_manage.utils import handler, 拟合斜率
 from stock_manage.models import StockListSZ, StockListSH, StockOnAnalysis
 

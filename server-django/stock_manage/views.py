@@ -6,7 +6,7 @@ from django.db import connection
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.http.response import JsonResponse
-from stock_manage import models_sql
+from config import models_sql
 from stock_manage.utils import handler
 from stock_manage.models import StockListSZ, StockListSH, StockConfig
 

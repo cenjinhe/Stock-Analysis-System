@@ -12,7 +12,7 @@ import pandas as pd
 import baostock as bs
 from django.db import connection
 from django.http.response import JsonResponse
-from stock_manage import models_sql
+from config import models_sql
 from stock_manage.utils import handler, 拟合斜率
 from stock_manage.models import StockListSZ, StockListSH
 
