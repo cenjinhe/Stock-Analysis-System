@@ -4,7 +4,7 @@
 # @Time     : 2023/11/22 21:38
 # @File     : handler.py
 from django.db import connection
-from stock_manage import models_sql
+from config import models_sql
 
 
 def getRawDataListFromStartDate(code, endDate, count):
