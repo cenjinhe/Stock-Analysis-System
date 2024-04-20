@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'stock_manage.apps.StockManageConfig',
-    'user.apps.UserConfig',
+    'stock_manage.apps.StockManageConfig',  # app应用: stock_manage
+    'user.apps.UserConfig',                 # app应用: user
 ]
 
 MIDDLEWARE = [
