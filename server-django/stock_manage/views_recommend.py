@@ -1,20 +1,16 @@
 """
 Django models filter筛选条件详解: https://www.cnblogs.com/qq128/p/13428278.html
+功能: 只存储macd上升的股票
 """
 import json
 import datetime
 from django.http.response import JsonResponse
 from django.core.paginator import Paginator
-from stock_manage.models import StockListSZ, StockListSH, StockOnAnalysis
-from stock_manage.utils import AsyncCall, handler, MACD, MA, StockConfig, 拟合斜率, 更新推荐股票
+from stock_manage.models import StockOnAnalysis
+from stock_manage.utils import AsyncCall, handler
 
-TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
 NUM_MACD = 200
 NUM_TREND = 3
-
-"""
-只存储macd上升的股票
-"""
 
 
 # get股票推荐分析结果

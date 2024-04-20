@@ -6,19 +6,17 @@
 
 import os
 import sys
+import django
 import argparse
 import datetime
-import django
 from multiprocessing import Process, Queue, cpu_count
-# sys.path.append('D:\project\Stock-System\server-django')
+# ‘/server-django’目录加到系统目录
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
-
-
+# 子进程中import models之前需要重新配置django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
-
 from stock_manage.models import StockListSZ, StockListSH, StockOnAnalysis
-from stock_manage.utils import AsyncCall, handler, MACD, MA, StockConfig, 拟合斜率, 更新推荐股票
+from stock_manage.utils import handler, MACD, MA, StockConfig, 拟合斜率
 
 
 TABLE_MAP = {'0': StockListSH, '1': StockListSZ}
