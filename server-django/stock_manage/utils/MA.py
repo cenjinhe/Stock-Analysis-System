@@ -28,3 +28,11 @@ def calculateMA(dayCount, data, field=1):
         element = total / dayCount
         result.append('{:.2f}'.format(element))
     return result
+
+
+def map_mcad_data(x, y):
+    """将MA数据转换为MACD数据"""
+    if y == '-':
+        y = 0
+    x[2] = float(y)
+    return x

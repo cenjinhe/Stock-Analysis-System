@@ -13,15 +13,15 @@ if %errorlevel%==0 (
 )
 
 if %status%=="Running" (
-    echo "Æô¶¯ Stock-System ÏµÍ³"
+    echo "å¯åŠ¨ Stock-System ç³»ç»Ÿ"
     start cmd /k "echo Startup server && D:\project\Stock-System\script\windows_server.bat"
     start cmd /k "echo Startup web && D:\project\Stock-System\script\windows_web.bat"
 )
 
 if %status%=="Stopped" (
-    :echo "Æô¶¯ MySQL80"
+    :echo "å¯åŠ¨ MySQL80"
     :net start MySQL80
-    echo "MySQL·şÎñ»¹Ã»ÓĞÔËĞĞÆğÀ´£¬ÇëÉÔºó......"
+    echo "MySQLæœåŠ¡è¿˜æ²¡æœ‰è¿è¡Œèµ·æ¥ï¼Œè¯·ç¨å......"
     timeout /T 5 /NOBREAK
     goto check_status
 )
