@@ -10,7 +10,7 @@ import django
 import argparse
 import datetime
 from multiprocessing import Process, Queue, cpu_count
-# ‘/server-django’目录加到系统目录
+# 当前目录的上上层(/server-django)目录加到系统路劲
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir, os.path.pardir)))
 # 子进程中import models之前需要重新配置django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
