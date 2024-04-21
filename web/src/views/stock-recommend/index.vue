@@ -252,10 +252,12 @@ export default defineComponent({
       // 【重置】按钮
       async btn_reset() {
         state.formData = {
-          code: '',
-          name: '',
           macdStart: -0.1,
           macdEnd: 0.1,
+          compareDate: '5',
+          stStock: '1', // 0: 不包含ST, 1: 包含ST
+          code: '',
+          name: '',
         }
         await state.getList()
         refresh()

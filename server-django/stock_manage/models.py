@@ -1,5 +1,6 @@
 import datetime
 from django.db import models
+from django.db import connection
 
 
 # config
@@ -102,3 +103,9 @@ class StockOnAnalysis(models.Model):
         db_table = 'stock_on_analysis'
         verbose_name = '股票分析结果'
         verbose_name_plural = '股票分析结果'
+
+    @classmethod
+    def truncate(cls):
+        with connection.cursor() as cursor:
+            print(cls)
+            cursor.execute('TRUNCATE TABLE {0}'.format('stock_on_analysis'))

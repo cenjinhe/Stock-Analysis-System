@@ -266,8 +266,9 @@ if __name__ == '__main__':
     try:
         # 更新状态:updating
         StockConfig.setConfigValue(name='status_recommend', value='updating')
-        # 清空数据库表
-        StockOnAnalysis.objects.all().delete()
+        # 清空数据库表(使用truncate命令，而不用delete命令是为了自增id进行重排)
+        # StockOnAnalysis.objects.all().delete()
+        StockOnAnalysis.truncate()
         # 运行队列
         run_queue(checkedMACD=args.checkedMACD, macdNum=args.macdNum, trendNum=args.trendNum, date=args.date)
     except Exception as ex:
